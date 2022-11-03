@@ -32,6 +32,7 @@ public class TestaCozinhaMain {
 			System.out.println(cozinha.getNome());
 		}
 		
+		//Adicionando Cozinhas no banco
 		Cozinha cozinha1 = new Cozinha();
 		cozinha1.setNome("Brasileira");
 		
@@ -42,9 +43,15 @@ public class TestaCozinhaMain {
 		cozinhas.add(cadastroCozinha.adicionar(cozinha1));
 		cozinhas.add(cadastroCozinha.adicionar(cozinha2));
 		
+		System.out.println("Lista de Cozinhas Mockadas:");
 		for (Cozinha cozinha : cozinhas) {
 			System.out.printf("%d - %s\n" ,cozinha.getId() , cozinha.getNome());
 		}
+		
+		//Buscando uma Cozinha por ID		
+		System.out.println("\nBuscando Cozinha por ID:");
+		Cozinha cozinha = cadastroCozinha.buscarPorId(4L);
+		System.out.println(cozinha.getNome());
 		
 		System.out.println();
 	}
