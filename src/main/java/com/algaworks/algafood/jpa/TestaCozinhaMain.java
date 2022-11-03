@@ -40,8 +40,8 @@ public class TestaCozinhaMain {
 		cozinha2.setNome("Japonesa");
 		
 		//Como método "adicionar" retorna um objeto Cozinha, adicionamos ele dentro da lista já criada
-		cozinhas.add(cadastroCozinha.adicionar(cozinha1));
-		cozinhas.add(cadastroCozinha.adicionar(cozinha2));
+		cozinhas.add(cadastroCozinha.salvar(cozinha1));
+		cozinhas.add(cadastroCozinha.salvar(cozinha2));
 		
 		System.out.println("Lista de Cozinhas Mockadas:");
 		for (Cozinha cozinha : cozinhas) {
@@ -52,6 +52,16 @@ public class TestaCozinhaMain {
 		System.out.println("\nBuscando Cozinha por ID:");
 		Cozinha cozinha = cadastroCozinha.buscarPorId(4L);
 		System.out.println(cozinha.getNome());
+		
+		System.out.println("\nAlterando Cozinha:");
+		Cozinha objCozinha = new Cozinha();
+		objCozinha.setId(1L);
+		objCozinha.setNome("Italiana");
+		cadastroCozinha.salvar(objCozinha);
+		
+		for (Cozinha obj : cadastroCozinha.listar()) {
+			System.out.printf("%d - %s\n" ,obj.getId() , obj.getNome());
+		}
 		
 		System.out.println();
 	}
