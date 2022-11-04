@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.algaworks.algafood.AlgafoodApiApplication;
 import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.repository.CozinhaRepository;
 
 //Classe de aplicacaço Spring sem ser voltado para WEB
 public class TestaCozinhaMain {
@@ -20,11 +21,11 @@ public class TestaCozinhaMain {
 				.web(WebApplicationType.NONE)	
 				.run(args);
 		
-		CadastroCozinha cadastroCozinha = applicationContext.getBean(CadastroCozinha.class);
+		CozinhaRepository cozinhaRepository = applicationContext.getBean(CozinhaRepository.class);
 		
 		System.out.println();
 		
-		List<Cozinha> cozinhas = cadastroCozinha.listar();
+		List<Cozinha> cozinhas = cozinhaRepository.listar();
 		
 		System.out.println("Lista de Cozinhas Mockadas:");
 		
@@ -40,8 +41,8 @@ public class TestaCozinhaMain {
 		cozinha2.setNome("Japonesa");
 		
 		//Como método "adicionar" retorna um objeto Cozinha, adicionamos ele dentro da lista já criada
-		cozinhas.add(cadastroCozinha.salvar(cozinha1));
-		cozinhas.add(cadastroCozinha.salvar(cozinha2));
+		cozinhas.add(cozinhaRepository.salvar(cozinha1));
+		cozinhas.add(cozinhaRepository.salvar(cozinha2));
 		
 		System.out.println("Lista de Cozinhas Mockadas:");
 		for (Cozinha cozinha : cozinhas) {
@@ -50,18 +51,23 @@ public class TestaCozinhaMain {
 		
 		//Buscando uma Cozinha por ID		
 		System.out.println("\nBuscando Cozinha por ID:");
-		Cozinha cozinha = cadastroCozinha.buscarPorId(4L);
+		Cozinha cozinha = cozinhaRepository.buscarPorId(4L);
 		System.out.println(cozinha.getNome());
 		
 		System.out.println("\nAlterando Cozinha:");
 		Cozinha objCozinha = new Cozinha();
 		objCozinha.setId(1L);
 		objCozinha.setNome("Italiana");
-		cadastroCozinha.salvar(objCozinha);
+		cozinhaRepository.salvar(objCozinha);
 		
-		for (Cozinha obj : cadastroCozinha.listar()) {
-			System.out.printf("%d - %s\n" ,obj.getId() , obj.getNome());
-		}
+		cozinhaRepository.listar().forEach(x -> System.out.printf("%d - %s\n" ,x.getId() , x.getNome()));
+		
+		System.out.println("\nDeletando uma Cozinha:");
+		cozinha = new Cozinha();
+		cozinha.setId(1L);
+		cozinhaRepository.deletar(cozinha);
+			
+		cozinhaRepository.listar().forEach(x -> System.out.printf("%d - %s\n" ,x.getId() , x.getNome()));
 		
 		System.out.println();
 	}
