@@ -9,19 +9,19 @@ import javax.persistence.Id;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-//Como queremos o Equals e HashCode apenas do ID, precisamos adicionar 2 annotations pra especificar isto
-
-//Esta Annotation é o conjunto de: @ Getters, Setters, toString, EqualsAndHashCode e RequiredArgsConstructor
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Cozinha {
+public class Permissao {
 	
-	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@EqualsAndHashCode.Include
 	private Long id;
-		
+	
 	@Column(nullable = false)
-	private String nome;	
+	private String nome;
+	
+	@Column(nullable = false)
+	private String descricao;
 }

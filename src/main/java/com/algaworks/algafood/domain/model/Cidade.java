@@ -5,23 +5,26 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-//Como queremos o Equals e HashCode apenas do ID, precisamos adicionar 2 annotations pra especificar isto
-
-//Esta Annotation é o conjunto de: @ Getters, Setters, toString, EqualsAndHashCode e RequiredArgsConstructor
+@Entity
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity
-public class Cozinha {
+public class Cidade {
 	
-	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@EqualsAndHashCode.Include
 	private Long id;
-		
+	
 	@Column(nullable = false)
-	private String nome;	
+	private String nome;
+	
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private Estado estado;		
 }
