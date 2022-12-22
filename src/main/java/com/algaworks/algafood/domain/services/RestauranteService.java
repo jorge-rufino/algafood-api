@@ -31,7 +31,12 @@ public class RestauranteService {
 			throw new EntidadeNaoEncontradaException(String.format("Não existe cadastro de cozinha com o ID: %d", cozinhaId));
 		}
 		
+		restaurante.setCozinha(cozinha);
+		
 		return repository.salvar(restaurante);
 	}
 	
+	public Restaurante buscarPorId(Long id) {		
+		return repository.buscarPorId(id);		
+	}
 }
