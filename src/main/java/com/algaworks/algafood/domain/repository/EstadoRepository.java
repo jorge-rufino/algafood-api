@@ -8,5 +8,5 @@ public interface EstadoRepository {
 	List<Estado> listar();
 	Estado buscarPorId(Long id);
 	Estado salvar(Estado estado);
-	void deletar(Estado estado);
+	void deletar(Long id);
 }

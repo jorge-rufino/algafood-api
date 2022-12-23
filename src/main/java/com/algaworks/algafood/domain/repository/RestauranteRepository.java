@@ -9,6 +9,6 @@ public interface RestauranteRepository {
 	List<Restaurante> listar();
 	Restaurante buscarPorId(Long id);
 	Restaurante salvar(Restaurante cozinha);
-	void deletar(Restaurante cozinha);
+	void deletar(Long id);
 	
 }
