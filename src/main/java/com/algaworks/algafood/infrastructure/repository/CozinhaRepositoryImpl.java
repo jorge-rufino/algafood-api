@@ -50,8 +50,8 @@ public class CozinhaRepositoryImpl implements CozinhaRepository{
 
 		@Override
 		public List<Cozinha> consultarPorNome(String nomeCozinha) {
-			return manager.createQuery("from Cozinha where nome = :nome", Cozinha.class)
-					.setParameter("nome", nomeCozinha)
+			return manager.createQuery("from Cozinha where like  :nome", Cozinha.class)
+					.setParameter("nome", "%" + nomeCozinha + "%")
 					.getResultList();
 		}
 	
