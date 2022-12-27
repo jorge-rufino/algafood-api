@@ -1,7 +1,6 @@
 package com.algaworks.algafood.domain.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,17 +27,7 @@ public class CozinhaService {
 	}
 	
 	public Cozinha buscarPorId(Long id) {
-		Cozinha cozinha = null;
-		
-//		Metodo "findById" retorna por padrão um Optional
-		Optional<Cozinha> cozinhaOptional = cozinhaRepository.findById(id);
-		
-//		Para pegarmos o "Objeto" de um "Optional", usamos o metodo "get()"
-		if (cozinhaOptional.isPresent()) {
-			cozinha = cozinhaOptional.get();
-		}
-		
-		return cozinha;
+		return cozinhaRepository.findById(id).orElse(null);
 	}
 	
 	public void deletar (Long id) {
