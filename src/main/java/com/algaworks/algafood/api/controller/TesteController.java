@@ -19,8 +19,8 @@ public class TesteController {
 	private CozinhaRepository repository;
 	
 //	RequesParam pega o valor que vem na URI da requisição, depois do ponto de "?"
-	@GetMapping("/cozinhas/por-nome")
-	public List<Cozinha> cozinhaPorNome (@RequestParam("nome") String nomeCozinha){
-		return repository.consultarPorNome(nomeCozinha);
-	}
+//	@GetMapping("/cozinhas/por-nome")
+//	public List<Cozinha> cozinhaPorNome (@RequestParam("nome") String nomeCozinha){
+//		return repository.consultarPorNome(nomeCozinha);
+//	}
 }

@@ -35,38 +35,29 @@ public class CozinhaController {
 	}
 	
 	@GetMapping(value = "/{cozinhaId}")
-	//Como a "PathVariable" e a variavel long tem o mesmo nome, poderiamos deixar a annotation "@PathVariable" sem o parametro
 	public ResponseEntity<Cozinha> buscarId(@PathVariable("cozinhaId") Long cozinhaId) {
 		Cozinha cozinha = cozinhaService.buscarPorId(cozinhaId);
-
+		System.out.println(cozinha);
 		if (cozinha != null) {
 			return ResponseEntity.ok(cozinha);
 		}
 
-//		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();	-> Faz o mesmo que a linha de baixo
 		return ResponseEntity.notFound().build();
 
 	}
 	
-	//Adiciona uma nova Cozinha
 	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)		//Status 201 para informar que foi criado o recurso
+	@ResponseStatus(HttpStatus.CREATED)		
 	public Cozinha adicionar (@RequestBody Cozinha cozinha) {
 		return cozinhaService.salvar(cozinha);
-	}
+	}	
 	
-	//Atualiza/Altera uma Cozinha existente
 	@PutMapping("/{cozinhaId}")
 	public ResponseEntity<Cozinha> atualizar(@PathVariable Long cozinhaId,@RequestBody Cozinha cozinha){
 		Cozinha cozinhaAtual = cozinhaService.buscarPorId(cozinhaId);
 		
 		if (cozinhaAtual != null) {
-//			cozinhaAtual.setNome(cozinha.getNome()); 
-//			(Imagina varios atributos para serem alterados? Seriam varios "set", para evitar isto, usamos o "BeanUtils" para copiar tudo de 1x)
-			
-//			Copia todas as propriedades do objeto criado pelo "body" do "request" para a "cozinhaAtual...
-//			do terceiro paremetro em diante, serão as variaveis/propriedades que serão ignoradas.
-//			Aqui foi necessário ignorar o "id" pois ele vem nulo da "request", portanto não devemos altera-lo, somente as outras variaveis
+
 			BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 			
 			return ResponseEntity.ok(cozinhaService.salvar(cozinhaAtual));
@@ -76,16 +67,15 @@ public class CozinhaController {
 	}
 	
 	@DeleteMapping("/{cozinhaId}")
-	public ResponseEntity<Cozinha> deletar(@PathVariable Long cozinhaId){
-//		Caso tente excluir uma cozinha que esteja vinculada com um Restaurante, vai ferir a integridade do banco e gerar um exceção
-//		Para evitar isto, usamos o try/catch e mostramos o status "409" para indicar que houve um CONFLITO
+	public ResponseEntity<?> deletar(@PathVariable Long cozinhaId){
+
 		try {							
 			cozinhaService.deletar(cozinhaId);
 			
 			return ResponseEntity.noContent().build();		
 			
 		} catch (EntidadeEmUsoException e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
 		}
