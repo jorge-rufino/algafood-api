@@ -10,15 +10,12 @@ import com.algaworks.algafood.domain.model.Cozinha;
 
 @Repository
 public interface CozinhaRepository extends JpaRepository<Cozinha, Long>{
-//	Este metodo faz a busca por "Nome", para funcionar ele deve ter mesmo nome do atributo que queremos fazer a busca
-//	Ele faz uma busca EXATA
-	List<Cozinha> nome(String nome);
 	
 	//Faz o mesmo que o metodo acima. Sintaxe para o nome do método: "find"+"quaisquer palavras"+"By"+"Nome do Atributos" 
-	List<Cozinha> findVariasByNome(String nome);	
+	List<Cozinha> findVariasByNome(String nome);
 	
-	//Aqui ele busca somente um elemento, caso o resultado seja mais de 1, vai dar erro
+	//Faz a busca não exata, ou seja, em qualquer parte do nome
+	List<Cozinha> findVariasByNomeContaining(String nome);	
+
 	Optional<Cozinha> findByNome(String nome);
-	
-	
 }
