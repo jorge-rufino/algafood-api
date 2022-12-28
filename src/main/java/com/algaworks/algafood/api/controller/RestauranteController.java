@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Restaurante;
-import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.services.RestauranteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,19 +29,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class RestauranteController {
 	
 	@Autowired
-	RestauranteRepository repository;
-	
-	@Autowired
 	RestauranteService service;
 	
 	@GetMapping
 	public List<Restaurante> listar(){
-		return repository.listar();
+		return service.listar();
 	}
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Restaurante> buscarId(@PathVariable Long id){
-		Restaurante restaurante = repository.buscarPorId(id);
+		Restaurante restaurante = service.buscarPorId(id);
 		
 		if (restaurante != null) {
 			
@@ -51,7 +47,7 @@ public class RestauranteController {
 		
 		return ResponseEntity.notFound().build();
 	}
-//	O "?" permite retornar qualquer coisa. Utilizamos para poder retornar uma mensagem de erro ou um "Restaurante"
+
 	@PostMapping	
 	public ResponseEntity<?> adicionar(@RequestBody Restaurante restaurante){
 		try {
@@ -69,9 +65,7 @@ public class RestauranteController {
 	public ResponseEntity<?> atualizar(@PathVariable Long id,@RequestBody Restaurante restaurante){
 		try {
 			Restaurante restauranteAtual = service.buscarPorId(id);
-			
-//			Não fiz essa validação para disparar uma Exception na classe RestauranteService pois como só temos uma exceção por enquanto
-//			ela seria disparada tanto quando não houve nem cozinha nem restaurante, então não teria como distinguir
+
 			if(restauranteAtual != null) {
 				BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
 				

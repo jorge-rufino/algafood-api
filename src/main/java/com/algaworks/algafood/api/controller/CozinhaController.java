@@ -37,7 +37,7 @@ public class CozinhaController {
 	@GetMapping(value = "/{cozinhaId}")
 	public ResponseEntity<Cozinha> buscarId(@PathVariable("cozinhaId") Long cozinhaId) {
 		Cozinha cozinha = cozinhaService.buscarPorId(cozinhaId);
-		System.out.println(cozinha);
+		
 		if (cozinha != null) {
 			return ResponseEntity.ok(cozinha);
 		}

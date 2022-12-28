@@ -10,7 +10,6 @@ import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
-import com.algaworks.algafood.domain.repository.EstadoRepository;
 
 @Service
 public class CidadeService {
@@ -19,15 +18,15 @@ public class CidadeService {
 	private CidadeRepository repository;
 	
 	@Autowired
-	private EstadoRepository estadoRepository;
+	private EstadoService estadoService;
 	
 	public List<Cidade> listar(){
-		return repository.listar();				
+		return repository.findAll();				
 	}
 	
 	public Cidade salvar (Cidade cidade) {
 		Long estadoId = cidade.getEstado().getId();
-		Estado estado = estadoRepository.buscarPorId(estadoId);
+		Estado estado = estadoService.buscarPorId(estadoId);
 		
 		if(estado == null) {
 			throw new EntidadeNaoEncontradaException(String.format("Não existe cadastro de Estado com o ID: %d", estadoId));
@@ -35,16 +34,16 @@ public class CidadeService {
 		
 		cidade.setEstado(estado);
 		
-		return repository.salvar(cidade);
+		return repository.save(cidade);
 	}
 	
 	public Cidade buscarPorId(Long id) {
-		return repository.buscarPorId(id);
+		return repository.findById(id).orElse(null);
 	}
 	
 	public void deletar (Long id) {
 		try {
-			repository.deletar(id);
+			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
 			throw new EntidadeNaoEncontradaException(String.format("Cidade não existe!", id));
 		}		

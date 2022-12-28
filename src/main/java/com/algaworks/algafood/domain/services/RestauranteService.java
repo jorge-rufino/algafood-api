@@ -21,7 +21,7 @@ public class RestauranteService {
 	private CozinhaService cozinhaService;
 	
 	public List<Restaurante> listar(){
-		return repository.listar();
+		return repository.findAll();
 	}
 	
 	public Restaurante salvar (Restaurante restaurante) {
@@ -34,16 +34,16 @@ public class RestauranteService {
 		
 		restaurante.setCozinha(cozinha);
 		
-		return repository.salvar(restaurante);
+		return repository.save(restaurante);
 	}
 	
 	public Restaurante buscarPorId(Long id) {		
-		return repository.buscarPorId(id);		
+		return repository.findById(id).orElse(null);		
 	}
 	
 	public void deletar (Long id) {
 		try {
-			repository.deletar(id);
+			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
 			throw new EntidadeNaoEncontradaException(String.format("Restaurante não existe!", id));
 		}

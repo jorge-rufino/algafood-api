@@ -19,24 +19,24 @@ public class EstadoService {
 	private EstadoRepository repository;
 	
 	public List<Estado> listar(){
-		return repository.listar();
+		return repository.findAll();
 	}
 	
 	public Estado buscarPorId(Long id) {
-		return repository.buscarPorId(id);
+		return repository.findById(id).orElse(null);
 	}
 	
 	public Estado salvar (Estado estado) {
-		return repository.salvar(estado);
+		return repository.save(estado);
 	}
 	
 	public void deletar (Long id) {		
 		try {
-			repository.deletar(id);
+			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
 			throw new EntidadeNaoEncontradaException(String.format("Estado não existe!", id));
 		}catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(String.format("Estado de %d, não pode ser removida pois está em uso!", id));
+			throw new EntidadeEmUsoException(String.format("Estado de ID %d, não pode ser removido pois está em uso!", id));
 		}		
 	}
 }
