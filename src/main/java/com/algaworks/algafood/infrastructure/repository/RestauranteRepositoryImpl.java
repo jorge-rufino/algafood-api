@@ -9,17 +9,17 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.repository.RestauranteRepositoryQueries;
 
-//Para o Spring identificar que aqui é implementação do metodo "find" que está declarado em "RestauranteRepository"
-//é obrigatório que o nome da classe esteja exatamente assim
-//Repare que mesmo sem implemertamos diretamente através da keyword "implements", o spring identifica a implementação
+//Agora criamos uma Interface que foi extendida em "RestauranteRepository", assim evita erros caso precise alterar o nome do método
 
 @Repository
-public class RestauranteRepositoryImpl {
+public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 	
 	@PersistenceContext
 	private EntityManager manager;
 	
+	@Override
 	public List<Restaurante> find (String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
 		
 		var jpql = "from Restaurante "
