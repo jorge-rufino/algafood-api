@@ -38,4 +38,7 @@ public interface RestauranteRepository  extends JpaRepository<Restaurante, Long>
 	
 //	A query está no arquivo "orm.xml" dentro da pasta "META-INF", dentro da pasta "resources"
 	List<Restaurante> consultarPorNomeAndCozinhaId(String nome,@Param("cozinhaId") Long id);
+	
+//	A implementação deste método, está na classe "RestauranteRepositoryImpl"
+	List<Restaurante> find (String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
 }
