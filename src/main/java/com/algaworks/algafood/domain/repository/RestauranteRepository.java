@@ -18,9 +18,12 @@ public interface RestauranteRepository  extends JpaRepository<Restaurante, Long>
 	//Busca por nome e pelo id da cozinha
 	List<Restaurante> findByNomeContainingAndCozinhaId(String nome, Long id); 
 	
-//	Busca pelo primeiro nome que encontrar
+	//Busca pelo primeiro nome que encontrar
 	Optional<Restaurante> findFirstRestauranteByNomeContaining(String nome);
 	
-//	Busca os 2 primeiros nomes
+	//Busca os 2 primeiros nomes
 	List<Restaurante> findTop2ByNomeContaining(String nome);
+	
+	//Mostra a quantidade de cozinhas 
+	int countByCozinhaId(Long id);
 }

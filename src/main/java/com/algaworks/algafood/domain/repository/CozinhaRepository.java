@@ -18,4 +18,7 @@ public interface CozinhaRepository extends JpaRepository<Cozinha, Long>{
 	List<Cozinha> findVariasByNomeContaining(String nome);	
 
 	Optional<Cozinha> findByNome(String nome);
+	
+	//Prefixo "exists" procura pelo nome e se encontrar retornar "true" (Não é Case Sensitive). Não é aconselhavel utilizar o "Containing".
+	boolean existsByNome(String nome);
 }
