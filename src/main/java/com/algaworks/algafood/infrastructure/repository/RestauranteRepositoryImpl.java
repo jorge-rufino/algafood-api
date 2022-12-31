@@ -48,7 +48,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 			predicates.add(builder.lessThanOrEqualTo(root.get("taxaFrete"), taxaFreteFinal));
 		}
 		
-		//Chama-se o "toArray" e passa um "Predicate" para transformar o Array
+		//Chama-se o "toArray" e passa um "Predicate" para transformar a Lista em Array
 		criteria.where(predicates.toArray(new Predicate[0]));
 		
 		TypedQuery<Restaurante> query = manager.createQuery(criteria);
