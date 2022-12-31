@@ -13,14 +13,13 @@ import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
-import com.algaworks.algafood.infrastructure.repository.spec.RestauranteSpecs;
 
 @RestController
 @RequestMapping("/teste")
 public class TesteController {
 	
 	@Autowired
-	private CozinhaRepository repository;
+	private CozinhaRepository cozinhaRepository;
 	
 	@Autowired
 	private RestauranteRepository restauranteRepository;
@@ -29,17 +28,17 @@ public class TesteController {
 //	como os estamos utilizando a palavra "nome" como variavel e parametro, podemos excluir a annotation "@RequestParam"
 	@GetMapping("/cozinhas/por-nome")
 	public List<Cozinha> cozinhasPorNome (String nome){
-		return repository.findVariasByNomeContaining(nome);
+		return cozinhaRepository.findVariasByNomeContaining(nome);
 	}
 	
 	@GetMapping("/cozinhas/unica-por-nome")
 	public Optional<Cozinha> cozinhaPorNome (String nome){
-		return repository.findByNome(nome);
+		return cozinhaRepository.findByNome(nome);
 	}
 	
 	@GetMapping("/cozinhas/exists")
 	public Boolean existePorNome (String nome){
-		return repository.existsByNome(nome);
+		return cozinhaRepository.existsByNome(nome);
 	}
 	
 	@GetMapping("/restaurantes/por-taxa-frete")
@@ -74,8 +73,17 @@ public class TesteController {
 	}
 	
 	@GetMapping("/restaurantes/com-frete-gratis")
-	public List<Restaurante> restaurantesComFreteGratis(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal){
-		
+	public List<Restaurante> restaurantesComFreteGratis(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal){		
 		return restauranteRepository.findComFreteGratis(nome);
+	}
+	
+	@GetMapping("/restaurantes/primeiro")
+	public Optional<Restaurante> restaurantePrimeiro(String nome){		
+		return restauranteRepository.buscarPrimeiro();
+	}
+	
+	@GetMapping("/cozinhas/primeiro")
+	public Optional<Cozinha> cozinhaPrimeiro(String nome){		
+		return cozinhaRepository.buscarPrimeiro();
 	}
 }
