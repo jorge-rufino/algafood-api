@@ -1,6 +1,7 @@
 package com.algaworks.algafood.infrastructure.repository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -12,6 +13,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepositoryQueries;
@@ -32,12 +34,22 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 		CriteriaQuery<Restaurante> criteria = builder.createQuery(Restaurante.class);
 		Root<Restaurante> root = criteria.from(Restaurante.class); // O "root" equivale ao "from Restaurante"
 		
-		//Cria os "predicate" com as propridades/colunas que queremos filtrar e as condições
-		Predicate nomePredicate = builder.like(root.get("nome"), "%" + nome + "%");
-		Predicate taxaInicialPredicate = builder.greaterThanOrEqualTo(root.get("taxaFrete"), taxaFreteInicial);
-		Predicate taxaFinalPredicate = builder.lessThanOrEqualTo(root.get("taxaFrete"), taxaFreteFinal);
+		var predicates = new ArrayList<Predicate>();
 		
-		criteria.where(nomePredicate, taxaInicialPredicate, taxaFinalPredicate);
+		if(StringUtils.hasText(nome)) {
+			predicates.add(builder.like(root.get("nome"), "%" + nome + "%"));
+		}
+	
+		if (taxaFreteInicial != null) {
+			predicates.add(builder.greaterThanOrEqualTo(root.get("taxaFrete"), taxaFreteInicial));
+		}
+		
+		if (taxaFreteFinal != null) {
+			predicates.add(builder.lessThanOrEqualTo(root.get("taxaFrete"), taxaFreteFinal));
+		}
+		
+		//Chama-se o "toArray" e passa um "Predicate" para transformar o Array
+		criteria.where(predicates.toArray(new Predicate[0]));
 		
 		TypedQuery<Restaurante> query = manager.createQuery(criteria);
 		
