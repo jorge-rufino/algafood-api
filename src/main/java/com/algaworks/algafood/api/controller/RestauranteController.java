@@ -60,14 +60,16 @@ public class RestauranteController {
 		}
 		
 	}
-	
+		
 	@PutMapping("/{id}")
 	public ResponseEntity<?> atualizar(@PathVariable Long id,@RequestBody Restaurante restaurante){
 		try {
 			Restaurante restauranteAtual = service.buscarPorId(id);
 
 			if(restauranteAtual != null) {
-				BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
+				
+		//Devido o relacionamento com "FormaPagamento", devemos , ignorar tb a lista "formasPagamento" juntamente com o ID
+				BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento");
 				
 				restauranteAtual = service.salvar(restauranteAtual);
 				
