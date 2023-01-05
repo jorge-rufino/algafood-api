@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,6 +39,9 @@ public class Restaurante {
 	@ManyToOne
 	@JoinColumn(name = "cozinha_id",nullable = false)	//Esta anotação é necessaria somente se quiseremos mudar no nome da Coluna da FK
 	private Cozinha cozinha;
+	
+	@Embedded
+	private Endereco endereco;
 	
 	//"ManyToMany" cria uma tabela de relacionamento entre Restaurante e FormaPagamento, os parametros utilizados definem
 	//o nome da tabela e os nomes das chaves(ID(s))
