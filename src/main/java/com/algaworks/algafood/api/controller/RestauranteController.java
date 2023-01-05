@@ -69,7 +69,8 @@ public class RestauranteController {
 			if(restauranteAtual != null) {
 				
 		//Não precisamos ignorar a "dataAtualizacao" pois o hibernate se encarrega disso
-				BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro");
+				BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro"
+						,"produtos");
 				
 				restauranteAtual = service.salvar(restauranteAtual);
 				
