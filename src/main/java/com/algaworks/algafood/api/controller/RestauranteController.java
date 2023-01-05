@@ -68,8 +68,8 @@ public class RestauranteController {
 
 			if(restauranteAtual != null) {
 				
-		//Devido o relacionamento com "FormaPagamento", devemos , ignorar tb a lista "formasPagamento" juntamente com o ID
-				BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento");
+		//Não precisamos ignorar a "dataAtualizacao" pois o hibernate se encarrega disso
+				BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro");
 				
 				restauranteAtual = service.salvar(restauranteAtual);
 				
