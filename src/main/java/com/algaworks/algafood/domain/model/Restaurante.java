@@ -68,7 +68,7 @@ public class Restaurante {
 	
 	//"ManyToMany" cria uma tabela de relacionamento entre Restaurante e FormaPagamento, os parametros utilizados definem
 	//o nome da tabela e os nomes das chaves(ID(s))
-	@JsonIgnore
+//	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "restaurante_forma_pagamento", 
 				joinColumns = @JoinColumn(name = "restaurante_id")
