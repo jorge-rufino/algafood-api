@@ -44,6 +44,6 @@ public interface RestauranteRepository  extends CustomJpaRepository<Restaurante,
 	//Deste jeito acabamos com o problema "N+1" pois assim se faz o "JOIN" com "Cozinha" e tb com "FormaPagamento"
 	//Quando for associação "...ToMany" devesse usar a palavra chave "fetch" depois do "join"
 	//Em associações "...ToOne" ele já faz isso automaticamente
-	@Query("from Restaurante r join r.cozinha left join fetch r.formasPagamento")
+	@Query("from Restaurante r join fetch r.cozinha")
 	List<Restaurante> findAll();
 }
