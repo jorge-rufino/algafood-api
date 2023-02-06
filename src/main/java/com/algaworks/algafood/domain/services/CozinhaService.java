@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
@@ -41,7 +40,7 @@ public class CozinhaService {
 			throw new EntidadeEmUsoException(String.format("Cozinha de ID %d, não pode ser removida pois está em uso!", id));
 		}		
 		catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(HttpStatus.BAD_REQUEST, String.format("Cozinha de ID %d não existe!", id));
+			throw new EntidadeNaoEncontradaException(String.format("Cozinha de ID %d não existe!", id));
 		}
 	}
 }
