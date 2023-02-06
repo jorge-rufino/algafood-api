@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,15 +32,8 @@ public class CozinhaController {
 	}
 	
 	@GetMapping(value = "/{cozinhaId}")
-	public ResponseEntity<Cozinha> buscarId(@PathVariable("cozinhaId") Long cozinhaId) {
-		Cozinha cozinha = cozinhaService.buscarPorId(cozinhaId);
-		
-		if (cozinha != null) {
-			return ResponseEntity.ok(cozinha);
-		}
-
-		return ResponseEntity.notFound().build();
-
+	public Cozinha buscarId(@PathVariable("cozinhaId") Long cozinhaId) {		
+		return cozinhaService.buscarPorId(cozinhaId);
 	}
 	
 	@PostMapping
@@ -51,35 +43,13 @@ public class CozinhaController {
 	}	
 	
 	@PutMapping("/{cozinhaId}")
-	public ResponseEntity<Cozinha> atualizar(@PathVariable Long cozinhaId,@RequestBody Cozinha cozinha){
+	public Cozinha atualizar(@PathVariable Long cozinhaId,@RequestBody Cozinha cozinha){
 		Cozinha cozinhaAtual = cozinhaService.buscarPorId(cozinhaId);
-		
-		if (cozinhaAtual != null) {
 
-			BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
-			
-			return ResponseEntity.ok(cozinhaService.salvar(cozinhaAtual));
-		}
+		BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 		
-		return ResponseEntity.notFound().build();		
+		return cozinhaService.salvar(cozinhaAtual);
 	}
-	
-//	@DeleteMapping("/{cozinhaId}")
-//	public ResponseEntity<?> deletar(@PathVariable Long cozinhaId){
-//
-//		try {							
-//			cozinhaService.deletar(cozinhaId);
-//			
-//			return ResponseEntity.noContent().build();		
-//			
-//		} 
-//		catch (EntidadeEmUsoException e) {
-//			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-//		} 
-//		catch (EntidadeNaoEncontradaException e) {
-//			return ResponseEntity.notFound().build();
-//		}
-//	}
 	
 	@DeleteMapping("/{cozinhaId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
