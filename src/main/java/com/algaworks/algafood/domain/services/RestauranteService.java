@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
@@ -14,8 +14,6 @@ import com.algaworks.algafood.domain.repository.RestauranteRepository;
 @Service
 public class RestauranteService {
 	
-	private static final String MSG_RESTAURANTE_NAO_ENCONTRADO = "Restaurante de ID %d não existe!";
-
 	@Autowired
 	private RestauranteRepository repository;
 	
@@ -37,15 +35,14 @@ public class RestauranteService {
 	
 	public Restaurante buscarPorId(Long id) {		
 		return repository.findById(id).orElseThrow(
-				() -> new EntidadeNaoEncontradaException(String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id)));		
+				() -> new RestauranteNaoEncontradoException(id));		
 	}
 	
 	public void deletar (Long id) {
 		try {
 			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id));
+			throw new RestauranteNaoEncontradoException(id);
 		}
-		
 	}
 }
