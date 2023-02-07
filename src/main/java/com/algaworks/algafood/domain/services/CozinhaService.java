@@ -36,8 +36,7 @@ public class CozinhaService {
 	
 	public void deletar (Long id) {
 		try {
-			cozinhaRepository.deleteById(id);
-			
+			cozinhaRepository.deleteById(id);			
 		}
 //		Caso a "Cozinha" a ser deletada esteja vinculada com algum restaurante, dispara "exception" de integridade
 		catch (DataIntegrityViolationException e) {			

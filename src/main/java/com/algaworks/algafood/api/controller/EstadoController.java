@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.services.EstadoService;
 
@@ -33,15 +30,9 @@ public class EstadoController {
 		return service.listar();
 	}
 	
-	@GetMapping(value = "{estadoId}")
-	public ResponseEntity<Estado> buscarId (@PathVariable Long estadoId){
-		Estado estado = service.buscarPorId(estadoId);
-		
-		if (estado == null) {
-			return ResponseEntity.notFound().build();
-		}
-		
-		return ResponseEntity.ok(estado);
+	@GetMapping(value = "/{estadoId}")
+	public Estado buscarId (@PathVariable Long estadoId){
+		return service.buscarPorId(estadoId);
 	}
 	
 	@PostMapping
@@ -50,33 +41,19 @@ public class EstadoController {
 		return service.salvar(estado);	
 	}
 	
-	@DeleteMapping("{estadoId}")
-	public ResponseEntity<?> deletar (@PathVariable Long estadoId) {
-		try {
-			service.deletar(estadoId);
-			
-			return ResponseEntity.noContent().build();
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.notFound().build(); 
-		} catch (EntidadeEmUsoException e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-		}		
-		
+	@DeleteMapping("/{estadoId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deletar (@PathVariable Long estadoId) {		
+		service.deletar(estadoId);
 	}
 	
 	@PutMapping("{estadoId}")
-	public ResponseEntity<Estado> atualizar (@RequestBody Estado estado, @PathVariable Long estadoId){
+	public Estado atualizar (@RequestBody Estado estado, @PathVariable Long estadoId){
 		
-		Estado estadoAtual = service.buscarPorId(estadoId);
+		Estado estadoAtual = service.buscarPorId(estadoId);		
 		
-		if(estadoAtual != null) {
-			BeanUtils.copyProperties(estado, estadoAtual, "id");
-			
-			estadoAtual = service.salvar(estadoAtual);
-			
-			return ResponseEntity.ok(estadoAtual);
-		}
+		BeanUtils.copyProperties(estado, estadoAtual, "id");
 		
-		return ResponseEntity.notFound().build(); 
+		return service.salvar(estadoAtual);
 	}
 }
