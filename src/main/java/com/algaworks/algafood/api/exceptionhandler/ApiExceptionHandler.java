@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -15,7 +16,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 
 //Esta classe captura Exceptions de todos os controladores 
 
@@ -72,6 +75,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 			return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
 		}
 		
+		if (rootCause instanceof PropertyBindingException) {
+			return handlePropertyBindingException((PropertyBindingException) rootCause, headers, status, request);
+		}
+		
 		ProblemType problemType = ProblemType.ERRO_REQUISICAO;
 		String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe.";
 		
@@ -83,9 +90,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 	private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		
-		String pathField = ex.getPath().stream()
-				.map(reference -> reference.getFieldName())
-				.collect(Collectors.joining("."));
+		String pathField = joinPath(ex.getPath());
 		
 		ProblemType problemType = ProblemType.ERRO_REQUISICAO;
 		String detail = String.format("A propriedade '%s' recebeu o valor '%s', que é de um tipo inválido. "
@@ -96,6 +101,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 
+	private ResponseEntity<Object> handlePropertyBindingException(PropertyBindingException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		
+		String pathField = joinPath(ex.getPath());
+		
+		ProblemType problemType = ProblemType.ERRO_REQUISICAO;
+		String detail = String.format("A propriedade '%s' não existe. Corrija ou remova esta propriedade tente novamente.", 
+				pathField);
+		Problem problem = createProblemBuilder(status, problemType, detail).build();
+		
+		return handleExceptionInternal(ex, problem, headers, status, request);
+	}
+	
 //	Este método sobrescrito é chamado toda vez que uma Exception interna é capturada
 //	Iremos fazer nossos métodos chamarem ele tb para padronizar tudo.
 //	Perceba que agora nossas exceptions que utilizam o "Problem" não caem nos "if/else"
@@ -127,5 +145,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 				.type(problemType.getUri())
 				.title(problemType.getTitle())
 				.detail(detail);
+	}
+	
+	private String joinPath(List<Reference> list) {
+		return list.stream()
+				.map(reference -> reference.getFieldName())
+				.collect(Collectors.joining("."));
 	}
 }
