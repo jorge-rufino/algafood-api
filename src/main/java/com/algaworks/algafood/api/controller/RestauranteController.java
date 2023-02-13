@@ -4,9 +4,14 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +28,7 @@ import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.services.RestauranteService;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
@@ -75,33 +81,49 @@ public class RestauranteController {
 	}
 	
 	@PatchMapping("/{id}")
-	public Restaurante atualizarParcial (@PathVariable Long id, @RequestBody Map<String, Object> campos){
+	public Restaurante atualizarParcial (@PathVariable Long id, @RequestBody Map<String, Object> campos, HttpServletRequest request){
 		
 		Restaurante restauranteAtual = service.buscarPorId(id);
 		
-		merge(campos, restauranteAtual);
+		merge(campos, restauranteAtual, request);
 		
 		return atualizar(id, restauranteAtual);
 	}
 
-	private void merge(Map<String, Object> camposOrigem, Restaurante restauranteDestino) {
+	private void merge(Map<String, Object> camposOrigem, Restaurante restauranteDestino, HttpServletRequest request) {
 		
-		ObjectMapper objectMapper = new ObjectMapper();
+//		ServletServerHttpRequest implementa ServerHttpRequest que implementa o HttpInputMessage que precisamos passar como 
+//		paramentro no catch
 		
-//		Converte os campos para os mesmos da classe Restaurante para evitar erros de conversão de dados
-		Restaurante restauranteOrigem = objectMapper.convertValue(camposOrigem, Restaurante.class);
+		ServletServerHttpRequest serverHttpRequest = new ServletServerHttpRequest(request);
 		
-		camposOrigem.forEach((nomePropriedade, valorPropriedade) -> {
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
 			
-//			Aqui, o Refletcion busca nas proriedades da classe (Restaurante) algum campo que tenha o nome de "nomePropriedade"
-			Field field  = ReflectionUtils.findField(Restaurante.class, nomePropriedade);
+//			O "ObjectMapper" não é gerenciado pelo spring, portanto precisamos configurar para disparar as exceções
+			objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
+			objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 			
-//			Torna os campos da classe, no caso Restaurante, que são privados (private) acessíveis
-			field.setAccessible(true);
+//			Converte os campos para os mesmos da classe Restaurante para evitar erros de conversão de dados
+			Restaurante restauranteOrigem = objectMapper.convertValue(camposOrigem, Restaurante.class);
 			
-			Object valorPropriedadeConvertido = ReflectionUtils.getField(field, restauranteOrigem);
-			
-			ReflectionUtils.setField(field, restauranteDestino, valorPropriedadeConvertido);
-		});
+			camposOrigem.forEach((nomePropriedade, valorPropriedade) -> {
+				
+//				Aqui, o Refletcion busca nas proriedades da classe (Restaurante) algum campo que tenha o nome de "nomePropriedade"
+				Field field  = ReflectionUtils.findField(Restaurante.class, nomePropriedade);
+				
+//				Torna os campos da classe, no caso Restaurante, que são privados (private) acessíveis
+				field.setAccessible(true);
+				
+				Object valorPropriedadeConvertido = ReflectionUtils.getField(field, restauranteOrigem);
+				
+				ReflectionUtils.setField(field, restauranteDestino, valorPropriedadeConvertido);
+			});
+		} catch (IllegalArgumentException e) {
+			Throwable rootCause = ExceptionUtils.getRootCause(e);
+			//Precisamos usar esse construtor pois ele não está "depreciado"
+			throw new HttpMessageNotReadableException(e.getMessage(), rootCause, serverHttpRequest);
+		}
+		
 	}
 }
