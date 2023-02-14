@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum ProblemType {
 	ERRO_REQUISICAO("/erro-de-requisicao","Erro de Requisição."),
-	ENTIDADE_NAO_ENCONTRADA("/entidade-nao-encontrada","Entidade não encontrada."),
+	RECURSO_NAO_ENCONTRADO("/recurso-nao-encontrado","Recurso não encontrado."),
 	ENTIDADE_EM_USO("/entidade-em-uso","Entidade em uso."),
 	ERRO_NEGOCIO("/erro-negocio","Violação de regra de negócio."),
 	PARAMETRO_INVALIDO("/parametro-invalido","Parâmetro de URL inválido.");
