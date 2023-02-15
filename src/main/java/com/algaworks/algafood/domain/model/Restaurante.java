@@ -25,6 +25,7 @@ import javax.validation.constraints.PositiveOrZero;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.algaworks.algafood.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -40,21 +41,17 @@ public class Restaurante {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-//	@NotNull			Não aceita "Null" porém aceita em branco ("") e aceita tb espaços em branco ("   ")
-//	@NotEmpty			Não aceita "Null" nem em branco porém aceita espaços em branco 
-	@NotBlank		  //Não aceita "Null", nem em branco, nem espaçoes em branco
+ 
+	@NotBlank(groups = Groups.CadastroRestaurante.class)
 	@Column(nullable = false)
 	private String nome;
-	
-//	Ambas as annotatons fazem a mesma coisa, nao permitem numeros negativos 
-//	@DecimalMin("0")
-	@PositiveOrZero
+
+	@PositiveOrZero(groups = Groups.CadastroRestaurante.class)
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 	
 	@Valid		//Spring nao valida em cascata por padrão, esta annotation indica a ele para validar Cozinha
-	@NotNull
+	@NotNull(groups = Groups.CadastroRestaurante.class)
 	@JsonIgnoreProperties("hibernateLazyInitializer")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cozinha_id",nullable = false)	//Esta anotação é necessaria somente se quiseremos mudar no nome da Coluna da FK
