@@ -177,7 +177,8 @@ private static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "Ocorreu um erro i
 		
 		ex.printStackTrace();
 
-		Problem problem = createProblemBuilder(status, problemType, detail)				
+		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(detail)
 				.build();
 		
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
@@ -195,12 +196,14 @@ private static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "Ocorreu um erro i
 		if (body == null) {
 			body = Problem.builder()
 					.status(status.value())
+					.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
 					.title(status.getReasonPhrase()).build();
 		} 
 		
 		else if (body instanceof String) {
 			body = Problem.builder()
 					.status(status.value())
+					.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
 					.title((String) body).build();
 		}		
 		
