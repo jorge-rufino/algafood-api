@@ -17,7 +17,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -38,10 +39,15 @@ public class Restaurante {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotNull
+//	@NotNull			Não aceita "Null" porém aceita em branco ("") e aceita tb espaços em branco ("   ")
+//	@NotEmpty			Não aceita "Null" nem em branco porém aceita espaços em branco 
+	@NotBlank		  //Não aceita "Null", nem em branco, nem espaçoes em branco
 	@Column(nullable = false)
 	private String nome;
 	
+//	Ambas as annotatons fazem a mesma coisa, nao permitem numeros negativos 
+//	@DecimalMin("0")
+	@PositiveOrZero
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 	
