@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -31,6 +32,7 @@ import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 	
+private static final String MSG_ERRO_DADOS_INVALIDOS = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente";
 private static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "Ocorreu um erro inesperado no sistema. Tente novamente e se o problema persistir,"
 			+ "entre em contato com o administrador do sistema.";
 
@@ -163,6 +165,30 @@ private static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "Ocorreu um erro i
 				ex.getRequestURL());
 		
 		Problem problem = createProblemBuilder(status, problemType, detail).userMessage(detail).build();
+		
+		return handleExceptionInternal(ex, problem, headers, status, request);
+	}
+	
+//	Captura as exceptions de validação do BeanValidation (@Valid)
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		
+		ProblemType problemType = ProblemType.ERRO_VALIDACAO;
+		String detail = MSG_ERRO_DADOS_INVALIDOS;
+		
+		List<Problem.Field> problemFields = ex.getBindingResult().getFieldErrors()
+				.stream()
+				.map(fieldError -> Problem.Field.builder()
+						.name(fieldError.getField())
+						.userMessage(fieldError.getDefaultMessage())
+						.build())
+				.collect(Collectors.toList());
+		
+		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(detail)
+				.fields(problemFields)
+				.build();
 		
 		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
