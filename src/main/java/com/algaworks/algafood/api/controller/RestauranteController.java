@@ -60,13 +60,16 @@ public class RestauranteController {
 	}
 		
 	@PutMapping("/{id}")
-	public Restaurante atualizar(@PathVariable Long id,@RequestBody Restaurante restaurante){
+	public Restaurante atualizar(@PathVariable Long id,@RequestBody @Valid Restaurante restaurante){
 	
-		Restaurante restauranteAtual = service.buscarPorId(id);
-			
+		Restaurante restauranteAtual = service.buscarPorId(id);		
+		System.out.println("Restaurante do service:" + restauranteAtual.getNome());	
 	//Não precisamos ignorar a "dataAtualizacao" pois o hibernate se encarrega disso
 		BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro"
 				,"produtos");
+		
+		System.out.println("Restaurante do body:"+ restaurante.getNome());
+		System.out.println("Restaurante do service:" + restauranteAtual.getNome());
 		
 		try {
 			return service.salvar(restauranteAtual);
