@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -183,14 +184,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		ProblemType problemType = ProblemType.ERRO_VALIDACAO;
 		String detail = MSG_ERRO_DADOS_INVALIDOS;
 		
-		List<Problem.Field> problemFields = ex.getBindingResult().getFieldErrors()
+		List<Problem.Field> problemFields = ex.getBindingResult().getAllErrors()
 				.stream()
-				.map(fieldError -> {
+				.map(objectError -> {					
+					String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
 					
-					String message = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+					String name = objectError.getObjectName();
+					
+					if (objectError instanceof FieldError) {
+						name = ((FieldError) objectError).getField();
+					}
 					
 					return Problem.Field.builder()
-					.name(fieldError.getField())
+					.name(name)
 					.userMessage(message)
 					.build();
 				})
