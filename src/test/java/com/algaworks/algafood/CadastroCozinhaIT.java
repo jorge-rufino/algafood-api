@@ -1,5 +1,7 @@
 package com.algaworks.algafood;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+
 import org.flywaydb.core.Flyway;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +36,6 @@ class CadastroCozinhaIT {
 	
 	@Test
 	public void deveRetornarStatus200_QuandoConsultarCozinhas() {
-		
 		RestAssured.given()			
 			.accept(ContentType.JSON)
 		.when()
@@ -45,8 +46,6 @@ class CadastroCozinhaIT {
 	
 	@Test
 	public void deveConter4Cozinhas_QuandoConsultarCozinhas() {
-		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-		
 		RestAssured.given()			
 			.accept(ContentType.JSON)
 		.when()
@@ -66,5 +65,17 @@ class CadastroCozinhaIT {
 			.post()
 		.then()
 			.statusCode(HttpStatus.CREATED.value());
+	}
+	
+	@Test
+	public void deveRetornarDadosCorretos_QuandoConsultarCozinhas() {
+		RestAssured.given()		
+			.pathParam("cozinhaId", 2)
+			.accept(ContentType.JSON)
+		.when()
+			.get("/{cozinhaId}")
+		.then()
+			.statusCode(HttpStatus.OK.value())
+			.body("nome", equalTo("Indiana"));
 	}
 }

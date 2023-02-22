@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
@@ -24,6 +25,7 @@ public class CozinhaService {
 		return cozinhaRepository.findAll();
 	}
 	
+	@Transactional
 	public Cozinha salvar(Cozinha cozinha) {
 		return cozinhaRepository.save(cozinha);
 	}
@@ -33,9 +35,15 @@ public class CozinhaService {
 				() -> new CozinhaNaoEncontradaException(id));
 	}
 	
+	@Transactional
 	public void deletar (Long id) {
 		try {
-			cozinhaRepository.deleteById(id);			
+			cozinhaRepository.deleteById(id);
+			
+//		Devido a annotation "Transactional" as exceptions de "deleteById" não serão pegas pois a transação so será encerrada
+//		no final deste método. Para forçar o Spring a executar as transações pendentes, usamos o método "flush()", assim
+//		em caso de erro, a exception volta a ser capturada corretamente.
+			cozinhaRepository.flush();
 		}
 //		Caso a "Cozinha" a ser deletada esteja vinculada com algum restaurante, dispara "exception" de integridade
 		catch (DataIntegrityViolationException e) {			

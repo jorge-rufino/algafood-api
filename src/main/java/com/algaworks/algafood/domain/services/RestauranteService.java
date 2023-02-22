@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -24,6 +25,7 @@ public class RestauranteService {
 		return repository.findAll();
 	}
 	
+	@Transactional
 	public Restaurante salvar (Restaurante restaurante) {
 		Long cozinhaId = restaurante.getCozinha().getId();
 		Cozinha cozinha = cozinhaService.buscarPorId(cozinhaId);
@@ -38,9 +40,12 @@ public class RestauranteService {
 				() -> new RestauranteNaoEncontradoException(id));		
 	}
 	
+	
 	public void deletar (Long id) {
 		try {
 			repository.deleteById(id);
+			repository.flush();
+			
 		} catch (EmptyResultDataAccessException e) {
 			throw new RestauranteNaoEncontradoException(id);
 		}
