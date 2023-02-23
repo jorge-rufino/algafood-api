@@ -1,6 +1,6 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -251,17 +251,21 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		
 //		Por padrao as Exceptions internas vem com o "body" nulo
 		if (body == null) {
-			body = Problem.builder()
+			body = Problem.builder()					
+					.title(status.getReasonPhrase())
 					.status(status.value())
 					.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-					.title(status.getReasonPhrase()).build();
+					.timestamp(OffsetDateTime.now())
+					.build();
 		} 
 		
 		else if (body instanceof String) {
-			body = Problem.builder()
+			body = Problem.builder()					
+					.title((String) body)
 					.status(status.value())
 					.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-					.title((String) body).build();
+					.timestamp(OffsetDateTime.now())
+					.build();
 		}		
 		
 		return super.handleExceptionInternal(ex, body, headers, status, request);
@@ -274,7 +278,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 				.type(problemType.getUri())
 				.title(problemType.getTitle())
 				.detail(detail)
-				.timestamp(LocalDateTime.now());
+				.timestamp(OffsetDateTime.now());
 	}
 	
 	private String joinPath(List<Reference> list) {

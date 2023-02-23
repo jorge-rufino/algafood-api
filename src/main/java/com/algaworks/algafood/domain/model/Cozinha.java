@@ -13,7 +13,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.algaworks.algafood.core.validation.Groups;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,8 +37,7 @@ public class Cozinha {
 	
 	//O "mappedBy" recebe o nome da variavel do objeto Cozinha na classe Restaurante para fazer o vinculo
 	//"JsonIgnore" server para evitar o loop de serialização dos objetos pois Restaurante vai chamar Cozinha e Cozinha
-	//vai chamar Restaurantes e vai entrar em loop. Assim dizemos para o Spring não serializar esta lista de Restaurantes
-	@JsonIgnore
+	//vai chamar Restaurantes e vai entrar em loop. Assim dizemos para o Spring não serializar esta lista de Restaurantes	
 	@OneToMany(mappedBy = "cozinha")
 	private List<Restaurante> restaurantes =  new ArrayList<>();
 }
