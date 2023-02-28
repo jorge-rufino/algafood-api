@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
 import com.algaworks.algafood.api.disassembler.RestauranteInputDtoDisassembler;
 import com.algaworks.algafood.api.model.RestauranteDto;
-import com.algaworks.algafood.api.model.input.RestauranteInputDTO;
+import com.algaworks.algafood.api.model.input.RestauranteInputDto;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -52,7 +52,7 @@ public class RestauranteController {
 
 	@PostMapping	
 	@ResponseStatus(HttpStatus.CREATED)
-	public RestauranteDto adicionar(@RequestBody @Valid RestauranteInputDTO restauranteInput){		
+	public RestauranteDto adicionar(@RequestBody @Valid RestauranteInputDto restauranteInput){		
 		try {
 			Restaurante restaurante =restauranteInputDisassembler.toDomainObject(restauranteInput);
 			
@@ -63,7 +63,7 @@ public class RestauranteController {
 	}
 		
 	@PutMapping("/{id}")
-	public RestauranteDto atualizar(@PathVariable Long id,@RequestBody @Valid RestauranteInputDTO restauranteInput){
+	public RestauranteDto atualizar(@PathVariable Long id,@RequestBody @Valid RestauranteInputDto restauranteInput){
 	
 //		Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
 		

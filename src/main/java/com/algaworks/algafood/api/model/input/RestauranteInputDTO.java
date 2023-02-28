@@ -14,7 +14,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class RestauranteInputDTO {
+public class RestauranteInputDto {
 	
 	@NotBlank
 	private String nome;
