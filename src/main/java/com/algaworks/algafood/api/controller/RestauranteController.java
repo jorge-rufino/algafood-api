@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -66,13 +65,15 @@ public class RestauranteController {
 	@PutMapping("/{id}")
 	public RestauranteDto atualizar(@PathVariable Long id,@RequestBody @Valid RestauranteInputDTO restauranteInput){
 	
-		Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
+//		Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
 		
 		Restaurante restauranteAtual = service.buscarPorId(id);		
 			
+		restauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
+		
 	//Não precisamos ignorar a "dataAtualizacao" pois o hibernate se encarrega disso
-		BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro"
-				,"produtos");
+//		BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro"
+//				,"produtos");
 		try {
 			return restauranteDtoAssembler.toDTO(service.salvar(restauranteAtual));
 		} catch (CozinhaNaoEncontradaException e) {
