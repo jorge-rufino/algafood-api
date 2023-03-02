@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.assembler.EstadoDtoAssembler;
+import com.algaworks.algafood.api.disassembler.EstadoInputDtoDisassembler;
+import com.algaworks.algafood.api.model.EstadoDto;
+import com.algaworks.algafood.api.model.input.EstadoInputDto;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.services.EstadoService;
 
@@ -27,20 +30,27 @@ public class EstadoController {
 	@Autowired
 	private EstadoService service;
 	
+	@Autowired
+	private EstadoDtoAssembler estadoDtoAssembler;
+	
+	@Autowired
+	private EstadoInputDtoDisassembler estadoInputDtoDisassembler;
+	
 	@GetMapping
-	public List<Estado> listar(){
-		return service.listar();
+	public List<EstadoDto> listar(){
+		return estadoDtoAssembler.toCollectionDto(service.listar());
 	}
 	
 	@GetMapping(value = "/{estadoId}")
-	public Estado buscarId (@PathVariable Long estadoId){
-		return service.buscarPorId(estadoId);
+	public EstadoDto buscarId (@PathVariable Long estadoId){
+		return estadoDtoAssembler.toDto(service.buscarPorId(estadoId));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Estado adicionar (@RequestBody @Valid Estado estado){
-		return service.salvar(estado);	
+	public EstadoDto adicionar (@RequestBody @Valid EstadoInputDto estadoInput){
+		Estado estado = estadoInputDtoDisassembler.toDomainObject(estadoInput); 
+		return estadoDtoAssembler.toDto(service.salvar(estado));	
 	}
 	
 	@DeleteMapping("/{estadoId}")
@@ -50,12 +60,10 @@ public class EstadoController {
 	}
 	
 	@PutMapping("{estadoId}")
-	public Estado atualizar (@RequestBody @Valid Estado estado, @PathVariable Long estadoId){
-		
+	public EstadoDto atualizar (@RequestBody @Valid EstadoInputDto estadoInput, @PathVariable Long estadoId){		
 		Estado estadoAtual = service.buscarPorId(estadoId);		
-		
-		BeanUtils.copyProperties(estado, estadoAtual, "id");
-		
-		return service.salvar(estadoAtual);
+		estadoInputDtoDisassembler.copyToDomainObject(estadoInput, estadoAtual);
+				
+		return estadoDtoAssembler.toDto(service.salvar(estadoAtual));
 	}
 }
