@@ -50,4 +50,24 @@ public class RestauranteService {
 			throw new RestauranteNaoEncontradoException(id);
 		}
 	}
+	
+	@Transactional
+	public void ativar(Long restauranteId) {
+//		Quando chamamos o metodo "buscarPorId", e este chama o "findById", o objeto "restaurante" fica sendo 
+//		gerenciado por pelo Spring num contexto de persistencia, qualquer alteraçao feita nele automaticamente será sincronizada 
+//		no banco de dados atraves de um "update" no banco, portanto não precisamos chamar o metodo "salvar".
+		
+		Restaurante restaurante = buscarPorId(restauranteId);
+		
+//		restaurante.setAtivo(true);
+		restaurante.ativar();
+	}
+	
+	@Transactional
+	public void inativar(Long restauranteId) {		
+		Restaurante restaurante = buscarPorId(restauranteId);
+		
+//		restaurante.setAtivo(false);
+		restaurante.inativar();
+	}
 }
