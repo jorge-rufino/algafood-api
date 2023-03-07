@@ -20,6 +20,7 @@ import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
 import com.algaworks.algafood.api.disassembler.RestauranteInputDtoDisassembler;
 import com.algaworks.algafood.api.model.RestauranteDto;
 import com.algaworks.algafood.api.model.input.RestauranteInputDto;
+import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -57,7 +58,9 @@ public class RestauranteController {
 			Restaurante restaurante =restauranteInputDisassembler.toDomainObject(restauranteInput);
 			
 			return restauranteDtoAssembler.toDTO(service.salvar(restaurante));
-		} catch (CozinhaNaoEncontradaException e) {
+			
+//		Podemos utilizar o operador "|" em vez de fazer um outro bloco "try/catch" pois ambas disparam a mesma exception
+		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}		
 	}
@@ -77,6 +80,8 @@ public class RestauranteController {
 		try {
 			return restauranteDtoAssembler.toDTO(service.salvar(restauranteAtual));
 		} catch (CozinhaNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		} catch (CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
 	}
