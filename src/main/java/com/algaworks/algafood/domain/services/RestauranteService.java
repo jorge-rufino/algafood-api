@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 
@@ -24,6 +25,9 @@ public class RestauranteService {
 	
 	@Autowired
 	private CidadeService cidadeService;
+	
+	@Autowired
+	private FormaPagamentoService formaPagamentoService;
 	
 	public List<Restaurante> listar(){
 		return repository.findAll();
@@ -46,8 +50,7 @@ public class RestauranteService {
 		return repository.findById(id).orElseThrow(
 				() -> new RestauranteNaoEncontradoException(id));		
 	}
-	
-	
+		
 	public void deletar (Long id) {
 		try {
 			repository.deleteById(id);
@@ -59,22 +62,36 @@ public class RestauranteService {
 	}
 	
 	@Transactional
+	public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+		Restaurante restaurante = buscarPorId(restauranteId);
+		FormaPagamento formaPagamento = formaPagamentoService.buscarPorId(formaPagamentoId);
+				
+		restaurante.removerFormaPagamento(formaPagamento);
+		//Lembrando que não precisamos chamar o metodo "salvar" pois está no contexto de persistencia do JPA e o update será feito.
+	}
+	
+	@Transactional
+	public void associarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+		Restaurante restaurante = buscarPorId(restauranteId);
+		FormaPagamento formaPagamento = formaPagamentoService.buscarPorId(formaPagamentoId);
+				
+		restaurante.associarFormaPagamento(formaPagamento);
+		//Lembrando que não precisamos chamar o metodo "salvar" pois está no contexto de persistencia do JPA e o update será feito.
+	}
+	
+	@Transactional
 	public void ativar(Long restauranteId) {
 //		Quando chamamos o metodo "buscarPorId", e este chama o "findById", o objeto "restaurante" fica sendo 
 //		gerenciado por pelo Spring num contexto de persistencia, qualquer alteraçao feita nele automaticamente será sincronizada 
 //		no banco de dados atraves de um "update" no banco, portanto não precisamos chamar o metodo "salvar".
 		
 		Restaurante restaurante = buscarPorId(restauranteId);
-		
-//		restaurante.setAtivo(true);
 		restaurante.ativar();
 	}
 	
 	@Transactional
 	public void inativar(Long restauranteId) {		
 		Restaurante restaurante = buscarPorId(restauranteId);
-		
-//		restaurante.setAtivo(false);
 		restaurante.inativar();
 	}
 }
