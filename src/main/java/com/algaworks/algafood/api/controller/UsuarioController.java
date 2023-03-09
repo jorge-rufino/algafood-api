@@ -53,7 +53,7 @@ public class UsuarioController {
 	public UsuarioDto adicionar(@RequestBody @Valid UsuarioComSenhaInputDto usuarioInputComSenha) {
 		
 		Usuario usuario = usuarioInputDtoDisassembler.toDomainObject(usuarioInputComSenha);
-		return usuarioDtoAssembler.toDto(service.adicionar(usuario));
+		return usuarioDtoAssembler.toDto(service.salvar(usuario));
 	}
 	
 	@PutMapping("/{id}")
@@ -61,7 +61,7 @@ public class UsuarioController {
 		Usuario usuarioAtual = service.buscarPorId(id);
 		usuarioInputDtoDisassembler.copyToDomainObject(usuarioInput, usuarioAtual);
 		
-		return usuarioDtoAssembler.toDto(service.adicionar(usuarioAtual));	
+		return usuarioDtoAssembler.toDto(service.salvar(usuarioAtual));	
 	}
 	
 	@ResponseStatus(HttpStatus.NO_CONTENT)

@@ -1,6 +1,7 @@
 package com.algaworks.algafood.domain.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -28,7 +29,21 @@ public class UsuarioService {
 	}
 	
 	@Transactional
-	public Usuario adicionar(Usuario usuario) {
+	public Usuario salvar(Usuario usuario) {
+		
+//Faz com que o "usuario" saia do contexto de persistencia do JPA evitando assim que aconteça a duplicação de usuarios
+//no momento do "findByEmail"
+		
+		repository.detach(usuario);
+		
+		Optional<Usuario> usuarioExistente = repository.findByEmail(usuario.getEmail());
+		
+//Como este metodo serve tanto para salvar quanto para atualizar, devemos verificar se o usuario(usuarioExistente) que ele buscou é o mesmo
+//que está sendo recebido como parametro(usuario). Se forem iguais então é um update portanto não irá disparar a exception
+		if(usuarioExistente.isPresent() && !usuarioExistente.get().equals(usuario)) {
+			throw new NegocioException(String.format("Já existe um usuário cadastrado com o e-mail: '%s'", usuario.getEmail()));
+		}
+		
 		return repository.save(usuario);
 	}
 	
