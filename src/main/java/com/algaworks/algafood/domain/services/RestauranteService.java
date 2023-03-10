@@ -94,4 +94,16 @@ public class RestauranteService {
 		Restaurante restaurante = buscarPorId(restauranteId);
 		restaurante.inativar();
 	}
+	
+	@Transactional
+	public void abrirRestaurante(Long restauranteId) {
+		Restaurante restaurante = buscarPorId(restauranteId);
+		restaurante.abrirRestaurante();
+	}
+	
+	@Transactional
+	public void fecharRestaurante(Long restauranteId) {
+		Restaurante restaurante = buscarPorId(restauranteId);
+		restaurante.fecharRestaurante();
+	}
 }
