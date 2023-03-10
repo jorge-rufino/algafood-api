@@ -1,7 +1,6 @@
 package com.algaworks.algafood.domain.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,21 +22,12 @@ public class ProdutoService {
 	
 	public List<Produto> listar(Long restauranteId){
 		Restaurante restaurante = restauranteService.buscarPorId(restauranteId);
-		return restaurante.getProdutos();
+		return produtoRepository.findByRestaurante(restaurante);
 	}
 	
 	public Produto buscarPorId(Long restauranteId, Long produtoId) {
-		Restaurante restaurante = restauranteService.buscarPorId(restauranteId);
-		
-		Optional<Produto> obj = restaurante.getProdutos().stream()
-		.filter(produto -> produto.getId().equals(produtoId))
-		.findFirst();
-		
-		if(obj.isEmpty()) {
-			throw new ProdutoNaoEncontradoException(restauranteId,produtoId);
-		}
-		
-		return produtoRepository.findById(produtoId).get();
+		return produtoRepository.findById(restauranteId, produtoId)
+				.orElseThrow(() -> new ProdutoNaoEncontradoException(restauranteId, produtoId));
 	}
 
 	@Transactional
