@@ -23,6 +23,7 @@ import com.algaworks.algafood.api.model.input.RestauranteInputDto;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.services.RestauranteService;
 
@@ -31,7 +32,7 @@ import com.algaworks.algafood.domain.services.RestauranteService;
 public class RestauranteController {
 	
 	@Autowired
-	private RestauranteService service;
+	private RestauranteService restauranteService;
 	
 	@Autowired
 	private RestauranteDtoAssembler restauranteDtoAssembler;
@@ -41,12 +42,12 @@ public class RestauranteController {
 	
 	@GetMapping
 	public List<RestauranteDto> listar(){		
-		return restauranteDtoAssembler.toCollectionDTO(service.listar());
+		return restauranteDtoAssembler.toCollectionDTO(restauranteService.listar());
 	}
 
 	@GetMapping(value = "/{id}")
 	public RestauranteDto buscarId(@PathVariable Long id){
-		Restaurante restaurante = service.buscarPorId(id);
+		Restaurante restaurante = restauranteService.buscarPorId(id);
 		
 		return restauranteDtoAssembler.toDTO(restaurante);
 	}
@@ -57,7 +58,7 @@ public class RestauranteController {
 		try {
 			Restaurante restaurante =restauranteInputDisassembler.toDomainObject(restauranteInput);
 			
-			return restauranteDtoAssembler.toDTO(service.salvar(restaurante));
+			return restauranteDtoAssembler.toDTO(restauranteService.salvar(restaurante));
 			
 //		Podemos utilizar o operador "|" em vez de fazer um outro bloco "try/catch" pois ambas disparam a mesma exception
 		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
@@ -70,7 +71,7 @@ public class RestauranteController {
 	
 //		Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
 		
-		Restaurante restauranteAtual = service.buscarPorId(id);		
+		Restaurante restauranteAtual = restauranteService.buscarPorId(id);		
 			
 		restauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
 		
@@ -78,7 +79,7 @@ public class RestauranteController {
 //		BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro"
 //				,"produtos");
 		try {
-			return restauranteDtoAssembler.toDTO(service.salvar(restauranteAtual));
+			return restauranteDtoAssembler.toDTO(restauranteService.salvar(restauranteAtual));
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		} catch (CidadeNaoEncontradaException e) {
@@ -89,30 +90,52 @@ public class RestauranteController {
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deletar(@PathVariable Long id){
-		service.deletar(id);
+		restauranteService.deletar(id);
 	}
 	
 	@PutMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativar(@PathVariable Long restauranteId) {
-		service.ativar(restauranteId);
+		restauranteService.ativar(restauranteId);
+	}
+	
+	@PutMapping("/ativacoes")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativarMultiplos(@RequestBody List<Long> restauranteIds) {
+//	Caso fosse passado um "restauranteId" que nao existe, ia disparar o erro "404" porem o erro adequado é "400"
+//	portanto precisamos fazer o "try/catch"
+		try {
+			restauranteService.ativar(restauranteIds);
+		} catch (RestauranteNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
+	}
+	
+	@DeleteMapping("/ativacoes")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativarMultiplos(@RequestBody List<Long> restauranteIds) {
+		try {
+			restauranteService.inativar(restauranteIds);
+		} catch (RestauranteNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
 	}
 	
 	@DeleteMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativar(@PathVariable Long restauranteId) {
-		service.inativar(restauranteId);
+		restauranteService.inativar(restauranteId);
 	}
 	
 	@PutMapping("/{restauranteId}/fechamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void fecharRestaurante(@PathVariable Long restauranteId) {
-		service.fecharRestaurante(restauranteId);
+		restauranteService.fecharRestaurante(restauranteId);
 	}
 	
 	@PutMapping("/{restauranteId}/abertura")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void abrirRestaurante(@PathVariable Long restauranteId) {
-		service.abrirRestaurante(restauranteId);
+		restauranteService.abrirRestaurante(restauranteId);
 	}
 }

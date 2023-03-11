@@ -12,6 +12,7 @@ import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 
 @Service
@@ -28,6 +29,9 @@ public class RestauranteService {
 	
 	@Autowired
 	private FormaPagamentoService formaPagamentoService;
+	
+	@Autowired
+	private UsuarioService usuarioService;
 	
 	public List<Restaurante> listar(){
 		return repository.findAll();
@@ -90,9 +94,19 @@ public class RestauranteService {
 	}
 	
 	@Transactional
+	public void ativar(List<Long> restauranteIds) {
+		restauranteIds.forEach(this::ativar);
+	}
+	
+	@Transactional
 	public void inativar(Long restauranteId) {		
 		Restaurante restaurante = buscarPorId(restauranteId);
 		restaurante.inativar();
+	}
+	
+	@Transactional
+	public void inativar(List<Long> restauranteIds) {
+		restauranteIds.forEach(this::inativar);
 	}
 	
 	@Transactional
@@ -105,5 +119,21 @@ public class RestauranteService {
 	public void fecharRestaurante(Long restauranteId) {
 		Restaurante restaurante = buscarPorId(restauranteId);
 		restaurante.fecharRestaurante();
+	}
+	
+	@Transactional
+	public void associarResponsavel(Long restauranteId, Long usuarioId) {
+		Usuario usuario = usuarioService.buscarPorId(usuarioId);
+		Restaurante restaurante = buscarPorId(restauranteId);
+		
+		restaurante.associarResponsavel(usuario);
+	}
+	
+	@Transactional
+	public void desassociarResponsavel(Long restauranteId, Long usuarioId) {
+		Usuario usuario = usuarioService.buscarPorId(usuarioId);
+		Restaurante restaurante = buscarPorId(restauranteId);
+		
+		restaurante.desassociarResponsavel(usuario);
 	}
 }
