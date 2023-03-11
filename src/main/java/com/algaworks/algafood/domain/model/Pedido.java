@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,13 +36,14 @@ public class Pedido {
 	private BigDecimal valorTotal;
 	
 	@CreationTimestamp	
-	private OffsetDateTime dataCadastro;	
+	private OffsetDateTime dataCriacao;	
 	
 	private OffsetDateTime dataConfirmacao;
 	private OffsetDateTime dataCancelamento;
 	private OffsetDateTime dataEntrega;
 	
-	private StatusPedido status;
+	@Enumerated(EnumType.STRING)
+	private StatusPedido status = StatusPedido.CRIADO;
 	
 	@Embedded
 	private Endereco enderecoEntrega;
