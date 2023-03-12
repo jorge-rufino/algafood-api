@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -62,6 +63,17 @@ public class Pedido {
 	@JoinColumn(nullable = false)
 	private FormaPagamento formaPagamento;
 	
-	@OneToMany(mappedBy = "pedido")
+//	"Cascade" faz com que o os objetos de ItemPedidos sejam salvos tb se nao somente os objetos de Pedido serao salvos
+	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
 	private List<ItemPedido> itens = new ArrayList<>();
+
+	public void calcularValotTotal() {
+		getItens().forEach(ItemPedido::calcularPrecoTotal);
+	    
+	    this.subtotal = getItens().stream()
+	        .map(item -> item.getPrecoTotal())
+	        .reduce(BigDecimal.ZERO, BigDecimal::add);
+	    
+	    this.valorTotal = this.subtotal.add(this.taxaFrete);
+	}
 }
