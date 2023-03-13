@@ -4,16 +4,13 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,9 +24,9 @@ import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.Usuario;
+import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
 import com.algaworks.algafood.domain.services.PedidoService;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.algaworks.algafood.infrastructure.repository.spec.PedidosSpecs;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -47,31 +44,37 @@ public class PedidoController {
 	@Autowired
 	private PedidoInputDtoDisassembler pedidoInputDtoDisassembler;
 	
-	@GetMapping
-	public MappingJacksonValue listar(@RequestParam(required = false) String campos){
-		List<PedidoResumoDto> pedidosResumoDto = pedidoResumoDtoAssembler.toCollectDto(pedidoService.listar());
-		
-//		Envelopa a lista
-		MappingJacksonValue pedidosWrapper = new MappingJacksonValue(pedidosResumoDto);
-		
-//		Criamos o filtro passando o nome do filtro e os campos que queremos mostrar na representaçao
-		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-		filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll());	//Mostra todos os campos
-		
-//		Filtra os campos caso sejam passados na requisiçao separados por ","
-		if(StringUtils.isNotBlank(campos)) {
-			filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept(campos.split(",")));
-		}
-		
-		pedidosWrapper.setFilters(filterProvider);
-		
-		return pedidosWrapper;
-	}
+//	@GetMapping
+//	public MappingJacksonValue listar(@RequestParam(required = false) String campos){
+//		List<PedidoResumoDto> pedidosResumoDto = pedidoResumoDtoAssembler.toCollectDto(pedidoService.listar());
+//		
+////		Envelopa a lista
+//		MappingJacksonValue pedidosWrapper = new MappingJacksonValue(pedidosResumoDto);
+//		
+////		Criamos o filtro passando o nome do filtro e os campos que queremos mostrar na representaçao
+//		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+//		filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll());	//Mostra todos os campos
+//		
+////		Filtra os campos caso sejam passados na requisiçao separados por ","
+//		if(StringUtils.isNotBlank(campos)) {
+//			filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept(campos.split(",")));
+//		}
+//		
+//		pedidosWrapper.setFilters(filterProvider);
+//		
+//		return pedidosWrapper;
+//	}
 	
 //	@GetMapping("{pedidoId}")
 //	public PedidoDto buscarPorId(@PathVariable Long pedidoId) {
 //		return pedidoDtoAssembler.toDto(pedidoService.buscarPorId(pedidoId));
 //	}
+	
+	@GetMapping
+	public List<PedidoResumoDto> pesquisar(PedidoFilter filtro){
+		
+		return pedidoResumoDtoAssembler.toCollectDto(pedidoService.listar(PedidosSpecs.usandoFiltro(filtro)));
+	}
 	
 	@GetMapping("{codigoPedido}")
 	public PedidoDto buscarPorCodigo(@PathVariable String codigoPedido) {

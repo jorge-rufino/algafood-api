@@ -5,6 +5,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -38,8 +39,8 @@ public class PedidoService {
 	@Autowired
 	private ProdutoService produtoService;
 	
-	public List<Pedido> listar(){
-		return pedidoRepository.findAll();
+	public List<Pedido> listar(Specification<Pedido> specification){
+		return pedidoRepository.findAll(specification);
 	}
 	
 //	public Pedido buscarPorId(Long pedidoId) {
