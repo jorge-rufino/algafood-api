@@ -27,6 +27,11 @@ public class ModelMapperConfig {
 		enderecoToEnderecoDtoTypeMap.<String>addMapping(
 				enderecoSrc -> enderecoSrc.getCidade().getEstado().getNome(), 
 				(enderecoDtoDestino, valor) -> enderecoDtoDestino.getCidade().setEstado(valor));
+	
+//Precisamos adicionar esta configuraçao pois como no input da requisição estamos passando um Long "produtoId" em vez de um objeto
+//de "ProdutoIdInput", o Spring se perde a acaba relacionando o id do produto com o id do "ItemPedido", portanto fazemos esta config para
+//que o spring ignore o Id de "ItemPedido" e assim faça o relacionamento correto.
+//  Se tivessemso criado a classe "ProdutoIdInput" não precisariamos dessa config.
 		
 		modelMapper.createTypeMap(ItemPedidoInputDto.class, ItemPedido.class)
 	    .addMappings(mapper -> mapper.skip(ItemPedido::setId));
