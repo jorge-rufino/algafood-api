@@ -20,9 +20,15 @@ public class ProdutoService {
 	@Autowired
 	private RestauranteService restauranteService;
 	
-	public List<Produto> listar(Long restauranteId){
+	public List<Produto> listar(Long restauranteId, boolean incluirInativos){
 		Restaurante restaurante = restauranteService.buscarPorId(restauranteId);
-		return produtoRepository.findByRestaurante(restaurante);
+		System.out.println(incluirInativos);
+		if(incluirInativos) {
+			return produtoRepository.findTodosByRestaurante(restaurante);
+			
+		}else {
+			return produtoRepository.findAtivosByRestaurante(restaurante);	
+		}
 	}
 	
 	public Produto buscarPorId(Long restauranteId, Long produtoId) {
