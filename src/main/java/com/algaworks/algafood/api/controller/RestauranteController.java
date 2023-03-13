@@ -20,12 +20,14 @@ import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
 import com.algaworks.algafood.api.disassembler.RestauranteInputDtoDisassembler;
 import com.algaworks.algafood.api.model.RestauranteDto;
 import com.algaworks.algafood.api.model.input.RestauranteInputDto;
+import com.algaworks.algafood.api.model.view.RestauranteView;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.services.RestauranteService;
+import com.fasterxml.jackson.annotation.JsonView;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -39,10 +41,25 @@ public class RestauranteController {
 	
 	@Autowired
 	private RestauranteInputDtoDisassembler restauranteInputDisassembler;
-	
+		
+//	Mostra todos os atributos
 	@GetMapping
 	public List<RestauranteDto> listar(){		
 		return restauranteDtoAssembler.toCollectionDTO(restauranteService.listar());
+	}
+	
+//	Mostra os atributos anotados com "Resumo"
+	@JsonView(RestauranteView.Resumo.class)
+	@GetMapping(params = "projecao=resumo")
+	public List<RestauranteDto> listarResumido(){		
+		return listar();
+	}
+	
+//	Mostra os atributos anotados com "ApenasNome"
+	@JsonView(RestauranteView.ApenasNome.class)
+	@GetMapping(params = "projecao=apenas-nome")
+	public List<RestauranteDto> listarApenasNome(){		
+		return listar();
 	}
 
 	@GetMapping(value = "/{id}")
