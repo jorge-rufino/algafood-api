@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -17,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -34,6 +36,8 @@ public class Pedido {
 	@EqualsAndHashCode.Include
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	private String codigo;
 	
 	private BigDecimal subtotal;
 	private BigDecimal taxaFrete;
@@ -99,15 +103,21 @@ public class Pedido {
 			final String mensagem;
 			
 			if(getStatus().equals(novoStatus)) {
-				mensagem = String.format("Pedido %d já foi %s.", getId(), novoStatus.getDescricao());
+				mensagem = String.format("Pedido %s já foi %s.", getCodigo(), novoStatus.getDescricao());
 			} else {
-				mensagem = String.format("Status do pedido %d não pode ser alterado de %s para %s"
-						, getId(), getStatus().getDescricao(), novoStatus.getDescricao());
+				mensagem = String.format("Status do pedido %s não pode ser alterado de %s para %s"
+						, getCodigo(), getStatus().getDescricao(), novoStatus.getDescricao());
 			}
 			
 			throw new NegocioException(mensagem);
 		}
 		
 		this.status = novoStatus;
+	}
+	
+//	Antes de inserir um novo registro de Pedido no banco de dados, ele executa este método
+	@PrePersist
+	private void gerarCodigo() {
+		setCodigo(UUID.randomUUID().toString());
 	}
 }

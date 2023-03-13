@@ -4,7 +4,7 @@ public class PedidoNaoEncontradoException extends EntidadeNaoEncontradaException
 	private static final long serialVersionUID = 1L;
 
 	public PedidoNaoEncontradoException(String mensagem) {
-		super(mensagem);
+		super(String.format("Pedido de código %s não existe!", mensagem));
 	}
 
 	public PedidoNaoEncontradoException(Long id) {
