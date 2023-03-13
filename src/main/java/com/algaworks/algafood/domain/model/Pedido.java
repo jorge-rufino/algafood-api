@@ -96,9 +96,16 @@ public class Pedido {
 	
 	private void setStatus(StatusPedido novoStatus) {
 		if(getStatus().naoPodeAlterarPara(novoStatus)) {
-			throw new NegocioException(
-					String.format("Status do pedido %d não pode ser alterado de %s para %s"
-							, getId(), getStatus().getDescricao(), novoStatus.getDescricao()));
+			final String mensagem;
+			
+			if(getStatus().equals(novoStatus)) {
+				mensagem = String.format("Pedido %d já foi %s.", getId(), novoStatus.getDescricao());
+			} else {
+				mensagem = String.format("Status do pedido %d não pode ser alterado de %s para %s"
+						, getId(), getStatus().getDescricao(), novoStatus.getDescricao());
+			}
+			
+			throw new NegocioException(mensagem);
 		}
 		
 		this.status = novoStatus;
