@@ -16,8 +16,13 @@ public class PedidosSpecs {
 			
 //			Faz os "fetch" para evitar o problema do N+1
 			
-			root.fetch("restaurante").fetch("cozinha");
-			root.fetch("cliente");
+//	Na paginacao, ele faz um select em Pedido e um "select count" que não pode ter o "fetch", para evitar este problema
+//	verificamos se o select é em Pedido e se for ai sim ele faz os "fetchs". 
+			
+			if(Pedido.class.equals(query.getResultType())) {
+				root.fetch("restaurante").fetch("cozinha");
+				root.fetch("cliente");
+			}
 			
 			var predicates = new ArrayList<Predicate>();
 			

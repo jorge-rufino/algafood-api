@@ -5,6 +5,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,9 +76,15 @@ public class PedidoController {
 	
 //	Mesmo sem o @RequestParam o spring consegue fazer o databind corretamente dos filtros
 	@GetMapping
-	public List<PedidoResumoDto> pesquisar(PedidoFilter filtro){
+	public Page<PedidoResumoDto> pesquisar(PedidoFilter filtro, Pageable pageable){
 		
-		return pedidoResumoDtoAssembler.toCollectDto(pedidoService.listar(PedidosSpecs.usandoFiltro(filtro)));
+		Page<Pedido> pedidosPage = pedidoService.listar(PedidosSpecs.usandoFiltro(filtro), pageable);
+		
+		List<PedidoResumoDto> pedidosResumoDto = pedidoResumoDtoAssembler.toCollectDto(pedidosPage.getContent());
+		
+		Page<PedidoResumoDto> pedidosResumoDtoPage = new PageImpl<>(pedidosResumoDto, pageable, pedidosPage.getTotalElements());
+		
+		return pedidosResumoDtoPage;
 	}
 	
 	@GetMapping("{codigoPedido}")
