@@ -70,6 +70,7 @@ public class PedidoController {
 //		return pedidoDtoAssembler.toDto(pedidoService.buscarPorId(pedidoId));
 //	}
 	
+//	Mesmo sem o @RequestParam o spring consegue fazer o databind corretamente dos filtros
 	@GetMapping
 	public List<PedidoResumoDto> pesquisar(PedidoFilter filtro){
 		
