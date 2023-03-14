@@ -5,6 +5,10 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,9 +41,19 @@ public class CozinhaController {
 	@Autowired
 	private CozinhaInputDtoDisassembler cozinhaDtoDisassembler;
 	
+//	Recebe como parametros de url "size","page", "sort", etc, para determina quantidade de itens por pagina, e navegar entre as paginas, ordernar,etc
+//	Tamanho padrao de elementos por pagina é 20 mas estamos especificando 10 
+	
 	@GetMapping
-	public List<CozinhaDto> listar(){
-		return cozinhaDtoAssembler.toCollectionDto(cozinhaService.listar());
+	public Page<CozinhaDto> listar(@PageableDefault(size = 10) Pageable pageable){
+		Page<Cozinha> cozinhasPage = cozinhaService.listar(pageable);
+		
+//	Metodo "getContent" retorna a lista de objetos da Page/Pagina 0	
+		List<CozinhaDto> cozinhasDto = cozinhaDtoAssembler.toCollectionDto(cozinhasPage.getContent());
+		
+		Page<CozinhaDto> cozinhasDtoPage = new PageImpl<>(cozinhasDto, pageable, cozinhasPage.getTotalElements());
+		
+		return cozinhasDtoPage;
 	}
 	
 	@GetMapping(value = "/{cozinhaId}")

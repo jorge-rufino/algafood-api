@@ -20,4 +20,9 @@ public interface CozinhaRepository extends CustomJpaRepository<Cozinha, Long>{
 	
 	//Prefixo "exists" procura pelo nome e se encontrar retornar "true" (Não é Case Sensitive). Não é aconselhavel utilizar o "Containing".
 	boolean existsByNome(String nome);
+	
+//	Podemos especificar a paginacao diretamente na consulta assim tb caso tenhamos metodos proprios mas no caso do "findAll"
+//	ele ja faz isso por padrao
+	
+//	Page<Cozinha> findAll(Pageable pageable);
 }

@@ -56,6 +56,7 @@ public class PedidoController {
 //		filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll());	//Mostra todos os campos
 //		
 ////		Filtra os campos caso sejam passados na requisiçao separados por ","
+//			StringUtils do pacote "CommonsLang3"
 //		if(StringUtils.isNotBlank(campos)) {
 //			filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept(campos.split(",")));
 //		}
