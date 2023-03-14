@@ -1,6 +1,8 @@
 package com.algaworks.algafood.api.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -23,6 +25,7 @@ import com.algaworks.algafood.api.disassembler.PedidoInputDtoDisassembler;
 import com.algaworks.algafood.api.model.PedidoDto;
 import com.algaworks.algafood.api.model.PedidoResumoDto;
 import com.algaworks.algafood.api.model.input.PedidoInputDto;
+import com.algaworks.algafood.core.data.PageableTranslate;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
@@ -30,6 +33,8 @@ import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
 import com.algaworks.algafood.domain.services.PedidoService;
 import com.algaworks.algafood.infrastructure.repository.spec.PedidosSpecs;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -76,7 +81,9 @@ public class PedidoController {
 	
 //	Mesmo sem o @RequestParam o spring consegue fazer o databind corretamente dos filtros
 	@GetMapping
-	public Page<PedidoResumoDto> pesquisar(PedidoFilter filtro, Pageable pageable){
+	public Page<PedidoResumoDto> pesquisar(@JsonInclude(Include.NON_NULL) PedidoFilter filtro, Pageable pageable){
+		
+		pageable = traduzirPageable(pageable);
 		
 		Page<Pedido> pedidosPage = pedidoService.listar(PedidosSpecs.usandoFiltro(filtro), pageable);
 		
@@ -105,5 +112,23 @@ public class PedidoController {
 		} catch (EntidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
+	}
+	
+//	Converte/traduz os nomes dos filtros/parametros da requisição para os nomes corretos que o Spring utiliza para filtrar
+	private Pageable traduzirPageable(Pageable apiPageable) {
+		Map<String, String> mapeamento = new HashMap<>();
+		mapeamento.put("codigo", "codigo");
+		mapeamento.put("restaurante.nome", "restaurante.nome");
+		mapeamento.put("restauranteNome", "restaurante.nome");
+		mapeamento.put("nomeCliente", "cliente.nome");
+		mapeamento.put("nome.cliente", "cliente.nome");
+		mapeamento.put("cliente.nome", "cliente.nome");
+		mapeamento.put("clienteEmail", "cliente.email");
+		mapeamento.put("cliente.email", "cliente.email");
+		mapeamento.put("valorTotal", "valorTotal");
+		mapeamento.put("taxaFrete", "taxaFrete");
+		mapeamento.put("status", "status");
+		
+		return PageableTranslate.translate(apiPageable, mapeamento);
 	}
 }
