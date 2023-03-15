@@ -15,7 +15,7 @@ public class PageableTranslate {
 		var orders = pageable.getSort().stream()
 				.filter(order -> {
 					if (!fieldsMapping.containsKey(order.getProperty())) {
-						throw new NegocioException("Parâmetro de ordenação inválido!");
+						throw new NegocioException("Parâmetro de ordenação '"+order.getProperty()+"' é inválido!");
 					}
 					return true;
 				})
