@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
@@ -21,14 +22,16 @@ public class EstatisticasController {
 	@Autowired
 	private VendaQueryService vendaQueryService;
 	
+//	Caso nao seja passado nenhum offset, o valor default utilizado é do UTC (+00:00)
 	@GetMapping("/vendas-diarias")
-	public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro){
-		return vendaQueryService.consultarVendasDiarias(filtro);
+	public List<VendaDiaria> consultarVendasDiarias(
+			VendaDiariaFilter filtro,@RequestParam(required = false, defaultValue = "+00:00")  String timeOffSet){
+		return vendaQueryService.consultarVendasDiarias(filtro,timeOffSet);
 	}
 	
 	@GetMapping("/vendas-diarias-com-total-geral")
-	public Map<String, Object> consultarVendasDiariasComTotalGeral(VendaDiariaFilter filtro){
-		List<VendaDiaria> vendasDiarias = vendaQueryService.consultarVendasDiarias(filtro);
+	public Map<String, Object> consultarVendasDiariasComTotalGeral(VendaDiariaFilter filtro, String timeOffSet){
+		List<VendaDiaria> vendasDiarias = vendaQueryService.consultarVendasDiarias(filtro,timeOffSet);
 		
 		Map<String, Object> respostaJson = new LinkedHashMap<>();
 		respostaJson.put("content", vendasDiarias);

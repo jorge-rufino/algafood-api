@@ -33,8 +33,6 @@ import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.services.PedidoService;
 import com.algaworks.algafood.infrastructure.repository.spec.PedidosSpecs;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -81,7 +79,7 @@ public class PedidoController {
 	
 //	Mesmo sem o @RequestParam o spring consegue fazer o databind corretamente dos filtros
 	@GetMapping
-	public Page<PedidoResumoDto> pesquisar(@JsonInclude(Include.NON_NULL) PedidoFilter filtro, Pageable pageable){
+	public Page<PedidoResumoDto> pesquisar(PedidoFilter filtro, Pageable pageable){
 		
 		pageable = traduzirPageable(pageable);
 		

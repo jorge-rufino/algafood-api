@@ -23,11 +23,32 @@ public class VendaQueryServiceImpl implements VendaQueryService{
 	private EntityManager manager;
 	
 	@Override
-	public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro) {
+	public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro, String timeOffSet) {
 		var builder = manager.getCriteriaBuilder();
 		var query = builder.createQuery(VendaDiaria.class);
 		var root = query.from(Pedido.class);
-		var functionDateDataCriacao = builder.function("date", Date.class, root.get("dataCriacao"));
+		
+//		Como estamos salvando as datas em UTC, elas estão com 3 horas a mais portando pode acontecer de um pedido ser criado
+//		em um dia mas no banco está em outro, como por exemplo o pedido de ID 4 que está com a seguinte data "2023-02-02 02:00:04", 
+//		em UTC ele foi criado no dia 02/02 porém ao convertermos para nosso horario ele passa a ter sido criado "2023-02-01 23:00:04"
+//		ou seja, 3 horas a menos.
+//		
+//		Precisamos modificar a query para a seguinte:
+		
+//			select date(convert_tz(P.data_criacao,'+00:00','-03:00')) as data_criacao, 
+//			count(P.id) as total_vendas, 
+//			sum(P.valor_total) as total_faturado
+//			from pedido P
+//			where P.status in ('CONFIRMADO', 'ENTREGUE')
+//			group by date(convert_tz(P.data_criacao,'+00:00','-03:00'))
+//			order by date(P.data_criacao);	
+		
+//		Aqui convertemos o "dataCriacao" com offset passado
+		var functionConvertTzDataCriacao = builder.function(
+				"convert_tz", Date.class, root.get("dataCriacao"), builder.literal("+00:00"), builder.literal(timeOffSet));
+		
+//		Aqui convertemos a data ja no horario convertido para o tipo "Date"
+		var functionDateDataCriacao = builder.function("date", Date.class, functionConvertTzDataCriacao);
 		
 		var selection = builder.construct(VendaDiaria.class, 
 				functionDateDataCriacao,				//Referente ao "date(P.data_criacao)

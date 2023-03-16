@@ -129,7 +129,7 @@ insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagame
                     endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
 	                status, data_criacao, data_confirmacao, data_entrega, subtotal, taxa_frete, valor_total)
 values (4, '5c621c9a-ba61-4454-8631-8aabefe58dc2', 1, 2, 1, 1, '38400-800', 'Rua Fortaleza', '900', 'Apto 504', 'Centro',
-        'ENTREGUE', '2023-02-02 20:34:04', '2023-02-02 20:35:10', '2023-02-02 21:10:32', 174.4, 5, 179.4);
+        'ENTREGUE', '2023-02-02 02:00:04', '2023-02-02 02:01:10', '2023-02-02 02:20:32', 174.4, 5, 179.4);
 
 insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
 values (5, 4, 3, 2, 87.2, 174.4, null);
