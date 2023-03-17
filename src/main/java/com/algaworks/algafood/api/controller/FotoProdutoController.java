@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controller;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.algaworks.algafood.api.assembler.FotoProdutoDtoAssembler;
 import com.algaworks.algafood.api.model.FotoProdutoDto;
@@ -35,18 +37,20 @@ public class FotoProdutoController {
 	private FotoProdutoDtoAssembler fotoProdutoDtoAssembler;
 	
 	@PutMapping(consumes = 	MediaType.MULTIPART_FORM_DATA_VALUE)
-	public FotoProdutoDto atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) {
+	public FotoProdutoDto atualizarFoto(
+			@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) throws IOException {
 	
 		Produto produto = produtoService.buscarPorId(restauranteId, produtoId);
-		
+		MultipartFile arquivo = fotoProdutoInput.getArquivo();
+				
 		FotoProduto novaFoto = new FotoProduto();		
 		novaFoto.setProduto(produto);
 		novaFoto.setDescricao(fotoProdutoInput.getDescricao());
-		novaFoto.setNomeArquivo(fotoProdutoInput.getArquivo().getOriginalFilename());
-		novaFoto.setContentType(fotoProdutoInput.getArquivo().getContentType());
-		novaFoto.setTamanho(fotoProdutoInput.getArquivo().getSize());
+		novaFoto.setNomeArquivo(arquivo.getOriginalFilename());
+		novaFoto.setContentType(arquivo.getContentType());
+		novaFoto.setTamanho(arquivo.getSize());
 		
-		return fotoProdutoDtoAssembler.toDto(fotoProdutoService.salvar(novaFoto));
+		return fotoProdutoDtoAssembler.toDto(fotoProdutoService.salvar(novaFoto, arquivo.getInputStream()));
 	}
 	
 	@PutMapping(value = "/multiplas", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
