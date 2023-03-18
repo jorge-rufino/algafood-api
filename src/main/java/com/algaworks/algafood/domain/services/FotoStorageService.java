@@ -12,6 +12,8 @@ public interface FotoStorageService {
 	
 	void removerFoto(String nomeArquivo);
 	
+	InputStream recuperarFoto(String nomeArquivo);
+	
 	default void substituir(String nomeArquivoAntigo, NovaFoto novaFoto) {
 		this.armazenarFoto(novaFoto);
 		
