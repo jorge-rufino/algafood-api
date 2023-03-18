@@ -16,6 +16,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -46,6 +47,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 	@Autowired
 	private MessageSource messageSource;
 
+//	Quando buscamos um foto e o mediatype passado na requisiçao é diferente do da foto armazenada, é disparada esta
+//	exception porém ela acaba caindo no método "handleExceptionInternal" que nós sobrescrevemos aqui e como ele agora está
+//	retornando um "body" que não é nulo, acaba dando erro "Could not find acceptable representation", portanto temos que
+//	reescreve-lo. Este erro não é perceptível para o consumidor da API, somente para desenvolvedores.
+	
+	@Override
+	protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+		return ResponseEntity.status(status).headers(headers).build();
+	}
+	
 //	Capturas as exceptions dos filtros de pesquisa
 	@Override
 	protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status,
