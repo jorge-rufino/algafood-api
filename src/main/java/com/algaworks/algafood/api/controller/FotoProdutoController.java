@@ -1,13 +1,13 @@
 package com.algaworks.algafood.api.controller;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +30,7 @@ import com.algaworks.algafood.domain.model.FotoProduto;
 import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.services.FotoProdutoService;
 import com.algaworks.algafood.domain.services.FotoStorageService;
+import com.algaworks.algafood.domain.services.FotoStorageService.FotoRecuperada;
 import com.algaworks.algafood.domain.services.ProdutoService;
 
 @RestController
@@ -72,10 +73,11 @@ public class FotoProdutoController {
 		return fotoProdutoDtoAssembler.toDto(fotoProduto);
 	}
 	
-//	Na requisicao => Accept = image/jpeg
-//	Agora pegamos os valores do campo "accept" da requisição, que inclusive podem ser varios seprados por ","
+//	Quando o serviço de storage de imagens for local, vamos mostrar a imagem atraves do InputStream, mas quando for remoto ou em nuvem
+//	vamos mostrar a URL da imagem
+	
 	@GetMapping
-	public ResponseEntity<InputStreamResource>  buscarFotoImagem(
+	public ResponseEntity<?>  buscarFotoImagem(
 			@PathVariable Long restauranteId, @PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader) 
 					throws HttpMediaTypeNotAcceptableException {
 		
@@ -93,11 +95,19 @@ public class FotoProdutoController {
 			
 			verificaCompatibilidadeMediaType(mediaTypeFoto, mediaTypesAceitas);
 			
-			InputStream inputStream = fotoStorageService.recuperarFoto(fotoProduto.getNomeArquivo());
+			FotoRecuperada fotoRecuperada = fotoStorageService.recuperarFoto(fotoProduto.getNomeArquivo());
 			
-			return ResponseEntity.ok()
-					.contentType(mediaTypeFoto)
-					.body(new InputStreamResource(inputStream));
+//			Se o serviço de storage for local retorna a imagem(InputStream) se não retorna a URL do storage remoto
+			if (fotoRecuperada.temUrl()) {
+				return ResponseEntity
+						.status(HttpStatus.FOUND)
+						.header(HttpHeaders.LOCATION, fotoRecuperada.getUrl())
+						.build();
+			}else {
+				return ResponseEntity.ok()
+						.contentType(mediaTypeFoto)
+						.body(new InputStreamResource(fotoRecuperada.getInputStream()));				
+			}
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
 		}

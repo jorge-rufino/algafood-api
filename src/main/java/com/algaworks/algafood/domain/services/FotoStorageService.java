@@ -12,7 +12,8 @@ public interface FotoStorageService {
 	
 	void removerFoto(String nomeArquivo);
 	
-	InputStream recuperarFoto(String nomeArquivo);
+//	Agora vamos retornar InputStream caso utilizem um storage Local, ou uma String que será a URL da foto caso em nuvem
+	FotoRecuperada recuperarFoto(String nomeArquivo);
 	
 	default void substituir(String nomeArquivoAntigo, NovaFoto novaFoto) {
 		this.armazenarFoto(novaFoto);
@@ -33,5 +34,21 @@ public interface FotoStorageService {
 		private String nomeArquivo;
 		private String contentType;
 		private InputStream inputStream;
+	}
+	
+	@Builder
+	@Getter
+	class FotoRecuperada {
+		
+		private InputStream inputStream;
+		private String url;
+		
+		public boolean temUrl() {
+			return url != null;
+		}
+		
+		public boolean temInputStream() {
+			return inputStream != null;
+		}
 	}
 }
