@@ -4,6 +4,8 @@ import java.util.Set;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.Singular;
 
 public interface EnvioEmailService {
 	
@@ -13,8 +15,15 @@ public interface EnvioEmailService {
 	@Builder
 	class Mensagem {
 		
+//		Annotation faz com que quando passarmos somente um objeto/destianatario, não seja necessário instanciar a lista
+//		Ele tambem transforma o nome da propriedade para o singular, ou seja, "destinatario"...e se passarmos um list volta para o plural
+		@Singular
 		private Set<String> destinatarios;
+		
+		@NonNull
 		private String assunto;
+		
+		@NonNull
 		private String corpo;
 	}
 
