@@ -1,5 +1,7 @@
 package com.algaworks.algafood.domain.services;
 
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,10 +26,17 @@ public class FluxoPedidoService {
 //		Template que será usado para montar o corpo da mensagem. "src/main/resources/pedido-confirmado.html"
 		String template = "pedido-confirmado.html";
 		
+		DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm:ss");
+		
+		String dataConfirmacao = pedido.getDataConfirmacao().format(formatterDate)
+						+" as " + pedido.getDataConfirmacao().format(formatterHour);
+		
 		var mensagem = Mensagem.builder()
 				.assunto(pedido.getRestaurante().getNome() + " - Pedido confirmado.")
 				.corpo(template)
 				.variavel("pedido", pedido)
+				.variavel("dataConfirmacao", dataConfirmacao)
 				.destinatario(pedido.getCliente().getEmail())
 				.build();
 		
