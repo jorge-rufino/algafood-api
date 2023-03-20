@@ -21,13 +21,13 @@ public class FluxoPedidoService {
 		Pedido pedido = pedidoService.buscarPorCodigo(codigoPedido);		
 		pedido.confirmar();
 				
-//		Repare que estamos passando tags html para formatar a mensagem
-		String corpoMensagem = "O pedido de código <strong>" + pedido.getCodigo() + "</strong>  em nome de <strong>" 
-				+ pedido.getCliente().getNome() + " </strong> foi confirmado.";
+//		Template que será usado para montar o corpo da mensagem. "src/main/resources/pedido-confirmado.html"
+		String template = "pedido-confirmado.html";
 		
 		var mensagem = Mensagem.builder()
 				.assunto(pedido.getRestaurante().getNome() + " - Pedido confirmado.")
-				.corpo(corpoMensagem)
+				.corpo(template)
+				.variavel("pedido", pedido)
 				.destinatario(pedido.getCliente().getEmail())
 				.build();
 		

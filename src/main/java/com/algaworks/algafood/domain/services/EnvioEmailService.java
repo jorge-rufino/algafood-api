@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.services;
 
+import java.util.Map;
 import java.util.Set;
 
 import lombok.Builder;
@@ -25,6 +26,11 @@ public interface EnvioEmailService {
 		
 		@NonNull
 		private String corpo;
+		
+//		Objeto para ser usado no template
+		
+		@Singular("variavel")				//Nome da variavel caso tenha somente 1 objeto
+		private Map<String, Object> variaveis;
 	}
 
 }
