@@ -21,7 +21,15 @@ public class EmailProperties {
 		
 	private Implementacao implementacao = Implementacao.FAKE;			//"fake" para usar email fake(é o padrao) ou "smtp" para utilizar email real
 	
+	private Sandbox sandbox = new Sandbox(); 
+	
 	public enum Implementacao{
-		FAKE,SMTP
+		FAKE,SMTP,SANDBOX;
+	}
+	
+	@Setter
+	@Getter
+	public class Sandbox{
+		private String destinatario;
 	}
 }

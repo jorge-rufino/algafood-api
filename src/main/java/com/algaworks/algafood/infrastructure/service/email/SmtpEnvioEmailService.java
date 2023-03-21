@@ -1,5 +1,6 @@
 package com.algaworks.algafood.infrastructure.service.email;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,17 +29,7 @@ public class SmtpEnvioEmailService implements EnvioEmailService{
 	@Override
 	public void enviar(Mensagem mensagem) {
 		try {
-			String corpo = processarTemplate(mensagem);
-			
-//		Objeto que será enviado	
-			MimeMessage mimeMessage = mailSender.createMimeMessage();
-			
-//		Facilitador para criar a mensagem que será enviada. Setamos com UTF-8 para evitar erro de codificação de mensagens
-			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
-			helper.setFrom(emailProperties.getRemetente());
-			helper.setTo(mensagem.getDestinatarios().toArray(new String[0]));	//Convertemos o Set em um Array de destinatarios
-			helper.setSubject(mensagem.getAssunto());
-			helper.setText(corpo, true);	//"True" é para mandar a mensagem em HTML. Senão seria enviado o texto puro.
+			MimeMessage mimeMessage = createMimeMessage(mensagem);
 			
 			mailSender.send(mimeMessage);
 			
@@ -46,6 +37,7 @@ public class SmtpEnvioEmailService implements EnvioEmailService{
 			throw new EmailException("Não foi possível enviar e-mail.", e);
 		}
 	}
+
 
 	protected String processarTemplate(Mensagem mensagem) {
 		try {
@@ -58,5 +50,18 @@ public class SmtpEnvioEmailService implements EnvioEmailService{
 		} catch (Exception e) {
 			throw new EmailException("Não foi possível montar o template do email.", e);
 		}
+	}
+	
+	protected MimeMessage createMimeMessage(Mensagem mensagem) throws MessagingException {
+		String corpo = processarTemplate(mensagem);
+		
+		MimeMessage mimeMessage = mailSender.createMimeMessage();
+		
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
+		helper.setFrom(emailProperties.getRemetente());
+		helper.setTo(mensagem.getDestinatarios().toArray(new String[0]));	//Convertemos o Set em um Array de destinatarios
+		helper.setSubject(mensagem.getAssunto());
+		helper.setText(corpo, true);	//"True" é para mandar a mensagem em HTML. Senão seria enviado o texto puro.
+		return mimeMessage;
 	}
 }
