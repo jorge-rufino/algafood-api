@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FileCopyUtils;
 
 import com.algaworks.algafood.core.storage.StorageProperties;
+import com.algaworks.algafood.domain.exception.FotoProdutoNaoEncontradoException;
 import com.algaworks.algafood.domain.services.FotoStorageService;
 
 public class LocalFotoStorageService implements FotoStorageService{
@@ -53,14 +54,21 @@ public class LocalFotoStorageService implements FotoStorageService{
 		try {
 	        Path arquivoPath = getArquivoPath(nomeArquivo);
 	        
+//	        Verifica se a foto existe no storage
+	        if(Files.notExists(arquivoPath)) {
+	        	throw new FotoProdutoNaoEncontradoException("Foto não encontrada no storage.");
+	        }
+	        
 	        FotoRecuperada fotoRecuperada = FotoRecuperada.builder()
 	        		.inputStream(Files.newInputStream(arquivoPath))
 	        		.build();
 
 	        return fotoRecuperada;
-	    } catch (Exception e) {
-	        throw new StorageException("Não foi possível recuperar arquivo.", e);
-	    }
+	    } catch (FotoProdutoNaoEncontradoException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new StorageException("Não foi possível recuperar arquivo.", e);
+        }
 	}
 
 }
