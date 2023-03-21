@@ -21,6 +21,12 @@ public class FotoProdutoService {
 	@Autowired
 	private FotoStorageService fotoStorageService;
 	
+	@Autowired
+	private RestauranteService restauranteService;
+	
+	@Autowired
+	private ProdutoService produtoService;
+	
 	@Transactional
 	public FotoProduto salvar(FotoProduto fotoProduto, InputStream dadosArquivo) {
 //		Busca a foto de produto e caso exista, exclui ela e salva uma nova
@@ -60,6 +66,11 @@ public class FotoProdutoService {
 	}
 	
 	public FotoProduto buscarFoto(Long restauranteId, Long produtoId) {
+//		Estamos fazendo a busca para retornar o erro correto de quando nao exisitr restaurante ou produto
+//		se nao irá sempre retornar "FotoProdutoNaoEncontradoException"
+		restauranteService.buscarPorId(restauranteId);
+		produtoService.buscarPorId(restauranteId, produtoId);
+		
 		return produtoRepository.findFotoById(restauranteId, produtoId)
 				.orElseThrow(() -> new FotoProdutoNaoEncontradoException(restauranteId, produtoId));
 	}

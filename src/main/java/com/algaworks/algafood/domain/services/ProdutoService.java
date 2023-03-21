@@ -22,7 +22,7 @@ public class ProdutoService {
 	
 	public List<Produto> listar(Long restauranteId, boolean incluirInativos){
 		Restaurante restaurante = restauranteService.buscarPorId(restauranteId);
-		System.out.println(incluirInativos);
+		
 		if(incluirInativos) {
 			return produtoRepository.findTodosByRestaurante(restaurante);
 			
@@ -32,6 +32,9 @@ public class ProdutoService {
 	}
 	
 	public Produto buscarPorId(Long restauranteId, Long produtoId) {
+//		Buscando restaurante somente para disparar a exception caso ele nao exista
+		restauranteService.buscarPorId(restauranteId);
+		
 		return produtoRepository.findById(restauranteId, produtoId)
 				.orElseThrow(() -> new ProdutoNaoEncontradoException(restauranteId, produtoId));
 	}
