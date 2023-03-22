@@ -1,9 +1,11 @@
 package com.algaworks.algafood.domain.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.algaworks.algafood.domain.event.PedidoEntregueApplicationEvent;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
 
@@ -15,6 +17,9 @@ public class FluxoPedidoService {
 	
 	@Autowired
 	private PedidoRepository pedidoRepository;	//Precisamos do repositorio para poder disparar os eventos
+	
+	@Autowired
+	private ApplicationEventPublisher eventPublisher;
 	
 	@Transactional
 	public void confirmar(String codigoPedido) {
@@ -29,6 +34,8 @@ public class FluxoPedidoService {
 	public void entregar(String codigoPedido) {
 		Pedido pedido = pedidoService.buscarPorCodigo(codigoPedido);
 		pedido.entregar();
+		
+		eventPublisher.publishEvent(new PedidoEntregueApplicationEvent(this, pedido));
 	}
 	
 	@Transactional
