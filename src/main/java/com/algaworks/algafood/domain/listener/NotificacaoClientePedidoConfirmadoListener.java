@@ -4,8 +4,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.algaworks.algafood.domain.event.PedidoConfirmadoEvent;
 import com.algaworks.algafood.domain.model.Pedido;
@@ -19,7 +19,15 @@ public class NotificacaoClientePedidoConfirmadoListener {
 	@Autowired
 	private EnvioEmailService envioEmailService;
 	
-	@EventListener
+//	@EventListener: executa os eventos um instante antes de fazer o commit no banco 
+//	(email será enviado antes de salvar no BD portanto caso dê algum erro de transação no BD, o email já foi enviado erroneamente)
+	
+//	@TransactionalEventListener(padrao): executa os eventos após o commit(se ocorrer erro no envio dos emails não faz rollback pois 
+//	os pedidos já foram salvos no banco, portanto os clientes não foram informados via email)
+	
+//	@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT): executa os eventos antes do commit (igual o EventListener) 
+	
+	@TransactionalEventListener
 	public void aoConfirmarPedido(PedidoConfirmadoEvent event) {
 		
 		Pedido pedido = event.getPedido();
