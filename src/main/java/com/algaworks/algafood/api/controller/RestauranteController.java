@@ -6,7 +6,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,11 +29,6 @@ import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.services.RestauranteService;
 import com.fasterxml.jackson.annotation.JsonView;
 
-//Esta permite o CORS nos navegadores. Por padrao ela já libera pra todos caso nao seja especificado um "origin", 
-//ou podemos especificar com "*" para ficar mais explicito
-//Esta annotation tb pode ser utilizada individualmente nos métodos que desejarmos
-
-@CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
 @RequestMapping("/restaurantes")
 public class RestauranteController {
