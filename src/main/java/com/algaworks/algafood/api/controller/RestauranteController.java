@@ -5,7 +5,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,17 +60,25 @@ public class RestauranteController {
 //		return restaurantesWrapper;
 //	}
 	
+//	CORS é bloqueio dos navegadores em casos de origem cruzada das URLs
+//	Alteracao para habilitar o CORS na Api evitando a origem cruzada
+	
 	@JsonView(RestauranteView.Resumo.class)
 	@GetMapping
-	public List<RestauranteDto> listar(){		
-		return restauranteDtoAssembler.toCollectionDTO(restauranteService.listar());
+	public ResponseEntity<List<RestauranteDto>> listar(){
+		List<RestauranteDto> restaurantes = restauranteDtoAssembler.toCollectionDTO(restauranteService.listar());
+		
+		return ResponseEntity.ok()
+				.header(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*")	
+				.body(restaurantes);
+				
 	}
 
-	@JsonView(RestauranteView.ApenasNome.class)
-	@GetMapping(params = "projecao=apenas-nome")
-	public List<RestauranteDto> listarResumido(){		
-		return listar();
-	}
+//	@JsonView(RestauranteView.ApenasNome.class)
+//	@GetMapping(params = "projecao=apenas-nome")
+//	public List<RestauranteDto> listarResumido(){		
+//		return listar();
+//	}
 
 	@GetMapping(value = "/{id}")
 	public RestauranteDto buscarId(@PathVariable Long id){
