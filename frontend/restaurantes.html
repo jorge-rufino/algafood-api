@@ -16,23 +16,16 @@
             font-family: Arial;
             font-size: 1rem;
         }
-        .botoes {
-        margin-bottom: 10px;
-        margin-top: 10px;
-        }
     </style>    
 </head>
 <body>
-    <div class="container">
-        <div class="botoes">
-            <button id="btn-restaurante" class="btn btn-primary">Restaurantes</button>    
-        </div>    
-        <div class="botoes">
-            <button id="btn-formapagamento" class="btn btn-secundario">Formas de Pagamento</button>
-        </div>
-    </div>
+    <button id="botao" class="btn btn-primary">Listar Restaurantes</button>
+    <div id="conteudo"></div>
+
+    <button id="botaoFechar" class="btn btn-secundario">Fechar Restaurante</button>
+    <div id="conteudoFechar"></div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="index.js"></script>
+    <script src="restaurantes.js"></script>
 </body>
 </html>
