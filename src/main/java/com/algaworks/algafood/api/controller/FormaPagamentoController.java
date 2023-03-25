@@ -1,11 +1,14 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,8 +40,13 @@ public class FormaPagamentoController {
 	private FormaPagamentoInputDtoDisassembler formaPagamentoDisassembler;
 	
 	@GetMapping
-	public List<FormaPagamentoDto> listar() {
-		return formaPagamentoDtoAssembler.toCollectionDto(service.listar());
+	public ResponseEntity<List<FormaPagamentoDto>> listar() {
+		List<FormaPagamentoDto> formasPagamentosDto = formaPagamentoDtoAssembler.toCollectionDto(service.listar());
+		
+		return ResponseEntity.ok()
+//		Habilita o cache para esta requisição por 10seg, ou seja, se em menos de 10seg for feita nova requisação, ela virá do cache		
+				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))	
+				.body(formasPagamentosDto); 
 	}
 	
 	@GetMapping("/{id}")
