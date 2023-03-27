@@ -58,9 +58,15 @@ public class FormaPagamentoController {
 			eTag = String.valueOf(dataUltimaAtualizacao.toEpochSecond());
 		}
 		
-//		Compara o "If-None-Match" com o ETag. Se forem iguais retorna "Null", se não continua a execução metodo
+//		Compara o "If-None-Match" com o ETag. Poderiamos somente retornar "null" que o status 304 seria retornado, porém para melhorar 
+//		a legibilidade do código, fiz esta implementaçao
+		
 		if(request.checkNotModified(eTag)) {
-			return null;
+//			return null;
+			return ResponseEntity.status(HttpStatus.NOT_MODIFIED) 	//Status 304
+		               .cacheControl(CacheControl.maxAge(0, TimeUnit.SECONDS).cachePublic())
+		               .eTag(eTag)
+		               .build();
 		}
 		
 		List<FormaPagamentoDto> formasPagamentosDto = formaPagamentoDtoAssembler.toCollectionDto(service.listar());
