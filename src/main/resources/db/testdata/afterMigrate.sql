@@ -31,10 +31,10 @@ alter table usuario auto_increment = 1;
 alter table pedido auto_increment = 1;
 alter table item_pedido auto_increment = 1;
 
-insert into cozinha (id, nome) values (1, 'Tailandesa');
-insert into cozinha (id, nome) values (2, 'Indiana');
-insert into cozinha (id, nome) values (3, 'Argentina');
-insert into cozinha (id, nome) values (4, 'Brasileira');
+insert into cozinha (id, nome, data_atualizacao) values (1, 'Tailandesa', utc_timestamp);
+insert into cozinha (id, nome, data_atualizacao) values (2, 'Indiana',utc_timestamp);
+insert into cozinha (id, nome, data_atualizacao) values (3, 'Argentina',utc_timestamp);
+insert into cozinha (id, nome, data_atualizacao) values (4, 'Brasileira',utc_timestamp);
 
 insert into estado (id, nome) values (1, 'Minas Gerais');
 insert into estado (id, nome) values (2, 'São Paulo');

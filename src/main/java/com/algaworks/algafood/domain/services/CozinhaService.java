@@ -1,5 +1,7 @@
 package com.algaworks.algafood.domain.services;
 
+import java.time.OffsetDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -52,5 +54,9 @@ public class CozinhaService {
 		catch (EmptyResultDataAccessException e) {
 			throw new CozinhaNaoEncontradaException(id);
 		}
+	}
+	
+	public OffsetDateTime getDataUltimaAtualizacao() {
+		return cozinhaRepository.getDataUltimaAtualizacao();
 	}
 }

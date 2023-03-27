@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.model;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,6 +33,9 @@ public class Cozinha {
 //	@NotBlank
 	@Column(nullable = false)
 	private String nome;	
+	
+	@UpdateTimestamp
+	private OffsetDateTime dataAtualizacao;
 	
 	//O "mappedBy" recebe o nome da variavel do objeto Cozinha na classe Restaurante para fazer o vinculo
 	//"JsonIgnore" server para evitar o loop de serialização dos objetos pois Restaurante vai chamar Cozinha e Cozinha

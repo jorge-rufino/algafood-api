@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.services;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,4 +137,9 @@ public class RestauranteService {
 		
 		restaurante.desassociarResponsavel(usuario);
 	}
+	
+	public OffsetDateTime getDataUltimaAtualizacao() {
+		return repository.getUltimaDataAtualizacao();
+	}
 }
+

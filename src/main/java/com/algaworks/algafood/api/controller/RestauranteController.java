@@ -1,11 +1,16 @@
 package com.algaworks.algafood.api.controller;
 
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
 import com.algaworks.algafood.api.disassembler.RestauranteInputDtoDisassembler;
@@ -26,6 +33,7 @@ import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.services.CozinhaService;
 import com.algaworks.algafood.domain.services.RestauranteService;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -35,6 +43,9 @@ public class RestauranteController {
 	
 	@Autowired
 	private RestauranteService restauranteService;
+	
+	@Autowired
+	private CozinhaService cozinhaService;
 	
 	@Autowired
 	private RestauranteDtoAssembler restauranteDtoAssembler;
@@ -60,14 +71,40 @@ public class RestauranteController {
 	
 	@JsonView(RestauranteView.Resumo.class)
 	@GetMapping
-	public List<RestauranteDto> listar(){		
-		return restauranteDtoAssembler.toCollectionDTO(restauranteService.listar());
+	public ResponseEntity<List<RestauranteDto>> listar(ServletWebRequest request){
+		
+		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+		
+		String eTag = "0";
+		
+		OffsetDateTime dataUltimaAtualizacaoRestaurante = restauranteService.getDataUltimaAtualizacao();
+		OffsetDateTime dataUltimaAtualizacaoCozinha = cozinhaService.getDataUltimaAtualizacao();
+		
+		var segundosDataRestaurante = new BigDecimal(dataUltimaAtualizacaoRestaurante.toEpochSecond());
+		var segundosDataCozinha = new BigDecimal(dataUltimaAtualizacaoCozinha.toEpochSecond());
+		var somaSegundos = segundosDataRestaurante.add(segundosDataCozinha);
+		
+		if(dataUltimaAtualizacaoRestaurante != null && dataUltimaAtualizacaoCozinha != null) {
+			eTag = String.valueOf(somaSegundos);
+		}
+		
+		if(request.checkNotModified(eTag)) {
+			return ResponseEntity.status(HttpStatus.NOT_MODIFIED) 	//Status 304
+		               .cacheControl(CacheControl.maxAge(0, TimeUnit.SECONDS).cachePublic())
+		               .eTag(eTag)
+		               .build();
+		}
+		
+		return ResponseEntity.ok()
+				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+				.eTag("")
+				.body(restauranteDtoAssembler.toCollectionDTO(restauranteService.listar()));
 	}
 
 	@JsonView(RestauranteView.ApenasNome.class)
 	@GetMapping(params = "projecao=apenas-nome")
-	public List<RestauranteDto> listarResumido(){		
-		return listar();
+	public ResponseEntity<List<RestauranteDto>> listarResumido(ServletWebRequest request){		
+		return listar(request);
 	}
 
 	@GetMapping(value = "/{id}")
