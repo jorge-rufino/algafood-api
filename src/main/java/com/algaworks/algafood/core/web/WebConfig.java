@@ -17,7 +17,7 @@ public class WebConfig implements WebMvcConfigurer{
 		registry.addMapping("/**")
 		.allowedOrigins("*")
 		.allowedMethods("*");
-//		.maxAge(10)
+//		.maxAge(10);		//Configura cache de 10segundos para toda API
 	}
 		
 //	Metodo para gerar o hash e o cabeçalho do Etag automaticamente. Basta definirmos este método como um Bean e pronto.

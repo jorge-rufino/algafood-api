@@ -50,4 +50,8 @@ public class FormaPagamentoService {
 	public OffsetDateTime getDataUltimaAtualizacao() {
 		return repository.getDataUltimaAtualizacao();
 	}
+	
+	public OffsetDateTime getDataAtualizacaoById(Long id) {
+		return repository.getDataAtualizacaoById(id);
+	}
 }

@@ -79,8 +79,28 @@ public class FormaPagamentoController {
 	}
 	
 	@GetMapping("/{id}")
-	public FormaPagamentoDto buscarId(@PathVariable Long id) {
-		return formaPagamentoDtoAssembler.toDto(service.buscarPorId(id));
+	public ResponseEntity<FormaPagamentoDto> buscarId(@PathVariable Long id, ServletWebRequest request) {
+		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+		
+		String eTag = "0";
+		
+		OffsetDateTime dataUltimaAtualizacao = service.getDataAtualizacaoById(id);
+		
+		if (dataUltimaAtualizacao != null) {
+			eTag = String.valueOf(dataUltimaAtualizacao.toEpochSecond());
+		}
+		
+		if (request.checkNotModified(eTag)) {
+			return ResponseEntity.status(HttpStatus.NOT_MODIFIED) 	//Status 304
+		               .cacheControl(CacheControl.maxAge(0, TimeUnit.SECONDS).cachePublic())
+		               .eTag(eTag)
+		               .build();
+		}
+		
+		return ResponseEntity.ok()
+				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+				.eTag(eTag)
+				.body(formaPagamentoDtoAssembler.toDto(service.buscarPorId(id)));
 	}
 	
 	@PostMapping
