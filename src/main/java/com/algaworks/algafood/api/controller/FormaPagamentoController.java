@@ -43,9 +43,19 @@ public class FormaPagamentoController {
 	public ResponseEntity<List<FormaPagamentoDto>> listar() {
 		List<FormaPagamentoDto> formasPagamentosDto = formaPagamentoDtoAssembler.toCollectionDto(service.listar());
 		
-		return ResponseEntity.ok()
 //		Habilita o cache para esta requisição por 10seg, ou seja, se em menos de 10seg for feita nova requisação, ela virá do cache		
-				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))	
+//		"cachPrivate": permite o armazenamento somente para CACHES LOCAIS nos navegadores, não permitindo caches compartilhados ou de proxy,
+//		utilizado quando a resposta é particular para o usuário.
+//		"cachPublic": é o padrão.
+//		"noCache": sempre que tiver cache, é obrigatoria a validação. É como se o cache estivesse sempre em "Stale".
+//		"noStore": desativa o cache. Nem mesmo cache local vai armazenar a resposta.
+		
+		return ResponseEntity.ok()
+//				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+//				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePrivate())
+				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePublic())
+//				.cacheControl(CacheControl.noCache())
+//				.cacheControl(CacheControl.noStore())
 				.body(formasPagamentosDto); 
 	}
 	
