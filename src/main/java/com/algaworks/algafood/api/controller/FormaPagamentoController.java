@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controller;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import com.algaworks.algafood.api.assembler.FormaPagamentoDtoAssembler;
 import com.algaworks.algafood.api.disassembler.FormaPagamentoInputDtoDisassembler;
@@ -39,23 +42,33 @@ public class FormaPagamentoController {
 	@Autowired
 	private FormaPagamentoInputDtoDisassembler formaPagamentoDisassembler;
 	
+//	Com DeepTags, o método só será executado completamente quando a "ETag" e "If-None-Match" forem diferentes
 	@GetMapping
-	public ResponseEntity<List<FormaPagamentoDto>> listar() {
+	public ResponseEntity<List<FormaPagamentoDto>> listar(ServletWebRequest request) {
+		
+//		Desativa a geraçao automatica de Etags para este método.
+		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+		
+		String eTag = "0";
+		
+		OffsetDateTime dataUltimaAtualizacao = service.getDataUltimaAtualizacao();
+		
+		if(dataUltimaAtualizacao != null) {
+//			Alteramos o eTag pegando a quantidade em segundos
+			eTag = String.valueOf(dataUltimaAtualizacao.toEpochSecond());
+		}
+		
+//		Compara o "If-None-Match" com o ETag. Se forem iguais retorna "Null", se não continua a execução metodo
+		if(request.checkNotModified(eTag)) {
+			return null;
+		}
+		
 		List<FormaPagamentoDto> formasPagamentosDto = formaPagamentoDtoAssembler.toCollectionDto(service.listar());
 		
-//		Habilita o cache para esta requisição por 10seg, ou seja, se em menos de 10seg for feita nova requisação, ela virá do cache		
-//		"cachPrivate": permite o armazenamento somente para CACHES LOCAIS nos navegadores, não permitindo caches compartilhados ou de proxy,
-//		utilizado quando a resposta é particular para o usuário.
-//		"cachPublic": é o padrão.
-//		"noCache": sempre que tiver cache, é obrigatoria a validação. É como se o cache estivesse sempre em "Stale".
-//		"noStore": desativa o cache. Nem mesmo cache local vai armazenar a resposta.
-		
 		return ResponseEntity.ok()
-//				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
-//				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePrivate())
 				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePublic())
-//				.cacheControl(CacheControl.noCache())
-//				.cacheControl(CacheControl.noStore())
+//				Retorna o eTag
+				.eTag(eTag)				
 				.body(formasPagamentosDto); 
 	}
 	
