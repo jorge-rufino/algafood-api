@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -49,27 +51,26 @@ public class CidadeController {
 	public CidadeDto buscarPorId(@PathVariable Long cidadeId){
 		CidadeDto cidadeDto = cidadeDtoAssembler.toDto(cidadeService.buscarPorId(cidadeId));
 		
+//		Criacao do link através de uma chamada ao método
 		cidadeDto.add(WebMvcLinkBuilder
-						.linkTo(CidadeController.class)	// "http://api.algafood.local:8080/cidades"
-						.slash(cidadeDto.getId())		// "/{cidadeId}"
+						.linkTo(methodOn(CidadeController.class)	//Controlador
+							.buscarPorId(cidadeDto.getId()))		//Método que será utilizado. Spring pega o "mapping" dele
 						.withSelfRel());
 		
 		cidadeDto.add(WebMvcLinkBuilder
-				.linkTo(CidadeController.class)				
-				.withRel("cidades"));
+						.linkTo(methodOn(CidadeController.class)	
+							.listar())
+						.withRel("cidades"));
 		
 		cidadeDto.getEstado().add(WebMvcLinkBuilder
-				.linkTo(EstadoController.class)		
-				.slash(cidadeDto.getEstado().getId())
-				.withSelfRel());
+						.linkTo(methodOn(EstadoController.class)	
+							.buscarId(cidadeDto.getEstado().getId()))
+						.withSelfRel());
 		
-//		cidadeDto.add(Link.of("http://api.algafood.local:8080/cidades/1"));
-////		cidadeDto.add(Link.of("http://api.algafood.local:8080/cidades/1", IanaLinkRelations.SELF));
+//		cidadeDto.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withRel("cidades"));
 //		
-//		cidadeDto.add(Link.of("http://api.algafood.local:8080/cidades", "cidades"));
-////		cidadeDto.add(Link.of("http://api.algafood.local:8080/cidades", IanaLinkRelations.COLLECTION));
-//		
-//		cidadeDto.getEstado().add(Link.of("http://api.algafood.local:8080/estados/1"));
+//		cidadeDto.getEstado().add(WebMvcLinkBuilder.linkTo(EstadoController.class).slash(cidadeDto.getEstado().getId())
+//				.withSelfRel());
 		
 		return cidadeDto;
 	}
