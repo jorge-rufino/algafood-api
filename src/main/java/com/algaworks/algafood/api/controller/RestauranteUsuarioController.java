@@ -1,9 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.Comparator;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,11 +30,11 @@ public class RestauranteUsuarioController {
 	private UsuarioDtoAssembler usuarioDtoAssembler;
 	
 	@GetMapping
-	public List<UsuarioDto> listar(@PathVariable Long restauranteId) {
+	public CollectionModel<UsuarioDto> listar(@PathVariable Long restauranteId) {
 		Restaurante restaurante = restauranteService.buscarPorId(restauranteId);
 		
 //		Passando a lista de Responsaveis e ordenando por nome
-		return  usuarioDtoAssembler.toCollectDto(
+		return  usuarioDtoAssembler.toCollectionModel(
 				restaurante.getResponsaveis().stream()
 				.sorted(Comparator.comparing(Usuario::getNome))
 				.toList());
