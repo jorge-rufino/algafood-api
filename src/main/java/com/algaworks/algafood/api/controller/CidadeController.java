@@ -1,12 +1,13 @@
 package com.algaworks.algafood.api.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,34 +44,39 @@ public class CidadeController {
 	private CidadeInputDtoDisassembler cidadeInputDtoDisassembler;
 	
 	@GetMapping
-	public List<CidadeDto> listar(){
-		return cidadeDtoAssembler.toCollectionDto(cidadeService.listar());				
+	public CollectionModel<CidadeDto> listar(){
+		
+		List<CidadeDto> cidadesDto = cidadeDtoAssembler.toCollectionDto(cidadeService.listar()); 
+		
+		cidadesDto.forEach(cidadeDto -> {
+			cidadeDto.add(WebMvcLinkBuilder.linkTo(methodOn(CidadeController.class).buscarPorId(cidadeDto.getId()))
+					.withSelfRel());
+	
+			cidadeDto.add(WebMvcLinkBuilder.linkTo(methodOn(CidadeController.class).listar()).withRel("cidades"));
+		
+			cidadeDto.getEstado().add(WebMvcLinkBuilder.linkTo(methodOn(EstadoController.class).buscarId(cidadeDto.getEstado().getId()))
+						.withSelfRel());
+		});
+		
+		CollectionModel<CidadeDto> cidadesCollectionModel = CollectionModel.of(cidadesDto);
+		
+		cidadesCollectionModel.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withSelfRel());
+		
+		return cidadesCollectionModel;
 	}
 	
 	@GetMapping("{cidadeId}")
 	public CidadeDto buscarPorId(@PathVariable Long cidadeId){
 		CidadeDto cidadeDto = cidadeDtoAssembler.toDto(cidadeService.buscarPorId(cidadeId));
 		
-//		Criacao do link através de uma chamada ao método
-		cidadeDto.add(WebMvcLinkBuilder
-						.linkTo(methodOn(CidadeController.class)	//Controlador
-							.buscarPorId(cidadeDto.getId()))		//Método que será utilizado. Spring pega o "mapping" dele
+
+		cidadeDto.add(WebMvcLinkBuilder.linkTo(methodOn(CidadeController.class).buscarPorId(cidadeDto.getId()))
 						.withSelfRel());
 		
-		cidadeDto.add(WebMvcLinkBuilder
-						.linkTo(methodOn(CidadeController.class)	
-							.listar())
-						.withRel("cidades"));
+		cidadeDto.add(WebMvcLinkBuilder.linkTo(methodOn(CidadeController.class).listar()).withRel("cidades"));
 		
-		cidadeDto.getEstado().add(WebMvcLinkBuilder
-						.linkTo(methodOn(EstadoController.class)	
-							.buscarId(cidadeDto.getEstado().getId()))
+		cidadeDto.getEstado().add(WebMvcLinkBuilder.linkTo(methodOn(EstadoController.class).buscarId(cidadeDto.getEstado().getId()))
 						.withSelfRel());
-		
-//		cidadeDto.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withRel("cidades"));
-//		
-//		cidadeDto.getEstado().add(WebMvcLinkBuilder.linkTo(EstadoController.class).slash(cidadeDto.getEstado().getId())
-//				.withSelfRel());
 		
 		return cidadeDto;
 	}
