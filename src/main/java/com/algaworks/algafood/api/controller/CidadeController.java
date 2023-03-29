@@ -1,14 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,40 +40,12 @@ public class CidadeController {
 	
 	@GetMapping
 	public CollectionModel<CidadeDto> listar(){
-		
-		List<CidadeDto> cidadesDto = cidadeDtoAssembler.toCollectionDto(cidadeService.listar()); 
-		
-		cidadesDto.forEach(cidadeDto -> {
-			cidadeDto.add(WebMvcLinkBuilder.linkTo(methodOn(CidadeController.class).buscarPorId(cidadeDto.getId()))
-					.withSelfRel());
-	
-			cidadeDto.add(WebMvcLinkBuilder.linkTo(methodOn(CidadeController.class).listar()).withRel("cidades"));
-		
-			cidadeDto.getEstado().add(WebMvcLinkBuilder.linkTo(methodOn(EstadoController.class).buscarId(cidadeDto.getEstado().getId()))
-						.withSelfRel());
-		});
-		
-		CollectionModel<CidadeDto> cidadesCollectionModel = CollectionModel.of(cidadesDto);
-		
-		cidadesCollectionModel.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withSelfRel());
-		
-		return cidadesCollectionModel;
+		return cidadeDtoAssembler.toCollectionModel(cidadeService.listar());
 	}
 	
 	@GetMapping("{cidadeId}")
 	public CidadeDto buscarPorId(@PathVariable Long cidadeId){
-		CidadeDto cidadeDto = cidadeDtoAssembler.toDto(cidadeService.buscarPorId(cidadeId));
-		
-
-		cidadeDto.add(WebMvcLinkBuilder.linkTo(methodOn(CidadeController.class).buscarPorId(cidadeDto.getId()))
-						.withSelfRel());
-		
-		cidadeDto.add(WebMvcLinkBuilder.linkTo(methodOn(CidadeController.class).listar()).withRel("cidades"));
-		
-		cidadeDto.getEstado().add(WebMvcLinkBuilder.linkTo(methodOn(EstadoController.class).buscarId(cidadeDto.getEstado().getId()))
-						.withSelfRel());
-		
-		return cidadeDto;
+		return cidadeDtoAssembler.toModel(cidadeService.buscarPorId(cidadeId));
 	}
 	
 	@PostMapping	
@@ -86,7 +53,7 @@ public class CidadeController {
 	public CidadeDto adicionar (@RequestBody @Valid CidadeInputDto cidadeInputDto){
 		try {
 			Cidade cidade = cidadeInputDtoDisassembler.toDomainObject(cidadeInputDto); 
-			CidadeDto cidadeDto =  cidadeDtoAssembler.toDto(cidadeService.salvar(cidade));
+			CidadeDto cidadeDto =  cidadeDtoAssembler.toModel(cidadeService.salvar(cidade));
 
 			ResourceUriHelper.addUriInResponseHeader(cidadeDto.getId());
 			
@@ -103,7 +70,7 @@ public class CidadeController {
 		cidadeInputDtoDisassembler.copyToDomainObject(cidadeInput, cidadeAtual);
 			
 		try {
-			return cidadeDtoAssembler.toDto(cidadeService.salvar(cidadeAtual));
+			return cidadeDtoAssembler.toModel(cidadeService.salvar(cidadeAtual));
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
