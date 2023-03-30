@@ -1,15 +1,15 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,52 +49,26 @@ public class PedidoController {
 	
 	@Autowired
 	private PedidoInputDtoDisassembler pedidoInputDtoDisassembler;
-	
-//	@GetMapping
-//	public MappingJacksonValue listar(@RequestParam(required = false) String campos){
-//		List<PedidoResumoDto> pedidosResumoDto = pedidoResumoDtoAssembler.toCollectDto(pedidoService.listar());
-//		
-////		Envelopa a lista
-//		MappingJacksonValue pedidosWrapper = new MappingJacksonValue(pedidosResumoDto);
-//		
-////		Criamos o filtro passando o nome do filtro e os campos que queremos mostrar na representaçao
-//		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-//		filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll());	//Mostra todos os campos
-//		
-////		Filtra os campos caso sejam passados na requisiçao separados por ","
-//			StringUtils do pacote "CommonsLang3"
-//		if(StringUtils.isNotBlank(campos)) {
-//			filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept(campos.split(",")));
-//		}
-//		
-//		pedidosWrapper.setFilters(filterProvider);
-//		
-//		return pedidosWrapper;
-//	}
-	
-//	@GetMapping("{pedidoId}")
-//	public PedidoDto buscarPorId(@PathVariable Long pedidoId) {
-//		return pedidoDtoAssembler.toDto(pedidoService.buscarPorId(pedidoId));
-//	}
+
+	@Autowired
+	private PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
 	
 //	Mesmo sem o @RequestParam o spring consegue fazer o databind corretamente dos filtros
 	@GetMapping
-	public Page<PedidoResumoDto> pesquisar(PedidoFilter filtro, Pageable pageable){
+	public PagedModel<PedidoResumoDto> pesquisar(PedidoFilter filtro, Pageable pageable){
 		
 		pageable = traduzirPageable(pageable);
 		
 		Page<Pedido> pedidosPage = pedidoService.listar(PedidosSpecs.usandoFiltro(filtro), pageable);
 		
-		List<PedidoResumoDto> pedidosResumoDto = pedidoResumoDtoAssembler.toCollectDto(pedidosPage.getContent());
+		PagedModel<PedidoResumoDto> pedidoPagedModel = pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoDtoAssembler);
 		
-		Page<PedidoResumoDto> pedidosResumoDtoPage = new PageImpl<>(pedidosResumoDto, pageable, pedidosPage.getTotalElements());
-		
-		return pedidosResumoDtoPage;
+		return pedidoPagedModel;
 	}
 	
 	@GetMapping("{codigoPedido}")
 	public PedidoDto buscarPorCodigo(@PathVariable String codigoPedido) {
-		return pedidoDtoAssembler.toDto(pedidoService.buscarPorCodigo(codigoPedido));
+		return pedidoDtoAssembler.toModel(pedidoService.buscarPorCodigo(codigoPedido));
 	}
 	
 	@PostMapping
@@ -105,7 +79,7 @@ public class PedidoController {
 			novoPedido.setCliente(new Usuario());
 			novoPedido.getCliente().setId(1L);
 			
-			return pedidoDtoAssembler.toDto(pedidoService.emitir(novoPedido));
+			return pedidoDtoAssembler.toModel(pedidoService.emitir(novoPedido));
 //	Convertermos os erros de "EntidadeNaoEncontrada" de "404" para BadRequest "400"
 		} catch (EntidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
