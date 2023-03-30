@@ -1,10 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,20 +36,20 @@ public class EstadoController {
 	private EstadoInputDtoDisassembler estadoInputDtoDisassembler;
 	
 	@GetMapping
-	public List<EstadoDto> listar(){
-		return estadoDtoAssembler.toCollectionDto(service.listar());
+	public CollectionModel<EstadoDto> listar(){
+		return estadoDtoAssembler.toCollectionModel(service.listar());
 	}
 	
 	@GetMapping(value = "/{estadoId}")
 	public EstadoDto buscarId (@PathVariable Long estadoId){
-		return estadoDtoAssembler.toDto(service.buscarPorId(estadoId));
+		return estadoDtoAssembler.toModel(service.buscarPorId(estadoId));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public EstadoDto adicionar (@RequestBody @Valid EstadoInputDto estadoInput){
 		Estado estado = estadoInputDtoDisassembler.toDomainObject(estadoInput); 
-		return estadoDtoAssembler.toDto(service.salvar(estado));	
+		return estadoDtoAssembler.toModel(service.salvar(estado));	
 	}
 	
 	@DeleteMapping("/{estadoId}")
@@ -64,6 +63,6 @@ public class EstadoController {
 		Estado estadoAtual = service.buscarPorId(estadoId);		
 		estadoInputDtoDisassembler.copyToDomainObject(estadoInput, estadoAtual);
 				
-		return estadoDtoAssembler.toDto(service.salvar(estadoAtual));
+		return estadoDtoAssembler.toModel(service.salvar(estadoAtual));
 	}
 }
