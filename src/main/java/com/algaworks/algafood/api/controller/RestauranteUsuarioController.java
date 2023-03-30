@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.UsuarioDtoAssembler;
 import com.algaworks.algafood.api.model.UsuarioDto;
+import com.algaworks.algafood.domain.exception.UsuarioNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.services.RestauranteService;
@@ -34,6 +35,10 @@ public class RestauranteUsuarioController {
 	@GetMapping
 	public CollectionModel<UsuarioDto> listar(@PathVariable Long restauranteId) {
 		Restaurante restaurante = restauranteService.buscarPorId(restauranteId);
+		
+		if (restaurante.getResponsaveis().isEmpty()) {
+			throw new UsuarioNaoEncontradoException("Restaurante de ID " + restaurante.getId() + " ainda não tem responsável.");
+		}
 		
 //		Passando a lista de Responsaveis e ordenando por nome
 		return  usuarioDtoAssembler.toCollectionModel(
