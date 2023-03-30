@@ -2,8 +2,10 @@ package com.algaworks.algafood.api.controller;
 
 import java.util.Comparator;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +39,11 @@ public class RestauranteUsuarioController {
 		return  usuarioDtoAssembler.toCollectionModel(
 				restaurante.getResponsaveis().stream()
 				.sorted(Comparator.comparing(Usuario::getNome))
-				.toList());
+				.toList())
+				.removeLinks()		//Remove o link do método "listar()" da classe "Usuario"
+				.add(WebMvcLinkBuilder.linkTo(		//Cria o link correto para o método "listar()" desta classe 
+						methodOn(RestauranteUsuarioController.class).listar(restaurante.getId()))
+						.withSelfRel());
 	}
 	
 	@PutMapping("/{usuarioId}")
