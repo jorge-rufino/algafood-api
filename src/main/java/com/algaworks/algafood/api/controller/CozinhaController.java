@@ -43,8 +43,8 @@ public class CozinhaController {
 	@Autowired
 	private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 	
-//	Recebe como parametros de url "size","page", "sort", etc, para determina quantidade de itens por pagina, e navegar entre as paginas, ordernar,etc
-//	Tamanho padrao de elementos por pagina é 20 mas estamos especificando 10 
+//	Como alteramos o metodo para "PagedModel", não estamos mais utilizado a classe "PageJsonSerializer" do pacote "core" para serializarmos 
+//	o json de resposta. O próprio PagedModel retorna por padrão os mesmos atributos que definimos no "PageJsonSerializer"
 	
 	@GetMapping
 	public PagedModel<CozinhaDto> listar(@PageableDefault(size = 10) Pageable pageable){
