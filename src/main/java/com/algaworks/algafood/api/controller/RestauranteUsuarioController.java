@@ -2,10 +2,8 @@ package com.algaworks.algafood.api.controller;
 
 import java.util.Comparator;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.AlgaLink;
 import com.algaworks.algafood.api.assembler.UsuarioDtoAssembler;
 import com.algaworks.algafood.api.model.UsuarioDto;
 import com.algaworks.algafood.domain.exception.UsuarioNaoEncontradoException;
@@ -32,6 +31,9 @@ public class RestauranteUsuarioController {
 	@Autowired
 	private UsuarioDtoAssembler usuarioDtoAssembler;
 	
+	@Autowired
+	private AlgaLink algaLinks;
+	
 	@GetMapping
 	public CollectionModel<UsuarioDto> listar(@PathVariable Long restauranteId) {
 		Restaurante restaurante = restauranteService.buscarPorId(restauranteId);
@@ -46,9 +48,7 @@ public class RestauranteUsuarioController {
 				.sorted(Comparator.comparing(Usuario::getNome))
 				.toList())
 				.removeLinks()		//Remove o link do método "listar()" da classe "Usuario"
-				.add(WebMvcLinkBuilder.linkTo(		//Cria o link correto para o método "listar()" desta classe 
-						methodOn(RestauranteUsuarioController.class).listar(restaurante.getId()))
-						.withSelfRel());
+				.add(algaLinks.linkToResponsaveisRestaurante(restaurante.getId()));
 	}
 	
 	@PutMapping("/{usuarioId}")

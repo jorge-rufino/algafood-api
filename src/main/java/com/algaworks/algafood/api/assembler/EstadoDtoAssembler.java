@@ -9,6 +9,7 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.AlgaLink;
 import com.algaworks.algafood.api.controller.EstadoController;
 import com.algaworks.algafood.api.model.EstadoDto;
 import com.algaworks.algafood.domain.model.Estado;
@@ -19,6 +20,9 @@ public class EstadoDtoAssembler extends RepresentationModelAssemblerSupport<Esta
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@Autowired
+	private AlgaLink algaLinks;
+	
 	public EstadoDtoAssembler() {
 		super(EstadoController.class, EstadoDto.class);
 	}
@@ -28,7 +32,7 @@ public class EstadoDtoAssembler extends RepresentationModelAssemblerSupport<Esta
 		EstadoDto estadoDto = createModelWithId(estado.getId(), estado);
 		modelMapper.map(estado, estadoDto);
 		
-		estadoDto.add(WebMvcLinkBuilder.linkTo(methodOn(EstadoController.class).listar()).withRel("estados"));
+		estadoDto.add(algaLinks.linkToEstados("estados"));
 		
 		return estadoDto;
 	}

@@ -1,7 +1,5 @@
 package com.algaworks.algafood.api.assembler;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -9,8 +7,8 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.AlgaLink;
 import com.algaworks.algafood.api.controller.UsuarioController;
-import com.algaworks.algafood.api.controller.UsuarioGrupoController;
 import com.algaworks.algafood.api.model.UsuarioDto;
 import com.algaworks.algafood.domain.model.Usuario;
 
@@ -20,6 +18,8 @@ public class UsuarioDtoAssembler extends RepresentationModelAssemblerSupport<Usu
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@Autowired
+	private AlgaLink algaLinks;
 	public UsuarioDtoAssembler() {
 		super(UsuarioController.class, UsuarioDto.class);
 	}
@@ -30,12 +30,8 @@ public class UsuarioDtoAssembler extends RepresentationModelAssemblerSupport<Usu
 		UsuarioDto usuarioDto = createModelWithId(usuario.getId(), usuario);		
         modelMapper.map(usuario, usuarioDto);
         
-//      Utilizando os passos acima, não é necessário definir o "Self" como abaixo, o spring vai inseri-lo automaticamente.
-//		usuarioDto.add(WebMvcLinkBuilder.linkTo(methodOn(UsuarioController.class).buscarPorId(usuarioDto.getId())).withSelfRel());
-		
-		usuarioDto.add(WebMvcLinkBuilder.linkTo(UsuarioController.class).withRel("usuarios"));
-		
-		usuarioDto.add(WebMvcLinkBuilder.linkTo(methodOn(UsuarioGrupoController.class).listar(usuarioDto.getId())).withRel("grupos-usuario"));
+        usuarioDto.add(algaLinks.linkToUsuarios("usuarios"));
+        usuarioDto.add(algaLinks.linkToGruposUsuario(usuario.getId(), "grupos-usuario"));
 		
 		return usuarioDto;
 	}
