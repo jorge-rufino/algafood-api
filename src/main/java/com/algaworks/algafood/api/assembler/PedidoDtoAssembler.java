@@ -4,6 +4,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.TemplateVariable;
+import org.springframework.hateoas.TemplateVariable.VariableType;
+import org.springframework.hateoas.TemplateVariables;
+import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
@@ -32,7 +37,23 @@ public class PedidoDtoAssembler extends RepresentationModelAssemblerSupport<Pedi
 		PedidoDto pedidoDto = createModelWithId(pedido.getCodigo(), pedido);
 		modelMapper.map(pedido, pedidoDto);
 		
-		pedidoDto.add(WebMvcLinkBuilder.linkTo(PedidoController.class).withRel("pedidos"));
+//		Agorá irá aparecer assim no JSON
+//	},
+//    "pedidos": {
+//        "href": "http://api.algafood.local:8080/pedidos{?page,size,sort}",
+//        "templated": true
+//    }
+		
+		TemplateVariables pageVariables = new TemplateVariables(
+				new TemplateVariable("page", VariableType.REQUEST_PARAM),
+				new TemplateVariable("size", VariableType.REQUEST_PARAM),
+				new TemplateVariable("sort", VariableType.REQUEST_PARAM));
+		
+		String pedidosUrl = WebMvcLinkBuilder.linkTo(PedidoController.class).toUri().toString();
+		
+		pedidoDto.add(Link.of(UriTemplate.of(pedidosUrl, pageVariables), "pedidos"));
+		
+//		pedidoDto.add(WebMvcLinkBuilder.linkTo(PedidoController.class).withRel("pedidos"));
 		
 		pedidoDto.getRestaurante().add(WebMvcLinkBuilder.linkTo(
 				methodOn(RestauranteController.class).buscarId(pedido.getRestaurante().getId())).withSelfRel());
