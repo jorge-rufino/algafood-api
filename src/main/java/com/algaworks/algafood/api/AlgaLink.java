@@ -44,15 +44,15 @@ public class AlgaLink {
 	}
 	
 	public Link linkToConfirmacaoPedido(String codigoPedido, String rel) {
-		return WebMvcLinkBuilder.linkTo(methodOn(FluxoPedidoController.class).confirmar(codigoPedido)).withRel(rel);
+		return WebMvcLinkBuilder.linkTo(methodOn(FluxoPedidoController.class).confirmar(codigoPedido)).withRel(rel).withType("PUT");
 	}
 	
 	public Link linkToEntregaPedido(String codigoPedido, String rel) {
-		return WebMvcLinkBuilder.linkTo(methodOn(FluxoPedidoController.class).entregar(codigoPedido)).withRel(rel);
+		return WebMvcLinkBuilder.linkTo(methodOn(FluxoPedidoController.class).entregar(codigoPedido)).withRel(rel).withType("PUT");
 	}
 	
 	public Link linkToCancelamentoPedido(String codigoPedido, String rel) {
-		return WebMvcLinkBuilder.linkTo(methodOn(FluxoPedidoController.class).cancelar(codigoPedido)).withRel(rel);
+		return WebMvcLinkBuilder.linkTo(methodOn(FluxoPedidoController.class).cancelar(codigoPedido)).withRel(rel).withType("PUT");
 	}
 	
 	public Link linkToRestaurante(Long restauranteId, String rel) {
