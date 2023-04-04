@@ -159,6 +159,16 @@ public class AlgaLinks {
 	    return WebMvcLinkBuilder.linkTo(methodOn(RestauranteFormaPagamentoController.class)
 	            .desassociarFormaPagamento(restauranteId, formaPagamentoId)).withRel(rel).withType("Delete");
 	}
+
+//	Quando o método espera um parametro e este parametro é um @PathVariable, o Hateos automaticamente o adiciona a URL.
+//	Basta passarmos "null" para ele entender
+	
+//	Exemplo: "http://api.algafood.local:8080/restaurantes/1/formas-pagamento/{formaPagamentoId}"
+	
+	public Link linkToRestauranteFormaPagamentoAssociacao(Long restauranteId, String rel) {
+	    return WebMvcLinkBuilder.linkTo(methodOn(RestauranteFormaPagamentoController.class)
+	            .associarFormaPagamento(restauranteId, null)).withRel(rel).withType("Put");
+	}
 	
 	public Link linkToCidade(Long cidadeId, String rel) {
 	    return WebMvcLinkBuilder.linkTo(methodOn(CidadeController.class)
