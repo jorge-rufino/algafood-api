@@ -6,7 +6,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import com.algaworks.algafood.api.AlgaLink;
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.controller.UsuarioController;
 import com.algaworks.algafood.api.model.UsuarioDto;
 import com.algaworks.algafood.domain.model.Usuario;
@@ -18,7 +18,7 @@ public class UsuarioDtoAssembler extends RepresentationModelAssemblerSupport<Usu
 	private ModelMapper modelMapper;
 	
 	@Autowired
-	private AlgaLink algaLinks;
+	private AlgaLinks algaLinks;
 	public UsuarioDtoAssembler() {
 		super(UsuarioController.class, UsuarioDto.class);
 	}

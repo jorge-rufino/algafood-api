@@ -25,7 +25,7 @@ import com.algaworks.algafood.api.controller.UsuarioController;
 import com.algaworks.algafood.api.controller.UsuarioGrupoController;
 
 @Component
-public class AlgaLink {
+public class AlgaLinks {
 	
 	public static final	TemplateVariables PAGINACAO_VARIABLES = new TemplateVariables(
 				new TemplateVariable("page", VariableType.REQUEST_PARAM),
@@ -138,9 +138,21 @@ public class AlgaLink {
 	    return linkToFormaPagamento(formaPagamentoId, IanaLinkRelations.SELF.value());
 	}
 
+	public Link linkToFormasPagamento(String rel) {
+	    return WebMvcLinkBuilder.linkTo(FormaPagamentoController.class).withRel(rel);
+	}
+
+	public Link linkToFormasPagamento() {
+	    return linkToFormasPagamento(IanaLinkRelations.SELF.value());
+	}
+	
 	public Link linkToRestauranteFormasPagamento(Long restauranteId, String rel) {
 	    return WebMvcLinkBuilder.linkTo(methodOn(RestauranteFormaPagamentoController.class)
 	            .listar(restauranteId)).withRel(rel);
+	}
+	
+	public Link linkToRestauranteFormasPagamento(Long restauranteId) {
+	    return linkToRestauranteFormasPagamento(restauranteId, IanaLinkRelations.SELF.value());
 	}
 	
 	public Link linkToCidade(Long cidadeId, String rel) {

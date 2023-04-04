@@ -1,12 +1,12 @@
 package com.algaworks.algafood.api.controller;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +44,7 @@ public class FormaPagamentoController {
 	
 //	Com DeepTags, o método só será executado completamente quando a "ETag" e "If-None-Match" forem diferentes
 	@GetMapping
-	public ResponseEntity<List<FormaPagamentoDto>> listar(ServletWebRequest request) {
+	public ResponseEntity<CollectionModel<FormaPagamentoDto>> listar(ServletWebRequest request) {
 		
 //		Desativa a geraçao automatica de Etags para este método.
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -69,7 +69,7 @@ public class FormaPagamentoController {
 		               .build();
 		}
 		
-		List<FormaPagamentoDto> formasPagamentosDto = formaPagamentoDtoAssembler.toCollectionDto(service.listar());
+		CollectionModel<FormaPagamentoDto> formasPagamentosDto = formaPagamentoDtoAssembler.toCollectionModel(service.listar());
 		
 		return ResponseEntity.ok()
 				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePublic())
@@ -100,14 +100,14 @@ public class FormaPagamentoController {
 		return ResponseEntity.ok()
 				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
 				.eTag(eTag)
-				.body(formaPagamentoDtoAssembler.toDto(service.buscarPorId(id)));
+				.body(formaPagamentoDtoAssembler.toModel(service.buscarPorId(id)));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public FormaPagamentoDto adicionar (@RequestBody @Valid FormaPagamentoInputDto formaPagamentoInput) {
 		FormaPagamento formaPagamento = formaPagamentoDisassembler.toDomainObject(formaPagamentoInput);
-		return formaPagamentoDtoAssembler.toDto(service.salvar(formaPagamento));
+		return formaPagamentoDtoAssembler.toModel(service.salvar(formaPagamento));
 	}
 	
 	@PutMapping("/{id}")
@@ -115,7 +115,7 @@ public class FormaPagamentoController {
 		FormaPagamento formaPagamentoAtual = service.buscarPorId(id);
 		formaPagamentoDisassembler.copyToDomainObject(formaPagamentoInput, formaPagamentoAtual);		
 		
-		return formaPagamentoDtoAssembler.toDto(service.salvar(formaPagamentoAtual));
+		return formaPagamentoDtoAssembler.toModel(service.salvar(formaPagamentoAtual));
 	}
 	
 	@DeleteMapping("/{id}")

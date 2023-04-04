@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.api.AlgaLink;
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.assembler.UsuarioDtoAssembler;
 import com.algaworks.algafood.api.model.UsuarioDto;
 import com.algaworks.algafood.domain.exception.UsuarioNaoEncontradoException;
@@ -32,7 +32,7 @@ public class RestauranteUsuarioController {
 	private UsuarioDtoAssembler usuarioDtoAssembler;
 	
 	@Autowired
-	private AlgaLink algaLinks;
+	private AlgaLinks algaLinks;
 	
 	@GetMapping
 	public CollectionModel<UsuarioDto> listar(@PathVariable Long restauranteId) {

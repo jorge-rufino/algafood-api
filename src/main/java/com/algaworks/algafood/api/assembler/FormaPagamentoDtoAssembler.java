@@ -1,30 +1,41 @@
 package com.algaworks.algafood.api.assembler;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.algaworks.algafood.api.AlgaLinks;
+import com.algaworks.algafood.api.controller.FormaPagamentoController;
 import com.algaworks.algafood.api.model.FormaPagamentoDto;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 
 @Component
-public class FormaPagamentoDtoAssembler {
+public class FormaPagamentoDtoAssembler extends RepresentationModelAssemblerSupport<FormaPagamento, FormaPagamentoDto>{
 	
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	public FormaPagamentoDto toDto(FormaPagamento formaPagamento) {
-		return modelMapper.map(formaPagamento, FormaPagamentoDto.class);
+	@Autowired
+    private AlgaLinks algaLinks;
+	
+	public FormaPagamentoDtoAssembler() {
+        super(FormaPagamentoController.class, FormaPagamentoDto.class);
+    }
+	
+	@Override
+	public FormaPagamentoDto toModel(FormaPagamento formaPagamento) {
+		FormaPagamentoDto formaPagamentoDto = createModelWithId(formaPagamento.getId(), formaPagamento);
+		modelMapper.map(formaPagamento, formaPagamentoDto);
+		
+		formaPagamentoDto.add(algaLinks.linkToFormasPagamento("formasPagamento"));
+		
+		return formaPagamentoDto;
 	}
 	
-//	Como alteramos as formas de pagamento da classe Restaurante de "List" para "Set", precisamos alterar o parametro
-//	para "Collection" que é a classe Pai tanto de List quanto Set.
-	public List<FormaPagamentoDto> toCollectionDto(Collection<FormaPagamento> formaPagamentos){
-		return formaPagamentos.stream()
-				.map(formaPagamento -> toDto(formaPagamento))
-				.toList();
+	@Override
+	public CollectionModel<FormaPagamentoDto> toCollectionModel(Iterable<? extends FormaPagamento> entities) {
+		return super.toCollectionModel(entities).add(algaLinks.linkToFormasPagamento());
 	}
 }
