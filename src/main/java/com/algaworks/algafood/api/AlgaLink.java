@@ -32,6 +32,9 @@ public class AlgaLink {
 				new TemplateVariable("size", VariableType.REQUEST_PARAM),
 				new TemplateVariable("sort", VariableType.REQUEST_PARAM));
 	
+	public static final TemplateVariables PROJECAO_VARIABLES = new TemplateVariables(
+				new TemplateVariable("projecao", VariableType.REQUEST_PARAM)); 
+	
 	public Link linkToPedidos(String rel) {		
 		TemplateVariables filtrosVariables = new TemplateVariables(
 				new TemplateVariable("clienteId", VariableType.REQUEST_PARAM),
@@ -82,7 +85,9 @@ public class AlgaLink {
 	}
 	
 	public Link linkToRestaurantes(String rel) {
-	    return WebMvcLinkBuilder.linkTo(RestauranteController.class).withRel(rel);
+		String restaurantesUrl = WebMvcLinkBuilder.linkTo(RestauranteController.class).toUri().toString();
+		
+		return Link.of(UriTemplate.of(restaurantesUrl, PROJECAO_VARIABLES), rel);
 	}
 	
 	public Link linkToRestaurantes() {
