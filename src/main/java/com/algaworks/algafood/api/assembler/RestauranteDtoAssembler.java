@@ -35,6 +35,18 @@ public class RestauranteDtoAssembler extends RepresentationModelAssemblerSupport
 		restauranteDto.add(algaLinks.linkToRestauranteFormasPagamento(restaurante.getId(), "formas-pagamento"));
 		restauranteDto.add(algaLinks.linkToResponsaveisRestaurante(restaurante.getId(), "responsaveis"));
 		
+		if(restaurante.isAtivo()) 
+			restauranteDto.add(algaLinks.linkToRestauranteInativacao(restaurante.getId(), "inativar"));
+		
+		if(restaurante.isInativo()) 
+			restauranteDto.add(algaLinks.linkToRestauranteAtivacao(restaurante.getId(), "ativar"));
+
+		if(restaurante.isAberto())
+			restauranteDto.add(algaLinks.linkToRestauranteFechamento(restaurante.getId(), "fechar"));
+
+		if(restaurante.isFechado() && restaurante.isAtivo())
+			restauranteDto.add(algaLinks.linkToRestauranteAbertura(restaurante.getId(), "abrir"));
+		
 		return restauranteDto;
 	}
 
@@ -43,11 +55,4 @@ public class RestauranteDtoAssembler extends RepresentationModelAssemblerSupport
 		return super.toCollectionModel(entities).add(algaLinks.linkToRestaurantes().withSelfRel());
 	}
 	
-//	public List<RestauranteDto> toCollectionDTO(List<Restaurante> restaurantes){
-//		return restaurantes.stream()
-//			.map(restaurante -> toModel(restaurante))	
-//			.sorted(Comparator.comparing(RestauranteDto::getId))	//Tive que adicinar para organizar a lista por ID
-//			.collect(Collectors.toList());
-//	}
-
 }

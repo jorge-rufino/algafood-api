@@ -45,15 +45,31 @@ public class AlgaLink {
 	}
 	
 	public Link linkToConfirmacaoPedido(String codigoPedido, String rel) {
-		return WebMvcLinkBuilder.linkTo(methodOn(FluxoPedidoController.class).confirmar(codigoPedido)).withRel(rel).withType("PUT");
+		return WebMvcLinkBuilder.linkTo(methodOn(FluxoPedidoController.class).confirmar(codigoPedido)).withRel(rel).withType("Put");
 	}
 	
 	public Link linkToEntregaPedido(String codigoPedido, String rel) {
-		return WebMvcLinkBuilder.linkTo(methodOn(FluxoPedidoController.class).entregar(codigoPedido)).withRel(rel).withType("PUT");
+		return WebMvcLinkBuilder.linkTo(methodOn(FluxoPedidoController.class).entregar(codigoPedido)).withRel(rel).withType("Put");
 	}
 	
 	public Link linkToCancelamentoPedido(String codigoPedido, String rel) {
-		return WebMvcLinkBuilder.linkTo(methodOn(FluxoPedidoController.class).cancelar(codigoPedido)).withRel(rel).withType("PUT");
+		return WebMvcLinkBuilder.linkTo(methodOn(FluxoPedidoController.class).cancelar(codigoPedido)).withRel(rel).withType("Put");
+	}
+	
+	public Link linkToRestauranteAtivacao(Long restauranteId, String rel) {
+		return WebMvcLinkBuilder.linkTo(methodOn(RestauranteController.class).ativar(restauranteId)).withRel(rel).withType("Put");
+	}
+	
+	public Link linkToRestauranteInativacao(Long restauranteId, String rel) {
+		return WebMvcLinkBuilder.linkTo(methodOn(RestauranteController.class).inativar(restauranteId)).withRel(rel).withType("Delete");
+	}
+	
+	public Link linkToRestauranteAbertura(Long restauranteId, String rel) {
+		return WebMvcLinkBuilder.linkTo(methodOn(RestauranteController.class).abrirRestaurante(restauranteId)).withRel(rel).withType("Put");
+	}
+	
+	public Link linkToRestauranteFechamento(Long restauranteId, String rel) {
+		return WebMvcLinkBuilder.linkTo(methodOn(RestauranteController.class).fecharRestaurante(restauranteId)).withRel(rel).withType("Put");
 	}
 	
 	public Link linkToRestaurante(Long restauranteId, String rel) {

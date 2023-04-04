@@ -166,8 +166,9 @@ public class RestauranteController {
 	
 	@PutMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void ativar(@PathVariable Long restauranteId) {
+	public ResponseEntity<Void> ativar(@PathVariable Long restauranteId) {
 		restauranteService.ativar(restauranteId);
+		return ResponseEntity.noContent().build();
 	}
 	
 	@PutMapping("/ativacoes")
@@ -194,19 +195,22 @@ public class RestauranteController {
 	
 	@DeleteMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void inativar(@PathVariable Long restauranteId) {
+	public ResponseEntity<Void> inativar(@PathVariable Long restauranteId) {
 		restauranteService.inativar(restauranteId);
+		return ResponseEntity.noContent().build();
 	}
 	
 	@PutMapping("/{restauranteId}/fechamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void fecharRestaurante(@PathVariable Long restauranteId) {
+	public ResponseEntity<Void> fecharRestaurante(@PathVariable Long restauranteId) {
 		restauranteService.fecharRestaurante(restauranteId);
+		return ResponseEntity.noContent().build();
 	}
 	
 	@PutMapping("/{restauranteId}/abertura")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void abrirRestaurante(@PathVariable Long restauranteId) {
+	public ResponseEntity<Void> abrirRestaurante(@PathVariable Long restauranteId) {
 		restauranteService.abrirRestaurante(restauranteId);
+		return ResponseEntity.noContent().build();
 	}
 }
