@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
+import com.algaworks.algafood.api.assembler.RestauranteApenasNomeDtoAssembler;
+import com.algaworks.algafood.api.assembler.RestauranteBasicoDtoAssembler;
 import com.algaworks.algafood.api.assembler.RestauranteDtoAssembler;
 import com.algaworks.algafood.api.disassembler.RestauranteInputDtoDisassembler;
+import com.algaworks.algafood.api.model.RestauranteApenasNomeDto;
+import com.algaworks.algafood.api.model.RestauranteBasicoDto;
 import com.algaworks.algafood.api.model.RestauranteDto;
 import com.algaworks.algafood.api.model.input.RestauranteInputDto;
-import com.algaworks.algafood.api.model.view.RestauranteView;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -35,7 +39,6 @@ import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.services.CozinhaService;
 import com.algaworks.algafood.domain.services.RestauranteService;
-import com.fasterxml.jackson.annotation.JsonView;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -52,6 +55,12 @@ public class RestauranteController {
 	
 	@Autowired
 	private RestauranteInputDtoDisassembler restauranteInputDisassembler;
+	
+	@Autowired
+	private RestauranteBasicoDtoAssembler restauranteBasicoDtoAssembler;
+	
+	@Autowired
+	private RestauranteApenasNomeDtoAssembler restauranteApenasNomeDtoAssembler;
 
 //	@GetMapping
 //	public MappingJacksonValue listar(@RequestParam(required = false) String projecao){		
@@ -69,9 +78,9 @@ public class RestauranteController {
 //		return restaurantesWrapper;
 //	}
 	
-	@JsonView(RestauranteView.Resumo.class)
+//	@JsonView(RestauranteView.Resumo.class)
 	@GetMapping
-	public ResponseEntity<List<RestauranteDto>> listar(ServletWebRequest request){
+	public ResponseEntity<CollectionModel<RestauranteBasicoDto>> listar(ServletWebRequest request){
 		
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 		
@@ -98,20 +107,20 @@ public class RestauranteController {
 		return ResponseEntity.ok()
 				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
 				.eTag("")
-				.body(restauranteDtoAssembler.toCollectionDTO(restauranteService.listar()));
+				.body(restauranteBasicoDtoAssembler.toCollectionModel(restauranteService.listar()));
 	}
 
-	@JsonView(RestauranteView.ApenasNome.class)
+//	@JsonView(RestauranteView.ApenasNome.class)
 	@GetMapping(params = "projecao=apenas-nome")
-	public ResponseEntity<List<RestauranteDto>> listarResumido(ServletWebRequest request){		
-		return listar(request);
+	public CollectionModel<RestauranteApenasNomeDto> listarApenasNome(){		
+		return restauranteApenasNomeDtoAssembler.toCollectionModel(restauranteService.listar());
 	}
 
 	@GetMapping(value = "/{id}")
 	public RestauranteDto buscarId(@PathVariable Long id){
 		Restaurante restaurante = restauranteService.buscarPorId(id);
 		
-		return restauranteDtoAssembler.toDTO(restaurante);
+		return restauranteDtoAssembler.toModel(restaurante);
 	}
 
 	@PostMapping	
@@ -120,7 +129,7 @@ public class RestauranteController {
 		try {
 			Restaurante restaurante =restauranteInputDisassembler.toDomainObject(restauranteInput);
 			
-			return restauranteDtoAssembler.toDTO(restauranteService.salvar(restaurante));
+			return restauranteDtoAssembler.toModel(restauranteService.salvar(restaurante));
 			
 //		Podemos utilizar o operador "|" em vez de fazer um outro bloco "try/catch" pois ambas disparam a mesma exception
 		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
@@ -141,7 +150,7 @@ public class RestauranteController {
 //		BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro"
 //				,"produtos");
 		try {
-			return restauranteDtoAssembler.toDTO(restauranteService.salvar(restauranteAtual));
+			return restauranteDtoAssembler.toModel(restauranteService.salvar(restauranteAtual));
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		} catch (CidadeNaoEncontradaException e) {

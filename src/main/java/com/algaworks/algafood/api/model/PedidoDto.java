@@ -22,7 +22,7 @@ public class PedidoDto extends RepresentationModel<PedidoDto>{
 	private OffsetDateTime dataConfirmacao;
 	private OffsetDateTime dataEntrega;
 	private OffsetDateTime dataCancelamento;
-	private RestauranteResumoDto restaurante;
+	private RestauranteApenasNomeDto restaurante;
 	private UsuarioDto cliente;
 	private FormaPagamentoDto formaPagamento;
 	private EnderecoDto enderecoEntrega;

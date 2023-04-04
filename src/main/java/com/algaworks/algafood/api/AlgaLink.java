@@ -19,6 +19,7 @@ import com.algaworks.algafood.api.controller.FormaPagamentoController;
 import com.algaworks.algafood.api.controller.PedidoController;
 import com.algaworks.algafood.api.controller.ProdutoController;
 import com.algaworks.algafood.api.controller.RestauranteController;
+import com.algaworks.algafood.api.controller.RestauranteFormaPagamentoController;
 import com.algaworks.algafood.api.controller.RestauranteUsuarioController;
 import com.algaworks.algafood.api.controller.UsuarioController;
 import com.algaworks.algafood.api.controller.UsuarioGrupoController;
@@ -62,6 +63,14 @@ public class AlgaLink {
 
 	public Link linkToRestaurante(Long restauranteId) {
 	    return linkToRestaurante(restauranteId, IanaLinkRelations.SELF.value());
+	}
+	
+	public Link linkToRestaurantes(String rel) {
+	    return WebMvcLinkBuilder.linkTo(RestauranteController.class).withRel(rel);
+	}
+	
+	public Link linkToRestaurantes() {
+	    return linkToRestaurantes(IanaLinkRelations.SELF.value());
 	}
 
 	public Link linkToUsuario(Long usuarioId, String rel) {
@@ -108,6 +117,11 @@ public class AlgaLink {
 	    return linkToFormaPagamento(formaPagamentoId, IanaLinkRelations.SELF.value());
 	}
 
+	public Link linkToRestauranteFormasPagamento(Long restauranteId, String rel) {
+	    return WebMvcLinkBuilder.linkTo(methodOn(RestauranteFormaPagamentoController.class)
+	            .listar(restauranteId)).withRel(rel);
+	}
+	
 	public Link linkToCidade(Long cidadeId, String rel) {
 	    return WebMvcLinkBuilder.linkTo(methodOn(CidadeController.class)
 	            .buscarPorId(cidadeId)).withRel(rel);
@@ -159,4 +173,13 @@ public class AlgaLink {
 	public Link linkToCozinhas() {
 	    return linkToCozinhas(IanaLinkRelations.SELF.value());
 	}
+	
+	public Link linkToCozinha(Long cozinhaId, String rel) {
+	    return WebMvcLinkBuilder.linkTo(methodOn(CozinhaController.class)
+	            .buscarId(cozinhaId)).withRel(rel);
+	}
+	
+	public Link linkToCozinha(Long cozinhaId) {
+	    return linkToCozinha(cozinhaId, IanaLinkRelations.SELF.value());
+	} 
 }

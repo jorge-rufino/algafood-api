@@ -34,7 +34,7 @@ public class PedidoResumoDto extends RepresentationModel<PedidoResumoDto>{
 	@JsonInclude(Include.NON_NULL)
 	private OffsetDateTime dataCancelamento;
 	
-	private RestauranteResumoDto restaurante;
+	private RestauranteApenasNomeDto restaurante;
 	private UsuarioDto cliente;	
 	
 }

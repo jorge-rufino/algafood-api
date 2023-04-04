@@ -4,7 +4,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
 import com.algaworks.algafood.api.AlgaLink;
@@ -44,14 +43,7 @@ public class CidadeDtoAssembler extends RepresentationModelAssemblerSupport<Cida
 	
 	@Override
 	public CollectionModel<CidadeDto> toCollectionModel(Iterable<? extends Cidade> entities) {
-		return super.toCollectionModel(entities)
-				.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withSelfRel()); 	//Acrescenta o Link da coleção
+		return super.toCollectionModel(entities).add(algaLinks.linkToCidades());
 	}
 	
-//	public List<CidadeDto> toCollectionDto(List<Cidade> cidades){
-//		return cidades.stream()
-//				.map(cidade -> toModel(cidade))
-//				.toList();
-//	}
-
 }
