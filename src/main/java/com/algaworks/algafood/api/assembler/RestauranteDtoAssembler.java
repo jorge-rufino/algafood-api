@@ -30,10 +30,16 @@ public class RestauranteDtoAssembler extends RepresentationModelAssemblerSupport
 		modelMapper.map(restaurante, restauranteDto);
 		
 		restauranteDto.getCozinha().add(algaLinks.linkToCozinha(restaurante.getCozinha().getId()));
-		restauranteDto.getEndereco().getCidade().add(algaLinks.linkToCidade(restaurante.getEndereco().getCidade().getId()));
+		
+		if (restauranteDto.getEndereco() != null && restauranteDto.getEndereco().getCidade() != null) {
+			restauranteDto.getEndereco().getCidade().add(algaLinks.linkToCidade(restaurante.getEndereco().getCidade().getId()));
+		}
+		
 		restauranteDto.add(algaLinks.linkToRestaurantes("restaurantes"));
 		restauranteDto.add(algaLinks.linkToRestauranteFormasPagamento(restaurante.getId(), "formas-pagamento"));
 		restauranteDto.add(algaLinks.linkToResponsaveisRestaurante(restaurante.getId(), "responsaveis"));
+		
+		restauranteDto.add(algaLinks.linkToProdutos(restaurante.getId(), "produtos"));
 		
 		if(restaurante.isAtivo()) 
 			restauranteDto.add(algaLinks.linkToRestauranteInativacao(restaurante.getId(), "inativar"));

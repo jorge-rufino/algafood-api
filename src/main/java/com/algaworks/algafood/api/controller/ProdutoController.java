@@ -1,10 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.assembler.ProdutoDtoAssembler;
 import com.algaworks.algafood.api.disassembler.ProdutoInputDtoDisassembler;
 import com.algaworks.algafood.api.model.ProdutoDto;
@@ -36,21 +36,29 @@ public class ProdutoController {
 	@Autowired
 	private ProdutoInputDtoDisassembler produtoInputDtoDisassembler;
 	
+	@Autowired
+	private AlgaLinks algaLinks; 
+	
+//	Alteramos para "Boolean" para poder receber "null" quando formos chamar o link
+//	Como precisamos do id do restaurante, adicionamos o link da coleçao aqui
+	
 	@GetMapping
-	public List<ProdutoDto> listar(@PathVariable Long restauranteId, @RequestParam(required = false) boolean incluirInativos){		
-		return produtoDtoAssembler.toCollectDto(produtoService.listar(restauranteId, incluirInativos));
+	public CollectionModel<ProdutoDto> listar(@PathVariable Long restauranteId, 
+			@RequestParam(required = false, defaultValue = "false") Boolean incluirInativos){		
+		return produtoDtoAssembler.toCollectionModel(produtoService.listar(restauranteId, incluirInativos))
+				.add(algaLinks.linkToProdutos(restauranteId));
 	}
 	
 	@GetMapping("/{produtoId}")
 	public ProdutoDto buscarPorId(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
-		return produtoDtoAssembler.toDto(produtoService.buscarPorId(restauranteId, produtoId));
+		return produtoDtoAssembler.toModel(produtoService.buscarPorId(restauranteId, produtoId));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ProdutoDto adicionar(@PathVariable Long restauranteId, @RequestBody @Valid ProdutoInputDto produtoInput) {
 		Produto produto = produtoInputDtoDisassembler.toDomainObject(produtoInput);
-		return produtoDtoAssembler.toDto(produtoService.salvar(restauranteId, produto));
+		return produtoDtoAssembler.toModel(produtoService.salvar(restauranteId, produto));
 	}
 	
 	@PutMapping("{produtoId}")
@@ -59,7 +67,7 @@ public class ProdutoController {
 		Produto produtoAtual = produtoService.buscarPorId(restauranteId, produtoId);
 		produtoInputDtoDisassembler.copyToDomainObject(produtoInput, produtoAtual);
 		
-		return produtoDtoAssembler.toDto(produtoService.salvar(restauranteId, produtoAtual));
+		return produtoDtoAssembler.toModel(produtoService.salvar(restauranteId, produtoAtual));
 	}
 	
 }

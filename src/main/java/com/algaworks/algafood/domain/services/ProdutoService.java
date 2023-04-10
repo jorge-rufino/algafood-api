@@ -20,7 +20,7 @@ public class ProdutoService {
 	@Autowired
 	private RestauranteService restauranteService;
 	
-	public List<Produto> listar(Long restauranteId, boolean incluirInativos){
+	public List<Produto> listar(Long restauranteId, Boolean incluirInativos){
 		Restaurante restaurante = restauranteService.buscarPorId(restauranteId);
 		
 		if(incluirInativos) {
