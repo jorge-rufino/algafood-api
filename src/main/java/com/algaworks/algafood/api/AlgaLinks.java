@@ -129,6 +129,16 @@ public class AlgaLinks {
 	    return linkToResponsaveisRestaurante(restauranteId, IanaLinkRelations.SELF.value());
 	}
 
+	public Link linkToRestauranteResponsavelDesassociacao(Long restauranteId, Long usuarioId, String rel) {
+	    return WebMvcLinkBuilder.linkTo(methodOn(RestauranteUsuarioController.class)
+	            .desassociarResponsavel(restauranteId, usuarioId)).withRel(rel).withType("Delete");
+	}
+
+	public Link linkToRestauranteResponsavelAssociacao(Long restauranteId, String rel) {
+	    return WebMvcLinkBuilder.linkTo(methodOn(RestauranteUsuarioController.class)
+	            .associarResponsavel(restauranteId, null)).withRel(rel).withType("Put");
+	}
+
 	public Link linkToFormaPagamento(Long formaPagamentoId, String rel) {
 	    return WebMvcLinkBuilder.linkTo(methodOn(FormaPagamentoController.class)
 	            .buscarId(formaPagamentoId, null)).withRel(rel);
