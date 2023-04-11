@@ -1,5 +1,7 @@
 package com.algaworks.algafood.domain.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +18,9 @@ public class PermissaoService {
 	public Permissao buscarPorId(Long permissaoId) {
 		return repository.findById(permissaoId)
 				.orElseThrow(() -> new PermissaoNaoEncontradaException(permissaoId));
+	}
+	
+	public List<Permissao> listar(){
+		return repository.findAll();
 	}
 }

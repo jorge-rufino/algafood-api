@@ -17,7 +17,10 @@ import com.algaworks.algafood.api.controller.EstadoController;
 import com.algaworks.algafood.api.controller.FluxoPedidoController;
 import com.algaworks.algafood.api.controller.FormaPagamentoController;
 import com.algaworks.algafood.api.controller.FotoProdutoController;
+import com.algaworks.algafood.api.controller.GrupoController;
+import com.algaworks.algafood.api.controller.GrupoPermissaoController;
 import com.algaworks.algafood.api.controller.PedidoController;
+import com.algaworks.algafood.api.controller.PermissaoController;
 import com.algaworks.algafood.api.controller.ProdutoController;
 import com.algaworks.algafood.api.controller.RestauranteController;
 import com.algaworks.algafood.api.controller.RestauranteFormaPagamentoController;
@@ -121,6 +124,43 @@ public class AlgaLinks {
 	    return linkToGruposUsuario(usuarioId, IanaLinkRelations.SELF.value());
 	}
 
+	public Link linkToGrupos(String rel) {
+	    return WebMvcLinkBuilder.linkTo(methodOn(GrupoController.class)
+	            .listar()).withRel(rel);
+	}
+	
+	public Link linkToGrupos() {
+	    return linkToGrupos(IanaLinkRelations.SELF.value());
+	}
+	
+	public Link linkToGrupoPermissoes(Long grupoId, String rel) {
+	    return WebMvcLinkBuilder.linkTo(methodOn(GrupoPermissaoController.class)
+	            .listar(grupoId)).withRel(rel);
+	}
+	
+	public Link linkToGrupoPermissoes(Long grupoId) {
+	    return WebMvcLinkBuilder.linkTo(methodOn(GrupoPermissaoController.class)
+	            .listar(grupoId)).withRel(IanaLinkRelations.SELF.value());
+	}
+	
+	public Link linkToPermissoes(String rel) {
+	    return WebMvcLinkBuilder.linkTo(PermissaoController.class).withRel(rel);
+	}
+	
+	public Link linkToPermissoes() {
+	    return linkToPermissoes(IanaLinkRelations.SELF.value());
+	}
+	
+	public Link linkToGrupoPermissaoAssociacao(Long grupoId, String rel) {
+	    return WebMvcLinkBuilder.linkTo(methodOn(GrupoPermissaoController.class)
+	            .associarPermissao(grupoId, null)).withRel(rel).withType("Put");
+	}
+	
+	public Link linkToGrupoPermissaoDesassociacao(Long grupoId, Long permissaoId, String rel) {
+	    return WebMvcLinkBuilder.linkTo(methodOn(GrupoPermissaoController.class)
+	            .desassociarPermissao(grupoId, permissaoId)).withRel(rel).withType("Delete");
+	}
+	
 	public Link linkToResponsaveisRestaurante(Long restauranteId, String rel) {
 	    return WebMvcLinkBuilder.linkTo(methodOn(RestauranteUsuarioController.class)
 	            .listar(restauranteId)).withRel(rel);
@@ -258,4 +298,5 @@ public class AlgaLinks {
 	public Link linkToCozinha(Long cozinhaId) {
 	    return linkToCozinha(cozinhaId, IanaLinkRelations.SELF.value());
 	} 
+
 }

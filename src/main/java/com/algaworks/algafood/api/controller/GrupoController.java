@@ -1,10 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,20 +36,20 @@ public class GrupoController {
 	private GrupoInputDtoDisassembler grupoInputDtoDisassembler;
 	
 	@GetMapping
-	public List<GrupoDto> listar(){
-		return grupoDtoAssembler.toCollectionDto(service.listar());
+	public CollectionModel<GrupoDto> listar(){
+		return grupoDtoAssembler.toCollectionModel(service.listar());
 	}
 	
 	@GetMapping("/{id}")
 	public GrupoDto buscarPorId(@PathVariable Long id) {
-		return grupoDtoAssembler.toDto(service.buscarPorId(id));
+		return grupoDtoAssembler.toModel(service.buscarPorId(id));
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public GrupoDto adicionar(@Valid @RequestBody GrupoInputDto grupoInput) {
 		Grupo grupo = grupoInputDtoDisassembler.toDomainObject(grupoInput);
-		return grupoDtoAssembler.toDto(service.adicionar(grupo));
+		return grupoDtoAssembler.toModel(service.adicionar(grupo));
 	}
 	
 	@PutMapping("/{id}")
@@ -58,7 +57,7 @@ public class GrupoController {
 		Grupo grupoAtual = service.buscarPorId(id);
 		grupoInputDtoDisassembler.copyToDomainObject(grupoInput, grupoAtual);
 		
-		return grupoDtoAssembler.toDto(service.adicionar(grupoAtual));
+		return grupoDtoAssembler.toModel(service.adicionar(grupoAtual));
 	}
 	
 	@DeleteMapping("/{id}")
