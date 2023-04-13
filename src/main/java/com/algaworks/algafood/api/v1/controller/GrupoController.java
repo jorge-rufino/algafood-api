@@ -23,7 +23,7 @@ import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.services.GrupoService;
 
 @RestController
-@RequestMapping("/grupos")
+@RequestMapping(path = "/v1/grupos")
 public class GrupoController {
 	
 	@Autowired

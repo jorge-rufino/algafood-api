@@ -41,7 +41,7 @@ import com.algaworks.algafood.domain.services.CozinhaService;
 import com.algaworks.algafood.domain.services.RestauranteService;
 
 @RestController
-@RequestMapping("/restaurantes")
+@RequestMapping(path = "/v1/restaurantes")
 public class RestauranteController {
 	
 	@Autowired

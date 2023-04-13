@@ -22,7 +22,7 @@ import com.algaworks.algafood.domain.services.VendaQueryService;
 import com.algaworks.algafood.domain.services.VendaReportService;
 
 @RestController
-@RequestMapping(path = "/estatisticas")
+@RequestMapping(path = "/v1/estatisticas")
 public class EstatisticasController {
 
 	@Autowired

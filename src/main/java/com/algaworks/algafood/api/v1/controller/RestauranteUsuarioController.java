@@ -23,7 +23,7 @@ import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.services.RestauranteService;
 
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/responsaveis")
+@RequestMapping(path = "/v1/restaurantes/{restauranteId}/responsaveis")
 public class RestauranteUsuarioController {
 	
 	@Autowired

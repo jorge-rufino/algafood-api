@@ -34,7 +34,7 @@ import com.algaworks.algafood.domain.services.FotoStorageService.FotoRecuperada;
 import com.algaworks.algafood.domain.services.ProdutoService;
 
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
+@RequestMapping(path = "/v1/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
 public class FotoProdutoController {
 	
 	@Autowired

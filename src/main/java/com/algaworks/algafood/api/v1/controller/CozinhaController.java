@@ -28,7 +28,7 @@ import com.algaworks.algafood.domain.services.CozinhaService;
 
 //Esta annotation é mais completa e implementa as annotations "@Controller" e "@ResponseBody"
 @RestController		
-@RequestMapping(value = "/cozinhas") 
+@RequestMapping(path = "/v1/cozinhas") 
 public class CozinhaController {
 			
 	@Autowired

@@ -25,7 +25,7 @@ import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.services.UsuarioService;
 
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping(path = "/v1/usuarios")
 public class UsuarioController {
 
 	@Autowired

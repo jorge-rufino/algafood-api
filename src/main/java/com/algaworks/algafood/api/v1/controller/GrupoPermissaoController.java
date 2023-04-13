@@ -19,7 +19,7 @@ import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.services.GrupoService;
 
 @RestController
-@RequestMapping("/grupos/{grupoId}/permissoes")
+@RequestMapping(path = "/v1/grupos/{grupoId}/permissoes")
 public class GrupoPermissaoController {
 
 	@Autowired

@@ -11,7 +11,7 @@ import com.algaworks.algafood.api.v1.model.PermissaoDto;
 import com.algaworks.algafood.domain.services.PermissaoService;
 
 @RestController
-@RequestMapping("/permissoes")
+@RequestMapping(path = "/v1/permissoes")
 public class PermissaoController {
 
 	@Autowired

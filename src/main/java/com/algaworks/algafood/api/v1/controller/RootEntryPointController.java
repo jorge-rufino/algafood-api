@@ -11,7 +11,7 @@ import com.algaworks.algafood.api.v1.AlgaLinks;
 
 //Esta classe é responsavel pelos links do EntryPoint da API (http://api.algafood.local:8080/)
 @RestController
-@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/v1",produces = MediaType.APPLICATION_JSON_VALUE)
 public class RootEntryPointController {
 
 	@Autowired
