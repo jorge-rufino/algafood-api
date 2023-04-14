@@ -26,11 +26,17 @@ import com.algaworks.algafood.api.v1.model.input.CozinhaInputDto;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.services.CozinhaService;
 
-//Esta annotation é mais completa e implementa as annotations "@Controller" e "@ResponseBody"
-@RestController		
+import lombok.extern.slf4j.Slf4j;
+
+
+@RestController		//Esta annotation é mais completa e implementa as annotations "@Controller" e "@ResponseBody"
+@Slf4j				//Usando esta annotation, evitamos ter que criar a variavel estatica "Logger"
 @RequestMapping(path = "/v1/cozinhas") 
 public class CozinhaController {
-			
+	
+//	Cria o "logger" e recebe a instancia capaz de registrar logs de "CozinhaController"
+//	private static final Logger logger = LoggerFactory.getLogger(CozinhaController.class);
+	
 	@Autowired
 	private CozinhaService cozinhaService;
 	
@@ -48,6 +54,10 @@ public class CozinhaController {
 	
 	@GetMapping
 	public PagedModel<CozinhaDto> listar(@PageableDefault(size = 10) Pageable pageable){
+		
+//		logger.info("Consultando cozinhas com páginas de {} registros", pageable.getPageSize());
+		log.info("Consultando cozinhas com páginas de {} registros", pageable.getPageSize());
+		
 		Page<Cozinha> cozinhasPage = cozinhaService.listar(pageable);
 		
 //		Passamos um Page de Cozinha e o objeto que converte uma Cozinha em CozinhaDto
