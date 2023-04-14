@@ -58,6 +58,10 @@ public class CozinhaController {
 //		logger.info("Consultando cozinhas com páginas de {} registros", pageable.getPageSize());
 		log.info("Consultando cozinhas com páginas de {} registros", pageable.getPageSize());
 		
+		if (true) {
+			throw new RuntimeException("Teste de exception");
+		}
+		
 		Page<Cozinha> cozinhasPage = cozinhaService.listar(pageable);
 		
 //		Passamos um Page de Cozinha e o objeto que converte uma Cozinha em CozinhaDto
