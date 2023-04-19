@@ -15,38 +15,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
-	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication()
-		.withUser("jorge")
-			.password(passwordEncoder().encode("123"))
-			.roles("ADMIN")
-		.and()	
-		.withUser("joao")
-			.password(passwordEncoder().encode("123"))
-			.roles("ADMIN");	
-	}
+public class ResourceSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.httpBasic()									//Permite HttpBasic			.
 			.and()	
-//			.formLogin()							  		  Não queremos que apareça o Formulario para Login							
-			.authorizeRequests()							//Autoriza requisições
-				.antMatchers("/v1/cozinhas/**").permitAll() //Permite qualque chamada que comece com "/v1/cozinhas/"
+			.authorizeRequests()							//Autoriza requisições				
 				.anyRequest().authenticated()				//Qualquer requisição que esteja autenticada
 			.and()
-				.sessionManagement()											//Gerenciamento de Sessão
-					.sessionCreationPolicy(SessionCreationPolicy.STATELESS)	//Proibimos o uso de "session", assim não é gerado mais "cookies"
-			.and()
-				.csrf().disable();							//desabilita o "csrf"
+			.oauth2ResourceServer().opaqueToken();			//Transforma o projeto em um ResourceServer com "OpaqueTokens"
 	}
 		
-//	Criptografa e discriptografa as senhas
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
 }
