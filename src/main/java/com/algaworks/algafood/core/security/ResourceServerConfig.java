@@ -15,12 +15,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-public class ResourceSecurityConfig extends WebSecurityConfigurerAdapter{
+public class ResourceServerConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.httpBasic()									//Permite HttpBasic			.
-			.and()	
+		http
 			.authorizeRequests()							//Autoriza requisições				
 				.anyRequest().authenticated()				//Qualquer requisição que esteja autenticada
 			.and()
