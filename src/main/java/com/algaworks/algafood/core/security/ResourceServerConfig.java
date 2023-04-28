@@ -1,5 +1,7 @@
 package com.algaworks.algafood.core.security;
 
+import javax.crypto.spec.SecretKeySpec;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -9,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
 //Classe de configuração do HttpBasic
 //Para manter a didática do curso, continuarei estendo esta classe mesmo estando depreciada
@@ -24,7 +28,18 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter{
 				.anyRequest().authenticated()				//Qualquer requisição que esteja autenticada
 			.and()
 			.cors().and()
-			.oauth2ResourceServer().opaqueToken();			//Transforma o projeto em um ResourceServer com "OpaqueTokens"
+//			.oauth2ResourceServer().jwt();			//Transforma o projeto em um ResourceServer com "OpaqueTokens"
+			.oauth2ResourceServer().jwt();			//Transforma o projeto em um ResourceServer com tokens JWT
 	}
+
+//	Utilizando o JWT, não precisamos mais consultar o Authorization Server, por isso alteramos o application.properties
+	@Bean
+	public JwtDecoder jwtDecoder() {
 		
+//		Chave secreta mais o algoritmo para codificar/decodificar a chave secreta
+//		Chave secreta precisa ter mais de 32 bytes
+		var secretKey = new SecretKeySpec("fd4a65f49h84tger6g13d6s54ad6af54ds".getBytes(), "HmacSHA256");
+		
+		return NimbusJwtDecoder.withSecretKey(secretKey).build();
+	}
 }
