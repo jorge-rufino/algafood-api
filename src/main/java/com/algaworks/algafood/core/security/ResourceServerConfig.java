@@ -32,14 +32,4 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter{
 			.oauth2ResourceServer().jwt();			//Transforma o projeto em um ResourceServer com tokens JWT
 	}
 
-//	Utilizando o JWT, não precisamos mais consultar o Authorization Server, por isso alteramos o application.properties
-	@Bean
-	public JwtDecoder jwtDecoder() {
-		
-//		Chave secreta mais o algoritmo para codificar/decodificar a chave secreta
-//		Chave secreta precisa ter mais de 32 bytes
-		var secretKey = new SecretKeySpec("fd4a65f49h84tger6g13d6s54ad6af54ds".getBytes(), "HmacSHA256");
-		
-		return NimbusJwtDecoder.withSecretKey(secretKey).build();
-	}
 }
