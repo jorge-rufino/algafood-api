@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -16,17 +16,13 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)	//Permite com que as regras das permissoes estejam direto nos controladores
 public class ResourceServerConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
-			.authorizeRequests()							//Autoriza requisições				
-				.antMatchers(HttpMethod.POST, "/v1/cozinhas/**").hasAuthority("EDITAR_COZINHAS")	//So pode fazer um Post se tiver a permissao
-				.antMatchers(HttpMethod.PUT, "/v1/cozinhas/**").hasAuthority("EDITAR_COZINHAS")	//So pode fazer um Put se tiver a permissao
-				.antMatchers(HttpMethod.GET, "/v1/cozinhas/**").authenticated()					//Basta está autenticado para fazer um Get
-				.anyRequest().denyAll()															//Se não estiver nas regras acima, será negado
-			.and()
+		http		
+			.csrf().disable()			//Para evitar erros com os metodos Post e Put
 			.cors().and()
 			.oauth2ResourceServer()
 				.jwt()
