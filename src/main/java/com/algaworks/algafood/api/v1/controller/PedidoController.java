@@ -27,6 +27,7 @@ import com.algaworks.algafood.api.v1.model.PedidoResumoDto;
 import com.algaworks.algafood.api.v1.model.input.PedidoInputDto;
 import com.algaworks.algafood.core.data.PageWrapper;
 import com.algaworks.algafood.core.data.PageableTranslate;
+import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.filter.PedidoFilter;
@@ -54,6 +55,9 @@ public class PedidoController {
 	@Autowired
 	private PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
 	
+	@Autowired
+	private AlgaSecurity algaSecurity;
+	
 //	Mesmo sem o @RequestParam o spring consegue fazer o databind corretamente dos filtros
 	@GetMapping
 	public PagedModel<PedidoResumoDto> pesquisar(PedidoFilter filtro, Pageable pageable){
@@ -80,7 +84,9 @@ public class PedidoController {
 		try {
 			Pedido novoPedido = pedidoInputDtoDisassembler.toDomainObject(pedidoInput);
 			novoPedido.setCliente(new Usuario());
-			novoPedido.getCliente().setId(1L);
+			
+//			Pega o Id do Usuario pela Claim do token JWT
+			novoPedido.getCliente().setId(algaSecurity.getUsuarioId());
 			
 			return pedidoDtoAssembler.toModel(pedidoService.emitir(novoPedido));
 //	Convertermos os erros de "EntidadeNaoEncontrada" de "404" para BadRequest "400"
