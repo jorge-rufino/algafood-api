@@ -9,7 +9,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +23,7 @@ import com.algaworks.algafood.api.v1.assembler.CozinhaDtoAssembler;
 import com.algaworks.algafood.api.v1.disassembler.CozinhaInputDtoDisassembler;
 import com.algaworks.algafood.api.v1.model.CozinhaDto;
 import com.algaworks.algafood.api.v1.model.input.CozinhaInputDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.services.CozinhaService;
 
@@ -53,7 +53,7 @@ public class CozinhaController {
 //	Como alteramos o metodo para "PagedModel", não estamos mais utilizado a classe "PageJsonSerializer" do pacote "core" para serializarmos 
 //	o json de resposta. O próprio PagedModel retorna por padrão os mesmos atributos que definimos no "PageJsonSerializer"
 	
-	@PreAuthorize("isAuthenticated()")
+	@CheckSecurity.Cozinhas.PodeConsultar
 	@GetMapping
 	public PagedModel<CozinhaDto> listar(@PageableDefault(size = 10) Pageable pageable){
 		
@@ -68,13 +68,13 @@ public class CozinhaController {
 		return cozinhasPagedModel;
 	}
 	
-	@PreAuthorize("isAuthenticated()")
+	@CheckSecurity.Cozinhas.PodeConsultar
 	@GetMapping(value = "/{cozinhaId}")
 	public CozinhaDto buscarId(@PathVariable("cozinhaId") Long cozinhaId) {		
 		return cozinhaDtoAssembler.toModel(cozinhaService.buscarPorId(cozinhaId));
 	}
 
-	@PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
+	@CheckSecurity.Cozinhas.PodeEditar
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)		
 	public CozinhaDto adicionar (@RequestBody @Valid CozinhaInputDto cozinhaInputDto) {
@@ -82,7 +82,7 @@ public class CozinhaController {
 		return cozinhaDtoAssembler.toModel(cozinhaService.salvar(cozinha));
 	}	
 	
-	@PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
+	@CheckSecurity.Cozinhas.PodeEditar
 	@PutMapping("/{cozinhaId}")
 	public CozinhaDto atualizar(@PathVariable Long cozinhaId,@RequestBody @Valid CozinhaInputDto cozinhaInput){
 		Cozinha cozinhaAtual = cozinhaService.buscarPorId(cozinhaId);		
@@ -91,7 +91,7 @@ public class CozinhaController {
 		return cozinhaDtoAssembler.toModel(cozinhaService.salvar(cozinhaAtual));
 	}
 	
-	@PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
+	@CheckSecurity.Cozinhas.PodeEditar
 	@DeleteMapping("/{cozinhaId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deletar(@PathVariable Long cozinhaId){								
