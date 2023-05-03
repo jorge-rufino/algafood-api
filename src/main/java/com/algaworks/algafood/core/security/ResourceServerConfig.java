@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 
 //Classe de configuração do HttpBasic
 //Para manter a didática do curso, continuarei estendo esta classe mesmo estando depreciada
@@ -43,22 +44,20 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter{
 //			Cria um lista de String com as permissoes
 			var authorities = jwt.getClaimAsStringList("authorities");
 			
-			var scopes = jwt.getClaimAsStringList("scope");
-			
 			if(authorities == null) {
 				authorities = Collections.emptyList();
 			}
 			
-//			Convertemos a lista de Scopes em String em uma lista de "GrantedAuthoritys"
-			Collection<GrantedAuthority> grantedAuthorities = scopes.stream()
-					.map(SimpleGrantedAuthority::new)
-					.collect(Collectors.toList());			
-
-//			Transformamos a lista de Permissoes string em GrantedAutoritys e a adicionamos a coleção 
+			var scopesAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+			
+//			Coleçao de GrantedAuthority dos escopos/Scopes
+			Collection<GrantedAuthority> grantedAuthorities = scopesAuthoritiesConverter.convert(jwt);
+			
+//			Adicionamos a coleção de GrantedAuthority das permissões
 			grantedAuthorities.addAll(authorities.stream()
 					.map(SimpleGrantedAuthority::new)
 					.collect(Collectors.toList()));
-
+			
 			return grantedAuthorities;
 		});
 		
