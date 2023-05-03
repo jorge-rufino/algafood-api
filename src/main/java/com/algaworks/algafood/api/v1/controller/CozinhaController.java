@@ -56,6 +56,7 @@ public class CozinhaController {
 	@CheckSecurity.Cozinhas.PodeConsultar
 	@GetMapping
 	public PagedModel<CozinhaDto> listar(@PageableDefault(size = 10) Pageable pageable){
+//		System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
 		
 //		logger.info("Consultando cozinhas com páginas de {} registros", pageable.getPageSize());
 		log.info("Consultando cozinhas com páginas de {} registros", pageable.getPageSize());
