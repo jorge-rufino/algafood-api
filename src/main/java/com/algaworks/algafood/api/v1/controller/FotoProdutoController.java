@@ -50,7 +50,7 @@ public class FotoProdutoController {
 	@Autowired
 	private FotoStorageService fotoStorageService;
 	
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@PutMapping(consumes = 	MediaType.MULTIPART_FORM_DATA_VALUE)
 	public FotoProdutoDto atualizarFoto(
 			@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) throws IOException {
@@ -116,7 +116,7 @@ public class FotoProdutoController {
 		}
 	}
 
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deletarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {

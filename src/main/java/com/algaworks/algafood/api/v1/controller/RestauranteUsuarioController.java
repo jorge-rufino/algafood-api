@@ -36,7 +36,7 @@ public class RestauranteUsuarioController {
 	@Autowired
 	private AlgaLinks algaLinks;
 	
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
 	@GetMapping
 	public CollectionModel<UsuarioDto> listar(@PathVariable Long restauranteId) {
 		Restaurante restaurante = restauranteService.buscarPorId(restauranteId);
@@ -60,7 +60,7 @@ public class RestauranteUsuarioController {
 		return usuariosDto;
 	}
 	
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
 	@PutMapping("/{usuarioId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> associarResponsavel(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {
@@ -68,7 +68,7 @@ public class RestauranteUsuarioController {
 		return ResponseEntity.noContent().build();
 	}
 	
-	@CheckSecurity.Restaurantes.PodeEditar
+	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
 	@DeleteMapping("/{usuarioId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> desassociarResponsavel(@PathVariable Long restauranteId, @PathVariable Long usuarioId) {

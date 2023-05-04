@@ -141,5 +141,9 @@ public class RestauranteService {
 	public OffsetDateTime getDataUltimaAtualizacao() {
 		return repository.getUltimaDataAtualizacao();
 	}
+	
+	public boolean existsResponsavel(Long restauranteId, Long usuarioId) {
+		return repository.existResponsavel(restauranteId, usuarioId);
+	}
 }
 

@@ -50,4 +50,7 @@ public interface RestauranteRepository  extends CustomJpaRepository<Restaurante,
 	
 	@Query("select max(dataAtualizacao) from Restaurante")
 	OffsetDateTime getUltimaDataAtualizacao();
+	
+//	A query está no arquivo "orm.xml" dentro da pasta "META-INF", dentro da pasta "resources"
+	boolean existResponsavel(Long restauranteId, Long usuarioId);
 }

@@ -32,7 +32,15 @@ public @interface CheckSecurity {
 		@PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_RESTAURANTES')")
 		@Retention(RUNTIME)
 		@Target(METHOD)
-		public @interface PodeEditar { }
+		public @interface PodeGerenciarCadastro { }
+		
+//		Permite acesso do "Responsavel do Restaurante" mesmo que ele não tenha nenhuma permissão 
+//		Usando "@" podemos chamar métodos de um bean. Os beans do spring tem sempre a inicial do nome minuscula,e o restante igual. 
+//		Usando "#" podemos pegar o valor do "pathvariable" como parametro, desde que tenham os nomes iguais
+		@PreAuthorize("hasAuthority('SCOPE_WRITE') and (hasAuthority('EDITAR_RESTAURANTES') or @algaSecurity.gerenciaRestaurante(#restauranteId))")
+		@Retention(RUNTIME)
+		@Target(METHOD)
+		public @interface PodeGerenciarFuncionamento { }
 
 		@PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
 		@Retention(RUNTIME)
