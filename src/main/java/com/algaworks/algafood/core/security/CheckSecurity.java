@@ -6,6 +6,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 @Retention(RUNTIME)
@@ -21,7 +22,7 @@ public @interface CheckSecurity {
 		public @interface PodeConsultar{ }
 		
 //		Precisa da permissao para editar e ter o scopo de escrita
-		@PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_COZINHAS')")
+		@PreAuthorize("hasAuthority('SCOPE_WRITE') AND hasAuthority('EDITAR_COZINHAS')")
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeEditar{ }
@@ -29,7 +30,7 @@ public @interface CheckSecurity {
 
 	public @interface Restaurantes {
 		
-		@PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_RESTAURANTES')")
+		@PreAuthorize("hasAuthority('SCOPE_WRITE') AND hasAuthority('EDITAR_RESTAURANTES')")
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeGerenciarCadastro { }
@@ -37,7 +38,7 @@ public @interface CheckSecurity {
 //		Permite acesso do "Responsavel do Restaurante" mesmo que ele não tenha nenhuma permissão 
 //		Usando "@" podemos chamar métodos de um bean. Os beans do spring tem sempre a inicial do nome minuscula,e o restante igual. 
 //		Usando "#" podemos pegar o valor do "pathvariable" como parametro, desde que tenham os nomes iguais
-		@PreAuthorize("hasAuthority('SCOPE_WRITE') and (hasAuthority('EDITAR_RESTAURANTES') or @algaSecurity.gerenciaRestaurante(#restauranteId))")
+		@PreAuthorize("hasAuthority('SCOPE_WRITE') AND (hasAuthority('EDITAR_RESTAURANTES') OR @algaSecurity.gerenciaRestaurante(#restauranteId))")
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeGerenciarFuncionamento { }
@@ -46,6 +47,21 @@ public @interface CheckSecurity {
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeConsultar { }
+		
+	}
+		
+	public @interface Pedidos {
+
+//	PostAuthorize permite a execução do método porém antes do resultado ser serializado, ele faz as checagems que forem configuradas
+//	O "returnObject" é o objeto de resposta do controlador, no caso do metodo "buscarPorCodigo", é o um objeto do tipo "PedidoDto"
+		
+		@PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+		@PostAuthorize("hasAuthority('CONSULTAR_PEDIDOS') OR "
+					+ "@algaSecurity.getUsuarioId() == returnObject.cliente.id OR"		//Se o usuario for o cliente que fez o pedido
+					+ "@algaSecurity.gerenciaRestaurante(returnObject.restaurante.id)")	//Se o usuário for o responsavel pelo restaurante
+		@Retention(RUNTIME)
+		@Target(METHOD)
+		public @interface PodeBuscar { }
 		
 	}
 }

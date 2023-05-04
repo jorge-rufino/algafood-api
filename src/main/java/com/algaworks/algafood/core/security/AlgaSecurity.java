@@ -27,6 +27,7 @@ public class AlgaSecurity {
 		return jwt.getClaim("usuario-id");
 	}
 	
+//	Verifica se o usuario logado é o dono/responsavel pelo restaurante
 	public boolean gerenciaRestaurante(Long restauranteId) {
 		return restauranteService.existsResponsavel(restauranteId, getUsuarioId());
 	}
