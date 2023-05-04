@@ -14,12 +14,14 @@ public @interface CheckSecurity {
 	
 	public @interface Cozinhas{
 		
-		@PreAuthorize("isAuthenticated()")
+//		Precisa estar autenticado e ter o scopo de leitura
+		@PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeConsultar{ }
 		
-		@PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
+//		Precisa da permissao para editar e ter o scopo de escrita
+		@PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_COZINHAS')")
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeEditar{ }
