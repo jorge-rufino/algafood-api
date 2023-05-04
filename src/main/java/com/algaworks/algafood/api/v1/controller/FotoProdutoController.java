@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.algaworks.algafood.api.v1.assembler.FotoProdutoDtoAssembler;
 import com.algaworks.algafood.api.v1.model.FotoProdutoDto;
 import com.algaworks.algafood.api.v1.model.input.FotoProdutoInput;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.FotoProduto;
 import com.algaworks.algafood.domain.model.Produto;
@@ -49,6 +50,7 @@ public class FotoProdutoController {
 	@Autowired
 	private FotoStorageService fotoStorageService;
 	
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping(consumes = 	MediaType.MULTIPART_FORM_DATA_VALUE)
 	public FotoProdutoDto atualizarFoto(
 			@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) throws IOException {
@@ -66,6 +68,7 @@ public class FotoProdutoController {
 		return fotoProdutoDtoAssembler.toDto(fotoProdutoService.salvar(novaFoto, arquivo.getInputStream()));
 	}
 	
+	@CheckSecurity.Restaurantes.PodeConsultar
 //	Na requisicao => Accept = application/json
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public FotoProdutoDto buscarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
@@ -75,7 +78,7 @@ public class FotoProdutoController {
 	
 //	Quando o serviço de storage de imagens for local, vamos mostrar a imagem atraves do InputStream, mas quando for remoto ou em nuvem
 //	vamos mostrar a URL da imagem
-	
+	// As fotos dos produtos ficarão públicas (não precisa de autorização para acessá-las)
 	@GetMapping
 	public ResponseEntity<?>  buscarFotoImagem(
 			@PathVariable Long restauranteId, @PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader) 
@@ -113,6 +116,7 @@ public class FotoProdutoController {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deletarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {

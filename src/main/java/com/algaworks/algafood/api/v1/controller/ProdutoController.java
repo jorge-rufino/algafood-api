@@ -20,6 +20,7 @@ import com.algaworks.algafood.api.v1.assembler.ProdutoDtoAssembler;
 import com.algaworks.algafood.api.v1.disassembler.ProdutoInputDtoDisassembler;
 import com.algaworks.algafood.api.v1.model.ProdutoDto;
 import com.algaworks.algafood.api.v1.model.input.ProdutoInputDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.services.ProdutoService;
 
@@ -42,6 +43,7 @@ public class ProdutoController {
 //	Alteramos para "Boolean" para poder receber "null" quando formos chamar o link
 //	Como precisamos do id do restaurante, adicionamos o link da coleçao aqui
 	
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping
 	public CollectionModel<ProdutoDto> listar(@PathVariable Long restauranteId, 
 			@RequestParam(required = false, defaultValue = "false") Boolean incluirInativos){		
@@ -49,11 +51,13 @@ public class ProdutoController {
 				.add(algaLinks.linkToProdutos(restauranteId));
 	}
 	
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping("/{produtoId}")
 	public ProdutoDto buscarPorId(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 		return produtoDtoAssembler.toModel(produtoService.buscarPorId(restauranteId, produtoId));
 	}
 	
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ProdutoDto adicionar(@PathVariable Long restauranteId, @RequestBody @Valid ProdutoInputDto produtoInput) {
@@ -61,6 +65,7 @@ public class ProdutoController {
 		return produtoDtoAssembler.toModel(produtoService.salvar(restauranteId, produto));
 	}
 	
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping("{produtoId}")
 	public ProdutoDto atualizar(
 			@PathVariable Long restauranteId, @PathVariable Long produtoId, @RequestBody @Valid ProdutoInputDto produtoInput) {

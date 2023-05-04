@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.assembler.FormaPagamentoDtoAssembler;
 import com.algaworks.algafood.api.v1.model.FormaPagamentoDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.services.RestauranteService;
 
@@ -33,6 +34,7 @@ public class RestauranteFormaPagamentoController {
 	
 //	Como não queremos que os Links de associar/desassociar apareçam somente neste recurso e não em outros, criamos o link no controller mesmo
 	
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping
 	public CollectionModel<FormaPagamentoDto> listar(@PathVariable Long restauranteId){
 		Restaurante restaurante = restauranteService.buscarPorId(restauranteId);
@@ -50,6 +52,7 @@ public class RestauranteFormaPagamentoController {
 		return formasPagamentoDto;
 	}	
 	
+	@CheckSecurity.Restaurantes.PodeEditar
 	@DeleteMapping("/{formaPagamentoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> desassociarFormaPagamento (@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {
@@ -57,6 +60,7 @@ public class RestauranteFormaPagamentoController {
 		return ResponseEntity.noContent().build();
 	}
 	
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping("/{formaPagamentoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> associarFormaPagamento (@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {
