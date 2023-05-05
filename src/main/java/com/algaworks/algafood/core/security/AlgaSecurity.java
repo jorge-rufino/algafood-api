@@ -29,6 +29,10 @@ public class AlgaSecurity {
 	
 //	Verifica se o usuario logado é o dono/responsavel pelo restaurante
 	public boolean gerenciaRestaurante(Long restauranteId) {
+		if (restauranteId == null) {
+	        return false;
+	    }
+		
 		return restauranteService.existsResponsavel(restauranteId, getUsuarioId());
 	}
 }

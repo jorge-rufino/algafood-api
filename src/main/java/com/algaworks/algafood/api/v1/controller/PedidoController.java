@@ -60,6 +60,7 @@ public class PedidoController {
 	private AlgaSecurity algaSecurity;
 	
 //	Mesmo sem o @RequestParam o spring consegue fazer o databind corretamente dos filtros
+	@CheckSecurity.Pedidos.PodePesquisar
 	@GetMapping
 	public PagedModel<PedidoResumoDto> pesquisar(PedidoFilter filtro, Pageable pageable){
 		

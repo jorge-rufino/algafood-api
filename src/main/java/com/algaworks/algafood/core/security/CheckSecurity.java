@@ -36,8 +36,7 @@ public @interface CheckSecurity {
 		public @interface PodeGerenciarCadastro { }
 		
 //		Permite acesso do "Responsavel do Restaurante" mesmo que ele não tenha nenhuma permissão 
-//		Usando "@" podemos chamar métodos de um bean. Os beans do spring tem sempre a inicial do nome minuscula,e o restante igual. 
-//		Usando "#" podemos pegar o valor do "pathvariable" como parametro, desde que tenham os nomes iguais
+//		Usando "@" podemos chamar métodos de um bean. Os beans do spring tem sempre a inicial do nome minuscula,e o restante igual.
 		@PreAuthorize("hasAuthority('SCOPE_WRITE') AND (hasAuthority('EDITAR_RESTAURANTES') OR @algaSecurity.gerenciaRestaurante(#restauranteId))")
 		@Retention(RUNTIME)
 		@Target(METHOD)
@@ -62,6 +61,14 @@ public @interface CheckSecurity {
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeBuscar { }
+		
+//		Usando "#" podemos pegar o valor do "pathvariable" como parametro, desde que tenham os nomes iguais
+		@PreAuthorize("hasAuthority('SCOPE_READ') and (hasAuthority('CONSULTAR_PEDIDOS') or " //Usuario com permissao pode pesquisar tudo
+				+ "@algaSecurity.getUsuarioId() == #filtro.clienteId or"				//Cliente pesquisa somente os pedidos dele
+				+ "@algaSecurity.gerenciaRestaurante(#filtro.restauranteId))")			//Responsavel pelo restaurante pesquisa todos os pedidos do restaurante dele
+		@Retention(RUNTIME)
+		@Target(METHOD)
+		public @interface PodePesquisar { }
 		
 	}
 }
