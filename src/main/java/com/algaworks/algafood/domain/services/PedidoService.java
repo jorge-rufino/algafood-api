@@ -89,4 +89,8 @@ public class PedidoService {
 			item.setPrecoUnitario(produto.getPreco());
 		});
 	}
+	
+	public boolean isPedidoGerenciadoPor(String codigoPedido, Long usuarioId){		
+		return pedidoRepository.isPedidoGerenciadoPor(codigoPedido, usuarioId);
+	}
 }

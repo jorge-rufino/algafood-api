@@ -17,4 +17,7 @@ public interface PedidoRepository extends CustomJpaRepository<Pedido, Long>, Jpa
 	List<Pedido> findAll();
 
 	Optional<Pedido> findByCodigo(String codigo);
+	
+//	Query no arquivo "orm.mxl" em "resources/meta-inf/orm.xml
+	boolean isPedidoGerenciadoPor(String codigoPedido, Long usuarioId);
 }

@@ -70,5 +70,19 @@ public @interface CheckSecurity {
 		@Target(METHOD)
 		public @interface PodePesquisar { }
 		
+//		Qualquer usuario autenticado e com Scopo WRITE pode criar um pedido
+		@PreAuthorize("hasAuthority('SCOPE_WRITE') and isAuthenticated()")
+		@Retention(RUNTIME)
+		@Target(METHOD)
+		public @interface PodeCriar { }
+
+//		Para gerenciar os pedidos: Scopo Write e (permissao GERENCIAR_PEDIDOS ou ser o responsavel pelo restaurante do pedido)
+		@PreAuthorize("hasAuthority('SCOPE_WRITE') and (hasAuthority('GERENCIAR_PEDIDOS') or "
+				+ "@algaSecurity.gerenciaRestauranteDoPedido(#codigoPedido))")
+		@Retention(RUNTIME)
+		@Target(METHOD)
+		public @interface PodeGerenciarPedidos {
+		}
+		
 	}
 }
