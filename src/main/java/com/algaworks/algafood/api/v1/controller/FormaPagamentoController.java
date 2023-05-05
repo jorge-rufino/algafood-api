@@ -26,6 +26,7 @@ import com.algaworks.algafood.api.v1.assembler.FormaPagamentoDtoAssembler;
 import com.algaworks.algafood.api.v1.disassembler.FormaPagamentoInputDtoDisassembler;
 import com.algaworks.algafood.api.v1.model.FormaPagamentoDto;
 import com.algaworks.algafood.api.v1.model.input.FormaPagamentoInputDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.services.FormaPagamentoService;
 
@@ -43,6 +44,7 @@ public class FormaPagamentoController {
 	private FormaPagamentoInputDtoDisassembler formaPagamentoDisassembler;
 	
 //	Com DeepTags, o método só será executado completamente quando a "ETag" e "If-None-Match" forem diferentes
+	@CheckSecurity.FormasPagamento.PodeConsultar
 	@GetMapping
 	public ResponseEntity<CollectionModel<FormaPagamentoDto>> listar(ServletWebRequest request) {
 		
@@ -78,6 +80,7 @@ public class FormaPagamentoController {
 				.body(formasPagamentosDto); 
 	}
 	
+	@CheckSecurity.FormasPagamento.PodeConsultar
 	@GetMapping("/{id}")
 	public ResponseEntity<FormaPagamentoDto> buscarId(@PathVariable Long id, ServletWebRequest request) {
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -103,6 +106,7 @@ public class FormaPagamentoController {
 				.body(formaPagamentoDtoAssembler.toModel(service.buscarPorId(id)));
 	}
 	
+	@CheckSecurity.FormasPagamento.PodeEditar
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public FormaPagamentoDto adicionar (@RequestBody @Valid FormaPagamentoInputDto formaPagamentoInput) {
@@ -110,6 +114,7 @@ public class FormaPagamentoController {
 		return formaPagamentoDtoAssembler.toModel(service.salvar(formaPagamento));
 	}
 	
+	@CheckSecurity.FormasPagamento.PodeEditar
 	@PutMapping("/{id}")
 	public FormaPagamentoDto atualizar (@PathVariable Long id, @RequestBody @Valid FormaPagamentoInputDto formaPagamentoInput) {
 		FormaPagamento formaPagamentoAtual = service.buscarPorId(id);
@@ -118,6 +123,7 @@ public class FormaPagamentoController {
 		return formaPagamentoDtoAssembler.toModel(service.salvar(formaPagamentoAtual));
 	}
 	
+	@CheckSecurity.FormasPagamento.PodeEditar
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Long id) {
