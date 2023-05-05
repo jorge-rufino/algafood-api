@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.v1.assembler.PermissaoDtoAssembler;
 import com.algaworks.algafood.api.v1.model.PermissaoDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.services.PermissaoService;
 
 @RestController
@@ -20,6 +21,7 @@ public class PermissaoController {
 	@Autowired
 	private PermissaoDtoAssembler permissaoDtoAssembler;
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	public CollectionModel<PermissaoDto> lista(){
 		return permissaoDtoAssembler.toCollectionModel(permissaoService.listar());

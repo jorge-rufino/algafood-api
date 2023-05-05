@@ -21,6 +21,7 @@ import com.algaworks.algafood.api.v1.model.UsuarioDto;
 import com.algaworks.algafood.api.v1.model.input.SenhaInputDto;
 import com.algaworks.algafood.api.v1.model.input.UsuarioComSenhaInputDto;
 import com.algaworks.algafood.api.v1.model.input.UsuarioInputDto;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.services.UsuarioService;
 
@@ -37,14 +38,16 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioInputDtoDisassembler usuarioInputDtoDisassembler;
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	public CollectionModel<UsuarioDto> listar(){
 		return usuarioDtoAssembler.toCollectionModel(service.listar());
 	}
 	
-	@GetMapping("{id}")
-	public UsuarioDto buscarPorId(@PathVariable Long id) {
-		return usuarioDtoAssembler.toModel(service.buscarPorId(id));
+	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultarUsuario
+	@GetMapping("{usuarioId}")
+	public UsuarioDto buscarPorId(@PathVariable Long usuarioId) {
+		return usuarioDtoAssembler.toModel(service.buscarPorId(usuarioId));
 	}
 	
 	@PostMapping
@@ -55,23 +58,26 @@ public class UsuarioController {
 		return usuarioDtoAssembler.toModel(service.salvar(usuario));
 	}
 	
-	@PutMapping("/{id}")
-	public UsuarioDto atualizar(@PathVariable Long id, @RequestBody @Valid UsuarioInputDto usuarioInput) {
-		Usuario usuarioAtual = service.buscarPorId(id);
+	@CheckSecurity.UsuariosGruposPermissoes.PodeAlterarUsuario
+	@PutMapping("/{usuarioId}")
+	public UsuarioDto atualizar(@PathVariable Long usuarioId, @RequestBody @Valid UsuarioInputDto usuarioInput) {
+		Usuario usuarioAtual = service.buscarPorId(usuarioId);
 		usuarioInputDtoDisassembler.copyToDomainObject(usuarioInput, usuarioAtual);
 		
 		return usuarioDtoAssembler.toModel(service.salvar(usuarioAtual));	
 	}
 	
+	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@DeleteMapping("/{id}")
-	public void deletar(@PathVariable Long id) {
-		service.deletar(id);
+	@DeleteMapping("/{usuarioId}")
+	public void deletar(@PathVariable Long usuarioId) {
+		service.deletar(usuarioId);
 	}
 	
-	@PutMapping("/{id}/senha")
+	@CheckSecurity.UsuariosGruposPermissoes.PodeAlterarPropriaSenha
+	@PutMapping("/{usuarioId}/senha")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void alterarSenha(@PathVariable Long id, @RequestBody @Valid SenhaInputDto senhaInput) {
-		service.alterarSenha(id, senhaInput.getSenhaAtual(), senhaInput.getNovaSenha());
+	public void alterarSenha(@PathVariable Long usuarioId, @RequestBody @Valid SenhaInputDto senhaInput) {
+		service.alterarSenha(usuarioId, senhaInput.getSenhaAtual(), senhaInput.getNovaSenha());
 	}
 }
