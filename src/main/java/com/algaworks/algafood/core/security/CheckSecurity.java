@@ -77,8 +77,8 @@ public @interface CheckSecurity {
 		public @interface PodeCriar { }
 
 //		Para gerenciar os pedidos: Scopo Write e (permissao GERENCIAR_PEDIDOS ou ser o responsavel pelo restaurante do pedido)
-		@PreAuthorize("hasAuthority('SCOPE_WRITE') and (hasAuthority('GERENCIAR_PEDIDOS') or "
-				+ "@algaSecurity.gerenciaRestauranteDoPedido(#codigoPedido))")
+//		Como utilizamos a mesma regra na classe AlgaSecurity para mostrar os links, vamos somente chamar o metodo aqui para nao duplicar codigo 
+		@PreAuthorize("@algaSecurity.podeGerenciarPedidos(#codigoPedido)")
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeGerenciarPedidos {
