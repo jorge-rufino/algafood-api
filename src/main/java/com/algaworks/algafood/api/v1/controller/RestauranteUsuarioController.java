@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.assembler.UsuarioDtoAssembler;
 import com.algaworks.algafood.api.v1.model.UsuarioDto;
+import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.UsuarioNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -36,6 +37,9 @@ public class RestauranteUsuarioController {
 	@Autowired
 	private AlgaLinks algaLinks;
 	
+	@Autowired
+	private AlgaSecurity algaSecurity;  
+	
 	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
 	@GetMapping
 	public CollectionModel<UsuarioDto> listar(@PathVariable Long restauranteId) {
@@ -50,12 +54,16 @@ public class RestauranteUsuarioController {
 				.sorted(Comparator.comparing(Usuario::getNome))
 				.toList())
 				.removeLinks()		//Remove o link do método "listar()" da classe "Usuario"
-				.add(algaLinks.linkToResponsaveisRestaurante(restaurante.getId()))
-				.add(algaLinks.linkToRestauranteResponsavelAssociacao(restauranteId, "associar"));
+				.add(algaLinks.linkToResponsaveisRestaurante(restaurante.getId()));
+				
 		
-		usuariosDto.getContent().forEach(usuarioDto -> {
-			usuarioDto.add(algaLinks.linkToRestauranteResponsavelDesassociacao(restaurante.getId(), usuarioDto.getId(), "desassociar"));
-		});
+		if (algaSecurity.podeGerenciarCadastroRestaurantes()) {
+			usuariosDto.add(algaLinks.linkToRestauranteResponsavelAssociacao(restauranteId, "associar"));
+			
+			usuariosDto.getContent().forEach(usuarioDto -> {
+				usuarioDto.add(algaLinks.linkToRestauranteResponsavelDesassociacao(restaurante.getId(), usuarioDto.getId(), "desassociar"));
+			});
+		}
 		
 		return usuariosDto;
 	}

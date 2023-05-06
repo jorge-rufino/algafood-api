@@ -16,7 +16,7 @@ public @interface CheckSecurity {
 	public @interface Cozinhas{
 		
 //		Precisa estar autenticado e ter o scopo de leitura
-		@PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+		@PreAuthorize("@algaSecurity.podeConsultarCozinhas()")
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeConsultar{ }
@@ -30,19 +30,19 @@ public @interface CheckSecurity {
 
 	public @interface Restaurantes {
 		
-		@PreAuthorize("hasAuthority('SCOPE_WRITE') AND hasAuthority('EDITAR_RESTAURANTES')")
+		@PreAuthorize("@algaSecurity.podeGerenciarCadastroRestaurantes()")
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeGerenciarCadastro { }
 		
 //		Permite acesso do "Responsavel do Restaurante" mesmo que ele não tenha nenhuma permissão 
 //		Usando "@" podemos chamar métodos de um bean. Os beans do spring tem sempre a inicial do nome minuscula,e o restante igual.
-		@PreAuthorize("hasAuthority('SCOPE_WRITE') AND (hasAuthority('EDITAR_RESTAURANTES') OR @algaSecurity.gerenciaRestaurante(#restauranteId))")
+		@PreAuthorize("@algaSecurity.podeGerenciarFuncionamentoRestaurantes(#restauranteId)")
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeGerenciarFuncionamento { }
 
-		@PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+		@PreAuthorize("@algaSecurity.podeConsultarRestaurantes()")
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeConsultar { }
@@ -63,9 +63,7 @@ public @interface CheckSecurity {
 		public @interface PodeBuscar { }
 		
 //		Usando "#" podemos pegar o valor do "pathvariable" como parametro, desde que tenham os nomes iguais
-		@PreAuthorize("hasAuthority('SCOPE_READ') and (hasAuthority('CONSULTAR_PEDIDOS') or " //Usuario com permissao pode pesquisar tudo
-				+ "@algaSecurity.usuarioAutenticadoIgual(#filtro.clienteId) or"				//Cliente pesquisa somente os pedidos dele
-				+ "@algaSecurity.gerenciaRestaurante(#filtro.restauranteId))")			//Responsavel pelo restaurante pesquisa todos os pedidos do restaurante dele
+		@PreAuthorize("@algaSecurity.podePesquisarPedidos(#filtro.clienteId, #filtro.restauranteId)")
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodePesquisar { }
@@ -92,7 +90,7 @@ public @interface CheckSecurity {
 	    @Target(METHOD)
 	    public @interface PodeEditar { }
 
-	    @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+	    @PreAuthorize("@algaSecurity.podeConsultarFormasPagamento()")
 	    @Retention(RUNTIME)
 	    @Target(METHOD)
 	    public @interface PodeConsultar { }
@@ -106,7 +104,7 @@ public @interface CheckSecurity {
 	    @Target(METHOD)
 	    public @interface PodeEditar { }
 
-	    @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+	    @PreAuthorize("@algaSecurity.podeConsultarCidades()")
 	    @Retention(RUNTIME)
 	    @Target(METHOD)
 	    public @interface PodeConsultar { }
@@ -120,7 +118,7 @@ public @interface CheckSecurity {
 	    @Target(METHOD)
 	    public @interface PodeEditar { }
 
-	    @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+	    @PreAuthorize("@algaSecurity.podeConsultarEstados()")
 	    @Retention(RUNTIME)
 	    @Target(METHOD)
 	    public @interface PodeConsultar { }
@@ -141,13 +139,13 @@ public @interface CheckSecurity {
 	    @Target(METHOD)
 	    public @interface PodeAlterarUsuario { }
 
-	    @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_USUARIOS_GRUPOS_PERMISSOES')")
+	    @PreAuthorize("@algaSecurity.podeEditarUsuariosGruposPermissoes()")
 	    @Retention(RUNTIME)
 	    @Target(METHOD)
 	    public @interface PodeEditar { }
 	    
 
-	    @PreAuthorize("hasAuthority('SCOPE_READ') and hasAuthority('CONSULTAR_USUARIOS_GRUPOS_PERMISSOES')")
+	    @PreAuthorize("@algaSecurity.podeConsultarUsuariosGruposPermissoes()")
 	    @Retention(RUNTIME)
 	    @Target(METHOD)
 	    public @interface PodeConsultar { }
@@ -162,8 +160,7 @@ public @interface CheckSecurity {
 	
 	public @interface Estatisticas {
 
-	    @PreAuthorize("hasAuthority('SCOPE_READ') and "
-	            + "hasAuthority('GERAR_RELATORIOS')")
+	    @PreAuthorize("@algaSecurity.podeConsultarEstatisticas()")
 	    @Retention(RUNTIME)
 	    @Target(METHOD)
 	    public @interface PodeConsultar { }
