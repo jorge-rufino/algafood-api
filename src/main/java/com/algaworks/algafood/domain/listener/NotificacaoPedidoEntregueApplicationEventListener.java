@@ -22,7 +22,7 @@ public class NotificacaoPedidoEntregueApplicationEventListener {
 	private void aoCancelarPedido(PedidoEntregueApplicationEvent event) {
 		Pedido pedido = event.getPedido();
 		
-		String template = "pedido-entregue.html";
+		String template = "emails/pedido-entregue.html";
 				
 		DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm:ss");

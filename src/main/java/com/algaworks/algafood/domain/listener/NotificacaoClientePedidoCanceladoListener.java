@@ -25,7 +25,7 @@ public class NotificacaoClientePedidoCanceladoListener {
 		Pedido pedido = event.getPedido();
 		
 //		Template que será usado para montar o corpo da mensagem. "src/main/resources/pedido-confirmado.html"
-		String template = "pedido-cancelado.html";
+		String template = "emails/pedido-cancelado.html";
 				
 		DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm:ss");

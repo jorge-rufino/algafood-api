@@ -33,7 +33,7 @@ public class NotificacaoClientePedidoConfirmadoListener {
 		Pedido pedido = event.getPedido();
 		
 //		Template que será usado para montar o corpo da mensagem. "src/main/resources/pedido-confirmado.html"
-		String template = "pedido-confirmado.html";
+		String template = "emails/pedido-confirmado.html";
 				
 		DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm:ss");
