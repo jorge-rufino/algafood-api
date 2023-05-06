@@ -56,15 +56,15 @@ public @interface CheckSecurity {
 		
 		@PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
 		@PostAuthorize("hasAuthority('CONSULTAR_PEDIDOS') OR "
-					+ "@algaSecurity.getUsuarioId() == returnObject.cliente.id OR"		//Se o usuario for o cliente que fez o pedido
-					+ "@algaSecurity.gerenciaRestaurante(returnObject.restaurante.id)")	//Se o usuário for o responsavel pelo restaurante
+					+ "@algaSecurity.usuarioAutenticadoIgual(returnObject.cliente.id) OR"	//Se o usuario for o cliente que fez o pedido
+					+ "@algaSecurity.gerenciaRestaurante(returnObject.restaurante.id)")		//Se o usuário for o responsavel pelo restaurante
 		@Retention(RUNTIME)
 		@Target(METHOD)
 		public @interface PodeBuscar { }
 		
 //		Usando "#" podemos pegar o valor do "pathvariable" como parametro, desde que tenham os nomes iguais
 		@PreAuthorize("hasAuthority('SCOPE_READ') and (hasAuthority('CONSULTAR_PEDIDOS') or " //Usuario com permissao pode pesquisar tudo
-				+ "@algaSecurity.getUsuarioId() == #filtro.clienteId or"				//Cliente pesquisa somente os pedidos dele
+				+ "@algaSecurity.usuarioAutenticadoIgual(#filtro.clienteId) or"				//Cliente pesquisa somente os pedidos dele
 				+ "@algaSecurity.gerenciaRestaurante(#filtro.restauranteId))")			//Responsavel pelo restaurante pesquisa todos os pedidos do restaurante dele
 		@Retention(RUNTIME)
 		@Target(METHOD)
@@ -130,13 +130,13 @@ public @interface CheckSecurity {
 	public @interface UsuariosGruposPermissoes {
 
 	    @PreAuthorize("hasAuthority('SCOPE_WRITE') and "
-	            + "@algaSecurity.getUsuarioId() == #usuarioId")
+	            + "@algaSecurity.usuarioAutenticadoIgual(#usuarioId)")
 	    @Retention(RUNTIME)
 	    @Target(METHOD)
 	    public @interface PodeAlterarPropriaSenha { }
 	    
 	    @PreAuthorize("hasAuthority('SCOPE_WRITE') and (hasAuthority('EDITAR_USUARIOS_GRUPOS_PERMISSOES') or "
-	            + "@algaSecurity.getUsuarioId() == #usuarioId)")
+	            + "@algaSecurity.usuarioAutenticadoIgual(#usuarioId))")
 	    @Retention(RUNTIME)
 	    @Target(METHOD)
 	    public @interface PodeAlterarUsuario { }
@@ -152,7 +152,8 @@ public @interface CheckSecurity {
 	    @Target(METHOD)
 	    public @interface PodeConsultar { }
 	    
-	    @PreAuthorize("hasAuthority('SCOPE_READ') and (hasAuthority('CONSULTAR_USUARIOS_GRUPOS_PERMISSOES')) or @algaSecurity.getUsuarioId() == #usuarioId")
+	    @PreAuthorize("hasAuthority('SCOPE_READ') and (hasAuthority('CONSULTAR_USUARIOS_GRUPOS_PERMISSOES')) "
+	    		+ "or @algaSecurity.usuarioAutenticadoIgual(#usuarioId)")
 	    @Retention(RUNTIME)
 	    @Target(METHOD)
 	    public @interface PodeConsultarUsuario {  }

@@ -43,4 +43,11 @@ public class AlgaSecurity {
 	public boolean gerenciaRestauranteDoPedido(String codigoPedido) {
 	    return pedidoService.isPedidoGerenciadoPor(codigoPedido, getUsuarioId());
 	} 
+	
+//	Quando utilizamos ClientCredentials, a claim nao vem com o id do usuario, então no caso de uma consulta em Pedidos sem passar o filtro contento
+//	o id do cliente, acabaria comparando o "null" da claim e o "null" do filtro e acabaria fazendo a consulta que não deveria ser possível.
+//	Portanto, os "ids" não podem ser nulos e tem que ser iguais
+	public boolean usuarioAutenticadoIgual(Long usuarioId) {
+		return getUsuarioId() != null && usuarioId != null && getUsuarioId().equals(usuarioId);
+	}
 }
