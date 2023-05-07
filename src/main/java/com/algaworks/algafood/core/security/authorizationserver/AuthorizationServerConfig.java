@@ -9,7 +9,6 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -123,11 +122,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	}
 	
 	private KeyPair keyPair() {
-		var jksResource = new ClassPathResource(jwtKeyStoreProperties.getPath());
+		
 	    var keyStorePass = jwtKeyStoreProperties.getPassword();
 	    var keyPairAlias = jwtKeyStoreProperties.getKeypairAlias();
 	    
-	    var keyStoreKeyFactory = new KeyStoreKeyFactory(jksResource, keyStorePass.toCharArray());
+	    var keyStoreKeyFactory = new KeyStoreKeyFactory(jwtKeyStoreProperties.getJksLocation(), keyStorePass.toCharArray());
 	    var keyPair = keyStoreKeyFactory.getKeyPair(keyPairAlias);
 	    
 	    return keyPair;
