@@ -1,3 +1,9 @@
+Antes, precisamos do arquivo .jar do projeto.
+Para criar o arqvuio .jar, entre na pasta do projeto e execute o seguinte comando:
+.mvnw clean package
+
+Será criado o arquivo .jar na pasta "/target"
+
 FROM: Define a imagem base para a imagem que iremos criar. No nosso caso iremos criar uma imagem que necessita do java, portanto seria uma imagem do openjdk. Porém o Openjdk está depreciado
 e por isso devemos utilizar como opção a seguinte imagem => eclipse-temurin:17-jre-alpine
 Ex. FROM eclipse-temurin:17-jre-alpine
