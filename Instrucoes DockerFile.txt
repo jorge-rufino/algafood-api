@@ -1,8 +1,10 @@
-Antes, precisamos do arquivo .jar do projeto.
+1 ====> Antes, precisamos do arquivo .jar do projeto.
 Para criar o arqvuio .jar, entre na pasta do projeto e execute o seguinte comando:
-.mvnw clean package
+".mvnw clean package"
 
 Será criado o arquivo .jar na pasta "/target"
+
+2 ====> Parametros do arquivo "Dockerfile":
 
 FROM: Define a imagem base para a imagem que iremos criar. No nosso caso iremos criar uma imagem que necessita do java, portanto seria uma imagem do openjdk. Porém o Openjdk está depreciado
 e por isso devemos utilizar como opção a seguinte imagem => eclipse-temurin:17-jre-alpine
@@ -20,3 +22,9 @@ EXPOSE 8080
 
 CMD: define o comando padrão que será executado quando o container for iniciado. Recomendo usar como array.
 Ex. CMD ["java","-jar","api.jar"]
+
+3 ====> Para criar a imagem Docker:
+Após criação do .jar e do arquivo "Dockerfile", entrar na pasta do projeto e executar o comando abaixo para a imagem ser criada:
+"docker image build -t algafood-api ."
+
+"algafood-api" é o nome da imagem que definirmos.
