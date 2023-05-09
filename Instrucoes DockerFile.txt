@@ -1,0 +1,16 @@
+FROM: Define a imagem base para a imagem que iremos criar. No nosso caso iremos criar uma imagem que necessita do java, portanto seria uma imagem do openjdk. Porém o Openjdk está depreciado
+e por isso devemos utilizar como opção a seguinte imagem => eclipse-temurin:17-jre-alpine
+Ex. FROM eclipse-temurin:17-jre-alpine
+
+WORKDIR: Define o diretorio de trabalho onde as instruções dos próximos comandos irão rodar . (/app) 
+Ex. WORKDIR /app
+
+COPY: Recebe uma origem e um destino. A origem é o local onde está o arquivo .jar que será a base da imagem, este arquivo está na pasta "/target/" do projeto.
+O destino é o local dentro do container, é o local definido em WORKDIR, seguido do nome do arquivo .jar dentro do container.
+Ex. COPY target/*.jar /app/api.jar
+
+EXPOSE: informa qual porta o container irá escutar quando estiver rodado. Ela não publica a porta.
+EXPOSE 8080
+
+CMD: define o comando padrão que será executado quando o container for iniciado. Recomendo usar como array.
+Ex. CMD ["java","-jar","api.jar"]
