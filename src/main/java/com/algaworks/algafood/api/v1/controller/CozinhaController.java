@@ -59,7 +59,7 @@ public class CozinhaController {
 //		System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
 		
 //		logger.info("Consultando cozinhas com páginas de {} registros", pageable.getPageSize());
-		log.info("Consultando cozinhas com páginas de {} registros", pageable.getPageSize());
+//		log.info("Consultando cozinhas com páginas de {} registros", pageable.getPageSize());
 				
 		Page<Cozinha> cozinhasPage = cozinhaService.listar(pageable);
 		
