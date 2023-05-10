@@ -34,7 +34,3 @@ build/
 
 ### Arquivos Jasper ###
 *.jasper
-
-### Arquivos Informativos ###
-*.rtf
-Instrucoes DockerFile.txt
