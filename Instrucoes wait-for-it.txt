@@ -17,3 +17,18 @@ RUN chmod +x /wait-for-it.sh		=> faz com que o arquivo .sh seja executavel
 => "command" substitui o "CMD" do Dockerfile. Ele executa o arquivo .sh, e faz com que o servico da API so seja
 executado após 30segundos de espera, e somente se o serviço do MySql já estiver finalizado.
 
+==============IMPORTANTE================
+Para evitar o erro de bash:
+
+   UTILIZEI ESTA A OPÇÃO 1 POIS A IMAGEM DA API FICA BEM MENOR COM ELE
+1- Quando a imagem não vem com o bash instalado, devemos executar um comando para adicionar o bash na imagem
+   - eclipse-temurin:17-jre-alpine => tem todos os pacotes inclusive para o jaspereport porém nao tem o bash
+
+Devemos adicionar o comando abaixo para adicionar o bash na imagem:
+   - RUN apk add --no-cache bash
+
+2- Utilizar uma imagem que venha com o bash instalado. Abaixo 2 opçoes possiveis
+   - openjdk:17-jdk-oracle => pacote completo porém ele deixa a imagem muito grande.
+   - openjdk:17-jdk-slim   => pacote maIs enxuto porém ele não contem as bibliotecas para o jaspereport e imagem ainda fica um pouco grande
+
+
