@@ -36,3 +36,8 @@ Após criação do .jar e do arquivo "Dockerfile", entrar na pasta do projeto e 
 "docker image build -t algafood-api ."
 
 "algafood-api" é o nome da imagem que definirmos.
+
+Resumo: 
+./mvnw clean package -Pdocker ===========> cria o JAR do projeto e a imagem no Docker. INFELIZMENTE DEVIDO A LENTIDÃO, PAREI DE USA-LO
+./mvnw clean package ====================> cria somente o JAR do projeto
+docker image build -t algafood-api . ====> cria a imagem no Docker utilizando o JAR da pasta "/target"
