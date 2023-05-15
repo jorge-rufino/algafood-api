@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.TokenGranter;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
+import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -68,6 +69,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		endpoints
 			.authenticationManager(authenticationManager)
 			.userDetailsService(userDetailsService)
+			.authorizationCodeServices(new JdbcAuthorizationCodeServices(this.dataSource))	//Faz com que os codes sejam armazenados no BD e nao em memória
+																							//Precisa criar a tabela "oauth_code" no MySql
+																							//Precisamos alterar a versão do "Oauth" no pom.xml
 			.reuseRefreshTokens(false) 							//Toda vez que um RefreshToken for utilizado, será criado um novo RefreshToken no lugar do utilizado
 			.accessTokenConverter(jwtAccessTokenConverter())	//Adiciona o metodo conversor JWT
 			.tokenEnhancer(enhancerChain)						//Passamos a cadeia/lista de "enhancers"
