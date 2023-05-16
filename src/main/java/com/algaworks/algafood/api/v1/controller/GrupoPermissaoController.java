@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.assembler.PermissaoDtoAssembler;
 import com.algaworks.algafood.api.v1.model.PermissaoDto;
+import com.algaworks.algafood.api.v1.openapi.controller.GrupoPermissaoControllerOpenApi;
 import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Grupo;
@@ -22,7 +23,7 @@ import com.algaworks.algafood.domain.services.GrupoService;
 
 @RestController
 @RequestMapping(path = "/v1/grupos/{grupoId}/permissoes")
-public class GrupoPermissaoController {
+public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi {
 
 	@Autowired
 	private GrupoService grupoService;
@@ -36,6 +37,7 @@ public class GrupoPermissaoController {
 	@Autowired
 	private AlgaSecurity algaSecurity;  
 	
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	public CollectionModel<PermissaoDto> listar(@PathVariable Long grupoId){
@@ -58,6 +60,7 @@ public class GrupoPermissaoController {
 	    return permissoesModel;
 	}
 	
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@DeleteMapping("/{permissaoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -67,6 +70,7 @@ public class GrupoPermissaoController {
 		return ResponseEntity.noContent().build();
 	}
 	
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@PutMapping("/{permissaoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)

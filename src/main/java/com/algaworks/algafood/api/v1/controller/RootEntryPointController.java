@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.core.security.AlgaSecurity;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@SecurityRequirement(name = "security_oauth")
 //Esta classe é responsavel pelos links do EntryPoint da API (http://api.algafood.local:8080/)
 @RestController
 @RequestMapping(path = "/v1",produces = MediaType.APPLICATION_JSON_VALUE)

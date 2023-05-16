@@ -20,13 +20,14 @@ import com.algaworks.algafood.api.v1.assembler.ProdutoDtoAssembler;
 import com.algaworks.algafood.api.v1.disassembler.ProdutoInputDtoDisassembler;
 import com.algaworks.algafood.api.v1.model.ProdutoDto;
 import com.algaworks.algafood.api.v1.model.input.ProdutoInputDto;
+import com.algaworks.algafood.api.v1.openapi.controller.ProdutoControllerOpenApi;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.services.ProdutoService;
 
 @RestController
 @RequestMapping(path = "/v1/restaurantes/{restauranteId}/produtos")
-public class ProdutoController {
+public class ProdutoController implements ProdutoControllerOpenApi {
 
 	@Autowired
 	private ProdutoService produtoService;
@@ -43,6 +44,7 @@ public class ProdutoController {
 //	Alteramos para "Boolean" para poder receber "null" quando formos chamar o link
 //	Como precisamos do id do restaurante, adicionamos o link da coleçao aqui
 	
+	@Override
 	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping
 	public CollectionModel<ProdutoDto> listar(@PathVariable Long restauranteId, 
@@ -51,12 +53,14 @@ public class ProdutoController {
 				.add(algaLinks.linkToProdutos(restauranteId));
 	}
 	
+	@Override
 	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping("/{produtoId}")
 	public ProdutoDto buscarPorId(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 		return produtoDtoAssembler.toModel(produtoService.buscarPorId(restauranteId, produtoId));
 	}
 	
+	@Override
 	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -65,6 +69,7 @@ public class ProdutoController {
 		return produtoDtoAssembler.toModel(produtoService.salvar(restauranteId, produto));
 	}
 	
+	@Override
 	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@PutMapping("{produtoId}")
 	public ProdutoDto atualizar(

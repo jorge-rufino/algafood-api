@@ -25,6 +25,7 @@ import com.algaworks.algafood.api.v1.disassembler.PedidoInputDtoDisassembler;
 import com.algaworks.algafood.api.v1.model.PedidoDto;
 import com.algaworks.algafood.api.v1.model.PedidoResumoDto;
 import com.algaworks.algafood.api.v1.model.input.PedidoInputDto;
+import com.algaworks.algafood.api.v1.openapi.controller.PedidoControllerOpenApi;
 import com.algaworks.algafood.core.data.PageWrapper;
 import com.algaworks.algafood.core.data.PageableTranslate;
 import com.algaworks.algafood.core.security.AlgaSecurity;
@@ -39,7 +40,7 @@ import com.algaworks.algafood.infrastructure.repository.spec.PedidosSpecs;
 
 @RestController
 @RequestMapping(path = "/v1/pedidos")
-public class PedidoController {
+public class PedidoController implements PedidoControllerOpenApi {
 
 	@Autowired
 	private PedidoService pedidoService;
@@ -60,6 +61,7 @@ public class PedidoController {
 	private AlgaSecurity algaSecurity;
 	
 //	Mesmo sem o @RequestParam o spring consegue fazer o databind corretamente dos filtros
+	@Override
 	@CheckSecurity.Pedidos.PodePesquisar
 	@GetMapping
 	public PagedModel<PedidoResumoDto> pesquisar(PedidoFilter filtro, Pageable pageable){
@@ -75,12 +77,14 @@ public class PedidoController {
 		return pedidoPagedModel;
 	}
 	
+	@Override
 	@CheckSecurity.Pedidos.PodeBuscar
 	@GetMapping("{codigoPedido}")
 	public PedidoDto buscarPorCodigo(@PathVariable String codigoPedido) {
 		return pedidoDtoAssembler.toModel(pedidoService.buscarPorCodigo(codigoPedido));
 	}
 	
+	@Override
 	@CheckSecurity.Pedidos.PodeCriar
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)

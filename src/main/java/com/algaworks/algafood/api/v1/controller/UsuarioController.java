@@ -21,13 +21,14 @@ import com.algaworks.algafood.api.v1.model.UsuarioDto;
 import com.algaworks.algafood.api.v1.model.input.SenhaInputDto;
 import com.algaworks.algafood.api.v1.model.input.UsuarioComSenhaInputDto;
 import com.algaworks.algafood.api.v1.model.input.UsuarioInputDto;
+import com.algaworks.algafood.api.v1.openapi.controller.UsuarioControllerOpenApi;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.services.UsuarioService;
 
 @RestController
 @RequestMapping(path = "/v1/usuarios")
-public class UsuarioController {
+public class UsuarioController implements UsuarioControllerOpenApi {
 
 	@Autowired
 	private UsuarioService service;
@@ -38,18 +39,21 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioInputDtoDisassembler usuarioInputDtoDisassembler;
 	
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	public CollectionModel<UsuarioDto> listar(){
 		return usuarioDtoAssembler.toCollectionModel(service.listar());
 	}
 	
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultarUsuario
 	@GetMapping("{usuarioId}")
 	public UsuarioDto buscarPorId(@PathVariable Long usuarioId) {
 		return usuarioDtoAssembler.toModel(service.buscarPorId(usuarioId));
 	}
 	
+	@Override
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public UsuarioDto adicionar(@RequestBody @Valid UsuarioComSenhaInputDto usuarioInputComSenha) {
@@ -58,6 +62,7 @@ public class UsuarioController {
 		return usuarioDtoAssembler.toModel(service.salvar(usuario));
 	}
 	
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeAlterarUsuario
 	@PutMapping("/{usuarioId}")
 	public UsuarioDto atualizar(@PathVariable Long usuarioId, @RequestBody @Valid UsuarioInputDto usuarioInput) {
@@ -67,6 +72,7 @@ public class UsuarioController {
 		return usuarioDtoAssembler.toModel(service.salvar(usuarioAtual));	
 	}
 	
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/{usuarioId}")
@@ -74,6 +80,7 @@ public class UsuarioController {
 		service.deletar(usuarioId);
 	}
 	
+	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeAlterarPropriaSenha
 	@PutMapping("/{usuarioId}/senha")
 	@ResponseStatus(HttpStatus.NO_CONTENT)

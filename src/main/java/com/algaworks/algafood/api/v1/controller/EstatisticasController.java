@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.v1.AlgaLinks;
+import com.algaworks.algafood.api.v1.openapi.controller.EstatisticasControllerOpenApi;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 import com.algaworks.algafood.domain.model.dto.VendaDiaria;
@@ -24,7 +25,7 @@ import com.algaworks.algafood.domain.services.VendaReportService;
 
 @RestController
 @RequestMapping(path = "/v1/estatisticas")
-public class EstatisticasController {
+public class EstatisticasController implements EstatisticasControllerOpenApi {
 
 	@Autowired
 	private VendaQueryService vendaQueryService;
@@ -35,6 +36,7 @@ public class EstatisticasController {
 	@Autowired
 	private AlgaLinks algaLinks;
 	
+	@Override
 	@CheckSecurity.Estatisticas.PodeConsultar
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public EstatisticasModel estatisticas() {
@@ -46,6 +48,7 @@ public class EstatisticasController {
 	}
 	
 //	Caso nao seja passado nenhum offset, o valor default utilizado é do UTC (+00:00)
+	@Override
 	@CheckSecurity.Estatisticas.PodeConsultar
 	@GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<VendaDiaria> consultarVendasDiarias(
@@ -53,6 +56,7 @@ public class EstatisticasController {
 		return vendaQueryService.consultarVendasDiarias(filtro,timeOffSet);
 	}
 	
+	@Override
 	@CheckSecurity.Estatisticas.PodeConsultar
 	@GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_PDF_VALUE)
 	public ResponseEntity<byte[]> consultarVendasDiariasPdf(
@@ -72,6 +76,7 @@ public class EstatisticasController {
 				.body(bytesPdf);
 	}
 	
+	@Override
 	@CheckSecurity.Estatisticas.PodeConsultar
 	@GetMapping("/vendas-diarias-com-total-geral")
 	public Map<String, Object> consultarVendasDiariasComTotalGeral(VendaDiariaFilter filtro, String timeOffSet){

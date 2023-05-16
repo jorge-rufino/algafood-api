@@ -25,7 +25,7 @@ import com.algaworks.algafood.api.v1.controller.PermissaoController;
 import com.algaworks.algafood.api.v1.controller.ProdutoController;
 import com.algaworks.algafood.api.v1.controller.RestauranteController;
 import com.algaworks.algafood.api.v1.controller.RestauranteFormaPagamentoController;
-import com.algaworks.algafood.api.v1.controller.RestauranteUsuarioController;
+import com.algaworks.algafood.api.v1.controller.RestauranteUsuarioResponsavelController;
 import com.algaworks.algafood.api.v1.controller.UsuarioController;
 import com.algaworks.algafood.api.v1.controller.UsuarioGrupoController;
 
@@ -186,7 +186,7 @@ public class AlgaLinks {
 	}
 	
 	public Link linkToResponsaveisRestaurante(Long restauranteId, String rel) {
-	    return WebMvcLinkBuilder.linkTo(methodOn(RestauranteUsuarioController.class)
+	    return WebMvcLinkBuilder.linkTo(methodOn(RestauranteUsuarioResponsavelController.class)
 	            .listar(restauranteId)).withRel(rel);
 	}
 
@@ -195,12 +195,12 @@ public class AlgaLinks {
 	}
 
 	public Link linkToRestauranteResponsavelDesassociacao(Long restauranteId, Long usuarioId, String rel) {
-	    return WebMvcLinkBuilder.linkTo(methodOn(RestauranteUsuarioController.class)
+	    return WebMvcLinkBuilder.linkTo(methodOn(RestauranteUsuarioResponsavelController.class)
 	            .desassociarResponsavel(restauranteId, usuarioId)).withRel(rel).withType("Delete");
 	}
 
 	public Link linkToRestauranteResponsavelAssociacao(Long restauranteId, String rel) {
-	    return WebMvcLinkBuilder.linkTo(methodOn(RestauranteUsuarioController.class)
+	    return WebMvcLinkBuilder.linkTo(methodOn(RestauranteUsuarioResponsavelController.class)
 	            .associarResponsavel(restauranteId, null)).withRel(rel).withType("Put");
 	}
 

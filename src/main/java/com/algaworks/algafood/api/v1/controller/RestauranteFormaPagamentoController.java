@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.assembler.FormaPagamentoDtoAssembler;
 import com.algaworks.algafood.api.v1.model.FormaPagamentoDto;
+import com.algaworks.algafood.api.v1.openapi.controller.RestauranteFormaPagamentoControllerOpenApi;
 import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -22,7 +23,7 @@ import com.algaworks.algafood.domain.services.RestauranteService;
 
 @RestController
 @RequestMapping(path = "/v1/restaurantes/{restauranteId}/formas-pagamento")
-public class RestauranteFormaPagamentoController {
+public class RestauranteFormaPagamentoController implements RestauranteFormaPagamentoControllerOpenApi {
 
 	@Autowired
 	private RestauranteService restauranteService;
@@ -38,6 +39,7 @@ public class RestauranteFormaPagamentoController {
 
 //	Como não queremos que os Links de associar/desassociar apareçam somente neste recurso e não em outros, criamos o link no controller mesmo
 
+	@Override
 	@CheckSecurity.Restaurantes.PodeConsultar
 	@GetMapping
 	public CollectionModel<FormaPagamentoDto> listar(@PathVariable Long restauranteId) {
@@ -58,6 +60,7 @@ public class RestauranteFormaPagamentoController {
 		return formasPagamentoDto;
 	}
 
+	@Override
 	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@DeleteMapping("/{formaPagamentoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -67,6 +70,7 @@ public class RestauranteFormaPagamentoController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@Override
 	@CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
 	@PutMapping("/{formaPagamentoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)

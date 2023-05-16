@@ -26,13 +26,14 @@ import com.algaworks.algafood.api.v1.assembler.FormaPagamentoDtoAssembler;
 import com.algaworks.algafood.api.v1.disassembler.FormaPagamentoInputDtoDisassembler;
 import com.algaworks.algafood.api.v1.model.FormaPagamentoDto;
 import com.algaworks.algafood.api.v1.model.input.FormaPagamentoInputDto;
+import com.algaworks.algafood.api.v1.openapi.controller.FormaPagamentoControllerOpenApi;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.services.FormaPagamentoService;
 
 @RestController
 @RequestMapping(path = "/v1/formaPagamentos")
-public class FormaPagamentoController {
+public class FormaPagamentoController implements FormaPagamentoControllerOpenApi {
 	
 	@Autowired
 	private FormaPagamentoService service;
@@ -44,6 +45,7 @@ public class FormaPagamentoController {
 	private FormaPagamentoInputDtoDisassembler formaPagamentoDisassembler;
 	
 //	Com DeepTags, o método só será executado completamente quando a "ETag" e "If-None-Match" forem diferentes
+	@Override
 	@CheckSecurity.FormasPagamento.PodeConsultar
 	@GetMapping
 	public ResponseEntity<CollectionModel<FormaPagamentoDto>> listar(ServletWebRequest request) {
@@ -80,6 +82,7 @@ public class FormaPagamentoController {
 				.body(formasPagamentosDto); 
 	}
 	
+	@Override
 	@CheckSecurity.FormasPagamento.PodeConsultar
 	@GetMapping("/{id}")
 	public ResponseEntity<FormaPagamentoDto> buscarId(@PathVariable Long id, ServletWebRequest request) {
@@ -106,6 +109,7 @@ public class FormaPagamentoController {
 				.body(formaPagamentoDtoAssembler.toModel(service.buscarPorId(id)));
 	}
 	
+	@Override
 	@CheckSecurity.FormasPagamento.PodeEditar
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -114,6 +118,7 @@ public class FormaPagamentoController {
 		return formaPagamentoDtoAssembler.toModel(service.salvar(formaPagamento));
 	}
 	
+	@Override
 	@CheckSecurity.FormasPagamento.PodeEditar
 	@PutMapping("/{id}")
 	public FormaPagamentoDto atualizar (@PathVariable Long id, @RequestBody @Valid FormaPagamentoInputDto formaPagamentoInput) {
@@ -123,6 +128,7 @@ public class FormaPagamentoController {
 		return formaPagamentoDtoAssembler.toModel(service.salvar(formaPagamentoAtual));
 	}
 	
+	@Override
 	@CheckSecurity.FormasPagamento.PodeEditar
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)

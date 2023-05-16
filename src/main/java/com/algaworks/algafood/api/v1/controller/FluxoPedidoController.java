@@ -9,18 +9,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.api.v1.openapi.controller.FluxoPedidoControllerOpenApi;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.services.FluxoPedidoService;
 
 @RestController
 @RequestMapping(path = "/v1/pedidos/{codigoPedido}")
-public class FluxoPedidoController {
+public class FluxoPedidoController implements FluxoPedidoControllerOpenApi {
 
 	@Autowired
 	private FluxoPedidoService fluxoPedidoService;
 	
 //	Precisamos alterar o retorno dos métodos para poder utiliza-los nos Links
 	
+	@Override
 	@CheckSecurity.Pedidos.PodeGerenciarPedidos
 	@PutMapping("/confirmacao")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -29,6 +31,7 @@ public class FluxoPedidoController {
 		return ResponseEntity.noContent().build();
 	}
 	
+	@Override
 	@CheckSecurity.Pedidos.PodeGerenciarPedidos
 	@PutMapping("/entrega")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -37,6 +40,7 @@ public class FluxoPedidoController {
 		return ResponseEntity.noContent().build();
 	}
 	
+	@Override
 	@CheckSecurity.Pedidos.PodeGerenciarPedidos
 	@PutMapping("/cancelamento") 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
