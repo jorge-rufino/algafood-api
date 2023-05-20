@@ -43,7 +43,7 @@ public class Problem {
 	@Schema(name = "ObjetoProblema")
 	public static class Field {
 	
-		@Schema(example = "preço")
+		@Schema(example = "preco")
 		private String name;
 		
 		@Schema(example = "O preço é inválido")

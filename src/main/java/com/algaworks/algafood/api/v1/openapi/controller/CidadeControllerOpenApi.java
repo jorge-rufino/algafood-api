@@ -23,18 +23,30 @@ public interface CidadeControllerOpenApi {
 
 	@Operation(summary = "Busca uma cidade por ID", responses = {
 			@ApiResponse(responseCode = "200"),
-			@ApiResponse(responseCode = "400", description = "ID da cidade inválido", content = @Content(schema = @Schema(ref = "Problema")))
+			@ApiResponse(responseCode = "400", description = "ID da cidade inválido", content = @Content(schema = @Schema(ref = "Problema"))),
+			@ApiResponse(responseCode = "404", description = "Cidade não encontrada", content = @Content(schema = @Schema(ref = "Problema")))
+			
 		})
 	CidadeDto buscarPorId(@Parameter(description = "ID de uma cidade", example = "1", required = true) Long cidadeId);
 
 	@Operation(summary = "Cadastra uma nova cidade", description = "Cadastrar uma nova cidade necessita de um Estado e um nome válido")
 	CidadeDto adicionar(@RequestBody(description = "Representação de uma nova cidade", required = true) CidadeInputDto cidadeInputDto);
 
-	@Operation(summary = "Atualiza/Altera uma cidade por ID")
+	@Operation(summary = "Atualiza/Altera uma cidade por ID",responses = {
+			@ApiResponse(responseCode = "200"),
+			@ApiResponse(responseCode = "400", description = "ID da cidade inválido", content = @Content(schema = @Schema(ref = "Problema"))),
+			@ApiResponse(responseCode = "404", description = "Cidade não encontrada", content = @Content(schema = @Schema(ref = "Problema")))
+			
+		})
 	CidadeDto atualizar(@Parameter(description = "ID de uma cidade", example = "1", required = true) Long id, 
 			@RequestBody(description = "Representação de uma cidade com dados atualizados", required = true) CidadeInputDto cidadeInput);
 
-	@Operation(summary = "Exclui uma cidade por ID")
+	@Operation(summary = "Exclui uma cidade por ID", responses = {
+			@ApiResponse(responseCode = "204"),
+			@ApiResponse(responseCode = "400", description = "ID da cidade inválido", content = @Content(schema = @Schema(ref = "Problema"))),
+			@ApiResponse(responseCode = "404", description = "Cidade não encontrada", content = @Content(schema = @Schema(ref = "Problema")))
+			
+		})
 	void deletar(@Parameter(description = "ID de uma cidade", example = "1", required = true) Long cidadeId);
 
 }
