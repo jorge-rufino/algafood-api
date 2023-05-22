@@ -62,7 +62,10 @@ public class SpringDocConfig {
 				.externalDocs(new ExternalDocumentation()
 						.description("AlgaWorks")
 						.url("https://algaworks.com"))
-				.tags(Arrays.asList(new Tag().name("Cidades").description("Gerencia as cidade")))
+				.tags(Arrays.asList(
+						new Tag().name("Cidades").description("Gerencia as cidade"),
+						new Tag().name("Grupos").description("Gerencia os grupos")						
+					  ))
 				.components(new Components()
 						.schemas(gerarSchemas())
 						.responses(gerarResponses())
