@@ -66,6 +66,7 @@ public class SpringDocConfig {
 						new Tag().name("Cidades").description("Gerencia as cidade"),
 						new Tag().name("Grupos").description("Gerencia os grupos"),
 						new Tag().name("Cozinhas").description("Gerencia as cozinhas")
+//						new Tag().name("Formas de pagamento").description("Gerencia as formas de pagamento")
 					  ))
 				.components(new Components()
 						.schemas(gerarSchemas())
