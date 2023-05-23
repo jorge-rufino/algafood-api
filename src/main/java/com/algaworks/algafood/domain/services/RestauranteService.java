@@ -4,10 +4,12 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -18,6 +20,8 @@ import com.algaworks.algafood.domain.repository.RestauranteRepository;
 
 @Service
 public class RestauranteService {
+	
+	private static final String MSG_RESTAURANTE_EM_USO = "Restaurante de ID %d, não pode ser removido pois está em uso!";	
 	
 	@Autowired
 	private RestauranteRepository repository;
@@ -63,7 +67,9 @@ public class RestauranteService {
 			
 		} catch (EmptyResultDataAccessException e) {
 			throw new RestauranteNaoEncontradoException(id);
-		}
+		}catch (DataIntegrityViolationException e) {			
+			throw new EntidadeEmUsoException(String.format(MSG_RESTAURANTE_EM_USO, id));
+		}	
 	}
 	
 	@Transactional
