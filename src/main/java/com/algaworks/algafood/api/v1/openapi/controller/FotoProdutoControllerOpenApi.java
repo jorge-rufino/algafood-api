@@ -8,6 +8,10 @@ import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import com.algaworks.algafood.api.v1.model.FotoProdutoDto;
 import com.algaworks.algafood.api.v1.model.input.FotoProdutoInput;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @SecurityRequirement(name = "security_oauth")
@@ -16,11 +20,16 @@ public interface FotoProdutoControllerOpenApi {
 	FotoProdutoDto atualizarFoto(Long restauranteId, Long produtoId, FotoProdutoInput fotoProdutoInput)
 			throws IOException;
 
+	@Operation(summary = "Busca foto do produto de um restaurante", responses = {
+			@ApiResponse(responseCode = "200", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = FotoProdutoDto.class)),
+					@Content(mediaType = "image/jpeg", schema = @Schema(type = "string", format = "binary")),
+					@Content(mediaType = "image/png", schema = @Schema(type = "string", format = "binary"))
+			})
+	})
 	FotoProdutoDto buscarFoto(Long restauranteId, Long produtoId);
 
-	//	Quando o serviço de storage de imagens for local, vamos mostrar a imagem atraves do InputStream, mas quando for remoto ou em nuvem
-	//	vamos mostrar a URL da imagem
-	// As fotos dos produtos ficarão públicas (não precisa de autorização para acessá-las)
+	@Operation(hidden = true)
 	ResponseEntity<?> buscarFotoImagem(Long restauranteId, Long produtoId, String acceptHeader)
 			throws HttpMediaTypeNotAcceptableException;
 
