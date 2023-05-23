@@ -31,7 +31,8 @@ public interface FotoProdutoControllerOpenApi {
 					@Content(mediaType = "image/png", schema = @Schema(type = "string", format = "binary"))
 			})
 	})
-	FotoProdutoDto buscarFoto(Long restauranteId, Long produtoId);
+	FotoProdutoDto buscarFoto(@Parameter(description = "ID do restaurante", example = "1", required = true) Long restauranteId, 
+			@Parameter(description = "ID do produto", example = "1", required = true)Long produtoId);
 
 	@Operation(hidden = true)
 	ResponseEntity<?> buscarFotoImagem(Long restauranteId, Long produtoId, String acceptHeader)
