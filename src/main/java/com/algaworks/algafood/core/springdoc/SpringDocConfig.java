@@ -6,11 +6,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springdoc.core.SpringDocUtils;
 import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import com.algaworks.algafood.api.exceptionhandler.Problem;
-import io.swagger.v3.oas.models.media.MediaType;
+import com.algaworks.algafood.api.v1.openapi.controller.LinksModel;
 
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -24,6 +26,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
@@ -50,6 +53,9 @@ public class SpringDocConfig {
 	@Bean
 	public OpenAPI openAPI() {
 		
+		SpringDocUtils.getConfig().replaceWithClass(
+		           org.springframework.hateoas.Links.class, LinksModel.class);
+		
 		return new OpenAPI()
 				.info(new Info().title("AlgaFood API")
 						.version("v1")
@@ -72,6 +78,7 @@ public class SpringDocConfig {
 						new Tag().name("Produtos").description("Gerencia os produtos"),
 						new Tag().name("Grupos").description("Gerencia os grupos"),
 						new Tag().name("Usuários").description("Gerencia os usuários"),
+						new Tag().name("Permissões").description("Gerencia as permissões"),
 						new Tag().name("Estatísticas").description("Estatísticas da AlgaFood")
 					  ))
 				.components(new Components()
