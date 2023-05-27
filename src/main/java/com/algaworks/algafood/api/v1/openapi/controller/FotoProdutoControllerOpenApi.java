@@ -35,7 +35,8 @@ public interface FotoProdutoControllerOpenApi {
 			@ApiResponse(responseCode = "400", description = "ID do restaurante ou produto inválido", content = {@Content(schema = @Schema(ref = "Problema")) }),
 			@ApiResponse(responseCode = "404", description = "Foto de produto não encontrada", content = {@Content(schema = @Schema(ref = "Problema")) })
 	})
-	FotoProdutoDto buscarFoto(@Parameter(description = "ID do restaurante", example = "1", required = true) Long restauranteId, 
+	FotoProdutoDto buscarFoto(
+			@Parameter(description = "ID do restaurante", example = "1", required = true) Long restauranteId, 
 			@Parameter(description = "ID do produto", example = "1", required = true)Long produtoId);
 
 	@Operation(hidden = true)
@@ -47,6 +48,8 @@ public interface FotoProdutoControllerOpenApi {
 			@ApiResponse(responseCode = "400", description = "ID do restaurante ou produto inválido", content = {@Content(schema = @Schema(ref = "Problema")) }),
 			@ApiResponse(responseCode = "404", description = "Foto de produto não encontrada", content = {@Content(schema = @Schema(ref = "Problema")) })
 	})
-	void deletarFoto(Long restauranteId, Long produtoId);
+	void deletarFoto(
+			@Parameter(description = "ID do restaurante", example = "1", required = true) Long restauranteId, 
+			@Parameter(description = "ID do produto", example = "1", required = true) Long produtoId);
 
 }
