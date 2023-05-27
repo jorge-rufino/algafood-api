@@ -46,9 +46,9 @@ public class GrupoController implements GrupoControllerOpenApi {
 	
 	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
-	@GetMapping("/{id}")
-	public GrupoDto buscarPorId(@PathVariable Long id) {
-		return grupoDtoAssembler.toModel(service.buscarPorId(id));
+	@GetMapping("/{grupoId}")
+	public GrupoDto buscarPorId(@PathVariable Long grupoId) {
+		return grupoDtoAssembler.toModel(service.buscarPorId(grupoId));
 	}
 	
 	@Override
@@ -62,9 +62,9 @@ public class GrupoController implements GrupoControllerOpenApi {
 	
 	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
-	@PutMapping("/{id}")
-	public GrupoDto atualizar(@PathVariable Long id, @Valid @RequestBody GrupoInputDto grupoInput) {
-		Grupo grupoAtual = service.buscarPorId(id);
+	@PutMapping("/{grupoId}")
+	public GrupoDto atualizar(@PathVariable Long grupoId, @Valid @RequestBody GrupoInputDto grupoInput) {
+		Grupo grupoAtual = service.buscarPorId(grupoId);
 		grupoInputDtoDisassembler.copyToDomainObject(grupoInput, grupoAtual);
 		
 		return grupoDtoAssembler.toModel(service.adicionar(grupoAtual));
@@ -72,9 +72,9 @@ public class GrupoController implements GrupoControllerOpenApi {
 	
 	@Override
 	@CheckSecurity.UsuariosGruposPermissoes.PodeEditar
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/{grupoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deletar(@PathVariable Long id) {
-		service.deletar(id);
+	public void deletar(@PathVariable Long grupoId) {
+		service.deletar(grupoId);
 	}
 }

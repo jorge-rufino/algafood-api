@@ -108,9 +108,9 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 
 	@Override
 	@CheckSecurity.Restaurantes.PodeConsultar
-	@GetMapping(value = "/{id}")
-	public RestauranteDto buscarId(@PathVariable Long id){
-		Restaurante restaurante = restauranteService.buscarPorId(id);
+	@GetMapping(value = "/{restauranteId}")
+	public RestauranteDto buscarId(@PathVariable Long restauranteId){
+		Restaurante restaurante = restauranteService.buscarPorId(restauranteId);
 		
 		return restauranteDtoAssembler.toModel(restaurante);
 	}
@@ -133,12 +133,12 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 		
 	@Override
 	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
-	@PutMapping("/{id}")
-	public RestauranteDto atualizar(@PathVariable Long id,@RequestBody @Valid RestauranteInputDto restauranteInput){
+	@PutMapping("/{restauranteId}")
+	public RestauranteDto atualizar(@PathVariable Long restauranteId,@RequestBody @Valid RestauranteInputDto restauranteInput){
 	
 //		Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
 		
-		Restaurante restauranteAtual = restauranteService.buscarPorId(id);		
+		Restaurante restauranteAtual = restauranteService.buscarPorId(restauranteId);		
 			
 		restauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
 		
@@ -156,10 +156,10 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	
 	@Override
 	@CheckSecurity.Restaurantes.PodeGerenciarCadastro
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/{restauranteId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deletar(@PathVariable Long id){
-		restauranteService.deletar(id);
+	public void deletar(@PathVariable Long restauranteId){
+		restauranteService.deletar(restauranteId);
 	}
 	
 	@Override

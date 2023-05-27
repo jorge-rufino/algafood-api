@@ -74,10 +74,10 @@ public class CidadeController implements CidadeControllerOpenApi {
 	
 	@Override
 	@CheckSecurity.Cidades.PodeEditar
-	@PutMapping("{id}")
-	public CidadeDto atualizar(@PathVariable Long id, @RequestBody @Valid CidadeInputDto cidadeInput){
+	@PutMapping("{cidadeId}")
+	public CidadeDto atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInputDto cidadeInput){
 		
-		Cidade cidadeAtual = cidadeService.buscarPorId(id);		
+		Cidade cidadeAtual = cidadeService.buscarPorId(cidadeId);		
 		cidadeInputDtoDisassembler.copyToDomainObject(cidadeInput, cidadeAtual);
 			
 		try {

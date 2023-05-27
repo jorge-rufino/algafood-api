@@ -84,13 +84,13 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	
 	@Override
 	@CheckSecurity.FormasPagamento.PodeConsultar
-	@GetMapping("/{id}")
-	public ResponseEntity<FormaPagamentoDto> buscarId(@PathVariable Long id, ServletWebRequest request) {
+	@GetMapping("/{formaPagamentoId}")
+	public ResponseEntity<FormaPagamentoDto> buscarId(@PathVariable Long formaPagamentoId, ServletWebRequest request) {
 		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 		
 		String eTag = "0";
 		
-		OffsetDateTime dataUltimaAtualizacao = service.getDataAtualizacaoById(id);
+		OffsetDateTime dataUltimaAtualizacao = service.getDataAtualizacaoById(formaPagamentoId);
 		
 		if (dataUltimaAtualizacao != null) {
 			eTag = String.valueOf(dataUltimaAtualizacao.toEpochSecond());
@@ -106,7 +106,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 		return ResponseEntity.ok()
 				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
 				.eTag(eTag)
-				.body(formaPagamentoDtoAssembler.toModel(service.buscarPorId(id)));
+				.body(formaPagamentoDtoAssembler.toModel(service.buscarPorId(formaPagamentoId)));
 	}
 	
 	@Override
@@ -120,9 +120,9 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	
 	@Override
 	@CheckSecurity.FormasPagamento.PodeEditar
-	@PutMapping("/{id}")
-	public FormaPagamentoDto atualizar (@PathVariable Long id, @RequestBody @Valid FormaPagamentoInputDto formaPagamentoInput) {
-		FormaPagamento formaPagamentoAtual = service.buscarPorId(id);
+	@PutMapping("/{formaPagamentoId}")
+	public FormaPagamentoDto atualizar (@PathVariable Long formaPagamentoId, @RequestBody @Valid FormaPagamentoInputDto formaPagamentoInput) {
+		FormaPagamento formaPagamentoAtual = service.buscarPorId(formaPagamentoId);
 		formaPagamentoDisassembler.copyToDomainObject(formaPagamentoInput, formaPagamentoAtual);		
 		
 		return formaPagamentoDtoAssembler.toModel(service.salvar(formaPagamentoAtual));
@@ -130,10 +130,10 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	
 	@Override
 	@CheckSecurity.FormasPagamento.PodeEditar
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/{formaPagamentoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable Long id) {
-		service.deletar(id);
+	public void delete(@PathVariable Long formaPagamentoId) {
+		service.deletar(formaPagamentoId);
 	}
 	
 }
