@@ -25,7 +25,7 @@ public class ResourceServerConfig {
 			.cors()
 			.and()
 			.oauth2ResourceServer()
-				.opaqueToken();
+				.jwt();
 		
 		return httpSecurity.build();
 	}
