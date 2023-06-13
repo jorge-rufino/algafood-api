@@ -11,6 +11,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
@@ -40,7 +42,9 @@ public class AuthorizationServerConfig {
 	public SecurityFilterChain authFilterChain(HttpSecurity http) throws Exception {
 		OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 		
-		return http.build();
+		return http
+				.formLogin(Customizer.withDefaults())	//Habilita o login
+				.build();
 	}
 	
 	@Bean
@@ -53,7 +57,7 @@ public class AuthorizationServerConfig {
 	@Bean
 	public RegisteredClientRepository registeredClientRepository(PasswordEncoder passwordEncoder) {
 		
-		RegisteredClient algafoodbackend = RegisteredClient
+		RegisteredClient algafoodBackend = RegisteredClient
 				.withId("1")
 				.clientId("algafood-backend")
 				.clientSecret(passwordEncoder.encode("backend123"))	//Senha
@@ -61,12 +65,49 @@ public class AuthorizationServerConfig {
 				.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
 				.scope("READ")
 				.tokenSettings(TokenSettings.builder()
-						.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)	//Token Opaco
+						.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)	//Toke JWT
 						.accessTokenTimeToLive(Duration.ofMinutes(30))	//30 minutos de validade
 						.build())
 				.build();
 		
-		return new InMemoryRegisteredClientRepository(Arrays.asList(algafoodbackend));
+		RegisteredClient algafoodWeb = RegisteredClient
+				.withId("2")
+				.clientId("algafood-web")
+				.clientSecret(passwordEncoder.encode("web123"))	//Senha
+				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+				.scope("READ")
+				.scope("WRITE")
+				.tokenSettings(TokenSettings.builder()
+						.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)	//Token JWT
+						.accessTokenTimeToLive(Duration.ofMinutes(15))	//30 minutos de validade
+						.build())
+				.redirectUri("http://localhost:8080/authorized")						//Esta url nao existe
+				.redirectUri("http://localhost:8080/swagger-ui/oauth2-redirect.html")	//Esta url existe
+				.clientSettings(ClientSettings.builder()
+						.requireAuthorizationConsent(true) 		//Obrigatorio a tela para conceder permissoes
+						.build())
+				.build();
+		
+		RegisteredClient foodanalytics = RegisteredClient
+				.withId("3")
+				.clientId("foodanalytics")
+				.clientSecret(passwordEncoder.encode("web123"))	//Senha
+				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+				.scope("READ")
+				.scope("WRITE")
+				.tokenSettings(TokenSettings.builder()
+						.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)	//Token JWT
+						.accessTokenTimeToLive(Duration.ofMinutes(30))	//30 minutos de validade
+						.build())
+				.redirectUri("http://www.foodanalytics.local:8082")
+				.clientSettings(ClientSettings.builder()
+						.requireAuthorizationConsent(false) 		//Obrigatorio a tela para conceder permissoes
+						.build())
+				.build();
+		
+		return new InMemoryRegisteredClientRepository(Arrays.asList(algafoodBackend, algafoodWeb, foodanalytics));
 	}
 	
 	@Bean
