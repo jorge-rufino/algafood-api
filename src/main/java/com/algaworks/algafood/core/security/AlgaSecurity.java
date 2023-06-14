@@ -28,7 +28,8 @@ public class AlgaSecurity {
 //		Captura o token Jwt
 		Jwt jwt = (Jwt) getAuthentication().getPrincipal();
 		
-		return jwt.getClaim("usuario-id");
+//		Alteramos no AuthorizationServerConfig o valor de "usuario-id" para String, portanto precisamos converter para Long 
+		return Long.parseLong(jwt.getClaim("usuario-id"));
 	}
 	
 //	Verifica se o usuario logado é o dono/responsavel pelo restaurante

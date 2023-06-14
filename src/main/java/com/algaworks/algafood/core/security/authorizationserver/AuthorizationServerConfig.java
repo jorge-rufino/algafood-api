@@ -17,7 +17,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -161,7 +160,7 @@ public class AuthorizationServerConfig {
 //				Adiciona as permissoes na lista "authorities
 				user.getAuthorities().forEach(grantedAuthority -> authorities.add(grantedAuthority.getAuthority()));
 
-				context.getClaims().claim("usuario_id", usuario.getId().toString());
+				context.getClaims().claim("usuario-id", usuario.getId().toString());
 				context.getClaims().claim("authorities", authorities);
 			}
 		};
