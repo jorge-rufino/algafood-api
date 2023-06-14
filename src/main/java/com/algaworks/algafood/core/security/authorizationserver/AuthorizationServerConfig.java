@@ -82,8 +82,8 @@ public class AuthorizationServerConfig {
 						.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)	//Token JWT
 						.accessTokenTimeToLive(Duration.ofMinutes(15))	//30 minutos de validade
 						.build())
-				.redirectUri("http://localhost:8080/authorized")						//Esta url nao existe
-				.redirectUri("http://localhost:8080/swagger-ui/oauth2-redirect.html")	//Esta url existe
+				.redirectUri("http://127.0.0.1:8080/authorized")						//Esta url nao existe
+				.redirectUri("http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html")	//Esta url existe
 				.clientSettings(ClientSettings.builder()
 						.requireAuthorizationConsent(true) 		//Obrigatorio a tela para conceder permissoes
 						.build())
