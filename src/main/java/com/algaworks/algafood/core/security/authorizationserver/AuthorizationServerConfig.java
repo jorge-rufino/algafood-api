@@ -76,11 +76,14 @@ public class AuthorizationServerConfig {
 				.clientSecret(passwordEncoder.encode("web123"))	//Senha
 				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
 				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+				.authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
 				.scope("READ")
 				.scope("WRITE")
 				.tokenSettings(TokenSettings.builder()
 						.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)	//Token JWT
-						.accessTokenTimeToLive(Duration.ofMinutes(15))	//30 minutos de validade
+						.accessTokenTimeToLive(Duration.ofMinutes(15))	//15 minutos de validade
+						.reuseRefreshTokens(false)						//Não permite reutilizar refresh token
+						.refreshTokenTimeToLive(Duration.ofDays(1))		//1 dia de validade
 						.build())
 				.redirectUri("http://127.0.0.1:8080/authorized")						//Esta url nao existe
 				.redirectUri("http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html")	//Esta url existe
