@@ -50,7 +50,7 @@ public class AuthorizationServerConfig {
 		OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 		
 		return http
-				.formLogin(Customizer.withDefaults())	//Habilita o login
+				.formLogin(customizer -> customizer.loginPage("/login"))	//Habilita o login
 				.build();
 	}
 	
