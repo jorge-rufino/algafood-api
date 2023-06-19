@@ -20,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.OAuth2TokenFormat;
-import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
@@ -76,68 +75,8 @@ public class AuthorizationServerConfig {
 	}
 	
 	@Bean
-	public RegisteredClientRepository registeredClientRepository(PasswordEncoder passwordEncoder, JdbcOperations jdbcOperations) {
-		
-		RegisteredClient algafoodBackend = RegisteredClient
-				.withId("1")
-				.clientId("algafood-backend")
-				.clientSecret(passwordEncoder.encode("backend123"))	//Senha
-				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-				.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-				.scope("READ")
-				.tokenSettings(TokenSettings.builder()
-						.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)	//Toke JWT
-						.accessTokenTimeToLive(Duration.ofMinutes(30))	//30 minutos de validade
-						.build())
-				.build();
-		
-		RegisteredClient algafoodWeb = RegisteredClient
-				.withId("2")
-				.clientId("algafood-web")
-				.clientSecret(passwordEncoder.encode("web123"))	//Senha
-				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-				.authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-				.scope("READ")
-				.scope("WRITE")
-				.tokenSettings(TokenSettings.builder()
-						.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)	//Token JWT
-						.accessTokenTimeToLive(Duration.ofMinutes(15))	//15 minutos de validade
-						.reuseRefreshTokens(false)						//Não permite reutilizar refresh token
-						.refreshTokenTimeToLive(Duration.ofDays(1))		//1 dia de validade
-						.build())
-				.redirectUri("http://127.0.0.1:8080/authorized")						//Esta url nao existe
-				.redirectUri("http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html")	//Esta url existe
-				.clientSettings(ClientSettings.builder()
-						.requireAuthorizationConsent(true) 		//Obrigatorio a tela para conceder permissoes
-						.build())
-				.build();
-		
-		RegisteredClient foodanalytics = RegisteredClient
-				.withId("3")
-				.clientId("foodanalytics")
-				.clientSecret(passwordEncoder.encode("web123"))	//Senha
-				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-				.scope("READ")
-				.scope("WRITE")
-				.tokenSettings(TokenSettings.builder()
-						.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)	//Token JWT
-						.accessTokenTimeToLive(Duration.ofMinutes(30))	//30 minutos de validade
-						.build())
-				.redirectUri("http://www.foodanalytics.local:8082")
-				.clientSettings(ClientSettings.builder()
-						.requireAuthorizationConsent(false) 		//Obrigatorio a tela para conceder permissoes
-						.build())
-				.build();
-		
-		JdbcRegisteredClientRepository repository = new JdbcRegisteredClientRepository(jdbcOperations);
-		
-		repository.save(algafoodBackend);
-		repository.save(algafoodWeb);
-		repository.save(foodanalytics);		
-		
-		return repository;
+	public RegisteredClientRepository registeredClientRepository(PasswordEncoder passwordEncoder, JdbcOperations jdbcOperations) {		
+		return new JdbcRegisteredClientRepository(jdbcOperations);		
 	}
 	
 	@Bean
@@ -188,5 +127,10 @@ public class AuthorizationServerConfig {
 	@Bean
 	public OAuth2AuthorizationConsentService consentService(JdbcOperations jdbcOperations, RegisteredClientRepository registeredClientRepository) {
 		return new JdbcOAuth2AuthorizationConsentService(jdbcOperations, registeredClientRepository);
+	}
+	
+	@Bean
+	public Oauth2AuthorizationQueryService authorizationQueryService(JdbcOperations jdbcOperations) {
+		return new JdbcOauth2AuthorizationQueryService(jdbcOperations);
 	}
 }
