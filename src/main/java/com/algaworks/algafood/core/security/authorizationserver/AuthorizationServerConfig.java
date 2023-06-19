@@ -130,7 +130,7 @@ public class AuthorizationServerConfig {
 	}
 	
 	@Bean
-	public Oauth2AuthorizationQueryService authorizationQueryService(JdbcOperations jdbcOperations) {
-		return new JdbcOauth2AuthorizationQueryService(jdbcOperations);
+	public Oauth2AuthorizationQueryService authorizationQueryService(JdbcOperations jdbcOperations, RegisteredClientRepository repository) {
+		return new JdbcOauth2AuthorizationQueryService(jdbcOperations, repository);
 	}
 }
